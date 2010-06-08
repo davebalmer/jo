@@ -1,0 +1,84 @@
+Class Hierarchy
+===============
+
+The following is a class hierarchy for the framework, organized
+by general function.
+
+User Interface
+--------------
+
+* joView
+	* joContainer
+		* joAlert
+		* joCard
+		* joDialog
+		* joFieldset
+		* joLayout
+	* joControl
+		* joButton
+		* joCheckBox
+		* joInput
+			* joDateTime
+			* joPasswordInput
+			* joText
+		* joList
+			* joMenu
+			* joTabBar
+			* joToggle
+		* joSelect
+		* joScroller
+		* joKnob
+		* joSlider
+	* joDivider
+	* joLabel
+	* joStack
+	* joTable
+	* joTitle
+
+Data
+----
+
+* joDatabase
+* joDataSource
+	* joFileDataSource
+	* joSQLDataSource
+* joFile
+
+Events
+------
+
+* joDispatch
+* joEvent
+* joSubject
+* joGesture
+
+Processing
+----------
+
+* joChain
+* joYield
+* joWait
+
+Utility
+-------
+
+* joDOM
+* joJSON
+* joLocal
+* joString
+* joTime
+
+Debugging
+---------
+* joLog
+
+Application
+-----------
+
+* jo
+* joClipboard
+* joDevice
+* joFocus
+* joPreference
+* joUser
+
