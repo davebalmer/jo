@@ -1,0 +1,78 @@
+
+Quick Start
+===========
+
+index.html
+----------
+
+The complete jo library is small, so in most cases you'll just want to pull it all in,
+like this:
+
+	<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/aluminum/aluminum.css">
+	</head>
+	<body>
+
+	<!-- any static page content goes here -->
+
+	<script src="js/jo_min.js"></script>
+
+	<!-- any application JavaScript files go here -->
+
+	</body>
+	</html>
+
+If you're using jo to create all the UI for your application, you won't need *any* content
+or tags in your `index.html` file.
+
+Since the framework is highly dependent on CSS, your mileage may vary across platforms. In
+particular, Internet Explorer before 9 will have limited eye candy and no animated
+transitions.
+
+Since jo is geared for HTML5 applications, I recommend you test your apps with Safari,
+Chrome, FireFox or Opera (in that order or preference).
+
+hello.js
+--------
+
+jo has some initialization which should only be done when your browser is ready to have its
+DOM fiddled with, so you may want to wrap your code in a function that's called when your
+page loads, or your device signals that your app is ready to go.
+
+The simplest UI would be something like:
+
+	jo.load();
+	joAlert("Hello!");
+
+Something more interesting would look like:
+
+	jo.load();
+	
+	// setup a stack and a sample card
+	var stack = new joStack();
+	var okbutton = new joButton("OK");
+	
+	// set a responder to the OK button
+	okbutton.selectEvent.subscribe(function() {
+		stack.hide();
+	});
+	
+	// create our card
+	var card = new joCard([
+		new joTitle("Hello"),
+		new joCaption("Hello World!"),
+		new joFiller([
+			okbutton
+		])
+	]);
+	
+	// put the card on our view stack
+	stack.push(card);
+
+Of course, it is recommended you use more robust OOP coding patterns to make a proper
+application. While there's nothing illegal about putting everything in global space
+in a single JavaScript file, but if you're looking to build something big or more easy
+to maintain, I recommend you check out "JavaScript: the Good Parts" by Doug Crockford
+(O'Reilly Press).
+

@@ -1,0 +1,106 @@
+Class Patterns
+==============
+
+Instead of a complex set of pseudo-class methods, jo uses a few simple
+coding patterns: singleton, base class, subclass, and module. All of these
+are found in modern JavaScript implementations. A good reference to have
+while developing your app is
+[JavaScript: The Good Parts](http://javascript.crockford.com/)
+by Douglas Crockford.
+
+Singleton
+---------
+
+The pattern for creating a singleton is really just an object literal. For
+example:
+
+	MyApp = {
+		init: function() {
+			// some sort of initialization code goes here
+		},
+		
+		mymethod: function() {
+			// some custom method
+		},
+		
+		// properties can also be declared inline
+		myproperty: true
+	};
+
+Base Class
+----------
+
+Prototypal inheritance does well with "fat" base classes which do most
+everything you anticipate a subclass would want. This type of inheritance
+benefits greatly from shallow/wide prototypes for a number of reasons.
+A base class looks something like:
+
+	MyClass = function(x) {
+		// constructor
+		this.x = x;
+	};
+	MyClass.prototype = {
+		mymethod: function() {
+			// some custom method
+		}
+	};
+	
+Subclass
+--------
+
+JavaScript doesn't have classes and subclasses. But it does know how to make
+copies of an object, and keeps track of "inheritance" through its prototype
+chain. A subclass in jo looks something like this:
+
+	MySubclass = function(x, y) {
+		//constructor
+		this.y = y;
+		
+		// call to our "superclass" constructor
+		MyClass.call(this, x);
+	};
+	MySubclass.extend(MyClass, {
+		mynewmethod: function() {
+			// this subclass has its own new method
+		}
+	});
+	
+A couple things to note. We've augmented the Function object in JavaScript to
+have an `extend()` method. This is really just some syntactic sugar that makes it
+easier to extend an object, giving us a pseudo-subclass which has syntax that's
+not too hard to digest. The advantage here is we're using JavaScript's natural
+object model behind the scenes. We're not creating any extra fluff, just automating
+the process somewhat.
+
+Note that objects created using prototypal inheritance also get the benefit of
+using JavaScript's built-in `instanceof` operator, and that tests work up
+prototype chain. For example:
+
+	var someobject = new MySubclass(1, 2);
+
+	// both of these tests are "true"
+	joLog(someobject instanceof MySubclass);
+	joLog(someobject instanceof MyClass);
+
+You may also notice a "call to super" comment in our `MySubclass` constructor.
+This is a convenient coding pattern which makes it easier to create subclasses,
+and methods which augment the superclass' functionality. Like this:
+
+	MySubclass.extend(MyClass, {
+		mynewmethod: function() {
+			// this subclass has its own new method
+		},
+		
+		mymethod: function() {
+			this.x += 5;
+			
+			// call super's mymethod with this object's context
+			MyClass.mymethod.apply(this, arguments);
+		}
+	});
+
+It may look slightly evil at first, but after a few uses this approach (using
+the `call` or `apply` methods built into `Function`) gives us a powerful way
+to get more of the benefits of subclassing you'd find in languages with
+classical inheritance but without having to step outside of JavaScript's
+natural object model.

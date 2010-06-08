@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+$file = `cat @ARGV[0]`;
+
+while ($file =~ m/\<h1\>([^\<]+)\<\/h1\>/g) {
+	push(@list, $1);
+}
+
+@keywords = reverse @list;
+
+$keys = join("|", @keywords);
+
+$file =~ s/(\W+)($keys)(?!\<\/\a|\w+)/$1\<a href=\"\#$2\"\>$2\<\/a\>$3/g;
+
+$file =~ s/\<h1\>\<a href=\"\#/\<h1\>\<a name=\"/g;
+
+$file =~ s/(\<a)\s+(href=\"http|href=\"mailto|href=\"ftp)/$1 class=\"external\" $2/g;
+
+@sorted = sort { lc($a) cmp lc($b) } @list;
+
+$index = "\n\n<hr>\n\n<h1>Index</h1>\n<div id=\"index\">\n";
+
+$lastletter = "ZZ";
+
+for $i (@sorted) {
+	$letter = uc(substr($i, 0, 1));
+	if ($letter ne $lastletter) {
+		if ($lastletter ne "ZZ") {
+			$index .= "</ul>\n";
+		}
+		$index .= "\n<h2>$letter</h2>\n";
+		$index .= "\n<ul>\n";
+		$lastletter = $letter;
+	}
+	$index .= "<li><a href=\"#" . $i . "\">" . $i . "</a></li>\n";
+}
+$index .= "</ul></div>\n\n";
+
+print $file;
+print $index;
+
+
+#@sorted = sort @ARGV;
+#$file = `cat @sorted`;
+
+#while ($file =~ m!/\*\*(?:.|[\r\n])*?\*/!g) {
+#	$l = $&;
+#	$l =~ s/(\*\/|\/\*\*)//g;
+#	$l =~ s/([\r\n]+)\s{1}/$1/g;
+#	print $l;
+#}

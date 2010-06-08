@@ -1,0 +1,67 @@
+<img src="jodog.png" align="right">
+
+About
+=====
+
+jo is a lightweight JavaScript framework designed for HTML5 apps.
+Small enough for mobile devices yet powerful enough for desktop applications.
+
+jo does
+--------
+
+- Embrace JavaScript's object model and loosely typed nature
+- Leverage CSS3 to handle as much of the pretty presentation and animation as possible
+- Provide a consistent and modular event model between objects
+- Reduce levels of pseudo-namespacing to improve performance
+- Wrap DOM and device-specific events into a cohesive gesture system
+- Insulate developers from different persistent storage solutions
+- Play nicely with other libraries like PhoneGap
+
+jo doesn't
+-----------
+
+- Depend on other frameworks
+- Force you to deeper into its framework than you want to go
+- Take up a ton of memory or hard drive space
+- Eat a bunch of your CPU cycles
+- Use `$` and other arcane looking symbols in place of proper identifiers
+
+Author
+------
+
+Dave Balmer:
+[homepage](http://davebalmer.wordpress.com),
+[twitter @balmer](http://twitter.com/balmer),
+or email [dbalmerjr@gmail.com](mailto:dbalmerjr@gmail.com)
+
+
+Philosophy
+==========
+
+If you want to jam an existing web page into an application framework, jo probably isn't
+for you. jo is designed to create applications. While it will play nicely with a mixture
+of new and old web development techniques, its aim is to serve as a cross-platform
+framework. jo treats WebKit and HTML5 as a development stack, and does not require a deep
+knowledge of DOM manipulation.
+
+Application Stack
+-----------------
+
+<table style="font-size: 75%">
+	<tr><td colspan="7">JavaScript Application</td></tr>
+	<tr><th colspan="6">jo</th><td rowspan="2">PhoneGap (optional)</td></tr>
+	<tr><th colspan="3">joView</th><th>joEvent</th><th colspan="2">joDataSource</th><tr>
+	<tr><td>CSS3</td><td>Canvas</td><td>DOM</td><td>Events</td><td>XHR</td><td>SQLite</td><td>Device OS</td></tr>
+</table>
+
+Documentation
+=============
+
+All documentation for the framework is based on
+[Markdown](http://daringfireball.net/projects/markdown/syntax)
+and provides a simple, natural and flexible way to document
+the code.
+
+This simple set of `perl` scripts has become its own tool called joDoc.
+
+- - -

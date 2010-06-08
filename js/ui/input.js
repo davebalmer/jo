@@ -1,0 +1,120 @@
+/**
+	joInput
+	=======
+	
+	Single-line text input control. When you instantiate or use `setData()`, you can
+	either pass in an initial value, or a reference to a joDataSource object.
+	
+	Use
+	---
+	
+		// simple value, simple field
+		var x = new joInput(a);
+		
+		// attach the value to a preference
+		var y = new joInput(joPreference.bind("username"));
+		
+		// attach input control to a custom joDataSource
+		var username = new joDataSource("bob");
+		var z = new joInput(username);
+	
+	Extends
+	-------
+	
+	- joControl
+	
+	Methods
+	-------
+	
+	- `focus()`
+	- `blur()`
+	
+	  You can manually set focus or call the `blur()` method (which also
+	  triggers a data save).
+	
+	- `setData()`
+	
+	  Pass in either some arbitrary value for the control, or a reference to
+	  a joDataSource if you want to automatically bind to a storage system
+	  (e.g. joPreference).
+	
+*/
+joInput = function(data) {
+	joControl.apply(this, arguments);
+};
+joInput.extend(joControl, {
+	setData: function(data) {
+		if (data !== this.data) {
+			this.data = data;
+			this.container.innerHTML = data;
+			this.changeEvent.fire(this.data);
+		}
+	},
+	
+	enable: function() {
+		this.container.setAttribute("tabindex", "1");
+		joControl.prototype.enable.call(this);
+	},
+	
+	disable: function() {
+		this.container.removeAttribute("tabindex");
+		joControl.prototype.disable.call(this);
+	},	
+	
+	createContainer: function(tag, classname) {
+		var o = joDOM.create(tag || "joinput", classname);
+		
+		if (!o)
+			return;
+	
+		o.setAttribute("type", "text");
+		o.setAttribute("tabindex", "1");
+		o.contentEditable = this.enabled;
+		
+		return o;
+	},
+
+	setEvents: function() {
+		joControl.prototype.setEvents.call(this);
+		joEvent.on(this.container, "keydown", this.onKeyDown, this);
+	},
+	
+	onKeyDown: function(e) {
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			joEvent.stop(e);
+		}
+		return false;
+	},
+	
+	onMouseDown: function(e) {
+		joEvent.stop(e);
+		this.focus();
+	},
+	
+	storeData: function() {
+		this.data = this.container.innerHTML;
+		if (this.dataSource)
+			this.dataSource.set(this.value);
+	}
+});
+
+/**
+	joPasswordInput
+	===============
+	
+	Secret data input field.
+	
+	Extends
+	-------
+	
+	- joInput
+*/
+joPasswordInput = function(data) {
+	joInput.apply(this, arguments);
+};
+joPasswordInput.extend(joInput, {
+	createContainer: function() {
+		return joInput.prototype.createContainer.call(this, "joinput", "password");
+	}
+});

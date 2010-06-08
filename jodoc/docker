@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+@sorted = sort @ARGV;
+$file = `cat @sorted`;
+
+while ($file =~ m!/\*\*(?:.|[\r\n])*?\*/!g) {
+	$l = $&;
+	$l =~ s/(\*\/|\/\*\*)//g;
+	$l =~ s/([\r\n]+)\s{1}/$1/g;
+	print "\r$l\r";
+}

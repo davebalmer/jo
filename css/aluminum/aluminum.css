@@ -1,0 +1,312 @@
+body {
+	margin: 0;
+	padding: 0;
+	background: #000;
+	word-wrap: break-word;
+}
+
+joview, jotitle, jolabel, jocard, jodivider, jocontrol, jocontainer, jocaption, jobutton, jotabbar, jolist, jomenu {
+	text-align: left;
+	display: block;
+	padding: 0;
+	margin: 0;
+	
+	font: normal 18px "Verdana";
+	color: #000;
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	background: transparent;
+}
+
+jodivider, jolabel, joinput, jocontrol {
+	margin: 0 10px 0 10px;
+}
+
+jocaption {
+	margin: 10px;
+}
+
+jodivider {
+	border-top: 1px solid rgba(0, 0, 0, .5);
+	border-bottom: 1px solid rgba(255, 255, 255, .2);
+	margin: 0 0 10px 0;
+	text-align: center;
+	height: 0;
+	display: block;
+}
+
+jolabel {
+	padding: 5px 0;
+/*	margin: 10px 10px 0 10px; */
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-left: 10px;
+	margin-bottom: 0;
+}
+
+jotitle {
+/*
+	background: rgba(0, 0, 0, .6) url(../shiny.png) repeat-x;
+	background-size: auto;
+	border-bottom: 1px solid rgba(0, 0, 0, .8);
+	padding: 10px 5px;
+*/
+	border-size: 1px;
+	-webkit-border-image: url('../titletop.png') 1 stretch stretch;
+	-moz-border-image: url('../titletop.png') 1 stretch stretch;
+	border-image: url('../titletop.png') 1 stretch stretch;
+	padding: 9px 5px;
+	
+	margin: 0;
+	text-align: center;
+	color: rgba(255, 255, 255, .9);
+}
+
+
+jocontainer {
+}
+
+joinput {
+	cursor: text;
+	display: block;
+	border: 1px solid #000;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 0 10px 10px 10px;
+	padding: 5px 10px;
+	background: rgba(255, 255, 255, .4);
+	white-space: nowrap;
+	overflow: hidden;
+	outline: none;
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	user-select: text;
+	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+}
+joinput.disabled {
+	color: #666;
+	cursor: text;
+}
+
+joinput.focus {
+	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
+	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
+	background: rgba(255, 255, 255, .8);
+}
+
+jostack {
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: block;
+	padding: 0;
+	margin: 0;
+}
+
+jostack.page {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+/*
+	position: relative;
+	height: 480px;
+	width: 320px;
+*/
+	background-color: #222;
+}
+
+jocard {
+	width: 100%;
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+	margin: 0 0 -10px 0;
+	padding: 0;
+	min-height: 100%;
+	background: #ccc;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+}
+jocard>* {
+	display: block;
+	-webkit-box-flex: 0;
+	-moz-box-flex: 0;
+	box-flex: 0;
+}
+
+jofooter {
+	display: block;
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+/*
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+*/
+	-webkit-box-flex: 2;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-webkit-box-pack: end;
+	-moz-box-flex: 2;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	-moz-box-pack: end;
+	box-flex: 2;
+	box-orient: vertical;
+	box-align: stretch;
+	box-pack: end;
+	margin: 0;
+}
+jofooter>* {
+	display: block;
+	-webkit-box-align: start;
+	-moz-box-align: start;
+	box-align: start;
+	-webkit-box-flex: 0;
+	-moz-box-flex: 0;
+	box-flex: 0;
+}
+
+johtml {
+	display: block;
+	margin: 10px;
+	padding: 0;
+}
+
+johtml>* {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+jolist {
+	display: block;
+	margin: 0 0 10px 0;
+}
+
+jolistitem {
+	border-bottom: 1px solid rgba(0, 0, 0, .4);
+	border-top: 1px solid rgba(255, 255, 255, .4);
+	display: block;
+	color: #000;
+	padding: 10px;
+	cursor: pointer;
+}
+
+jolistitem.selected {
+	background: #bbb;
+}
+
+jomenu {
+	display: block;
+	margin: 0 0 10px 0;
+}
+
+jomenuitem {
+	border-bottom: 1px solid rgba(0, 0, 0, .4);
+	border-top: 1px solid rgba(255, 255, 255, .8);
+	display: block;
+	color: #000;
+	padding: 10px;
+	cursor: pointer;
+	background: rgba(255, 255, 255, .4);
+}
+
+jomenuitem img {
+	max-height:40px;
+	padding-right: 10px;
+	border: none;
+	display: inline;
+}
+
+jomenuitem.selected {
+	border-top: 1px solid rgba(0, 0, 0, .8);
+	border-bottom: 1px solid rgba(255, 255, 255, .4);
+	background: rgba(0, 64, 255, .4);
+	color: #fff;
+	
+}
+
+jomenutitle {
+	display: inline;
+}
+
+jobutton {
+	color: rgba(255, 255, 255, .9);
+	font-weight: normal;
+	text-align: center;
+	margin: 0px 10px 10px 10px;
+	cursor: pointer;
+	outline: none;
+	outline-color: transparent;
+	
+/*	padding: 10px;
+	border: 1px solid #999;
+	background: rgba(0, 0, 0, .6);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-top-color: #fff;
+	border-bottom-color: #000;
+*/
+	background-color: transparent;
+	border-width: 13px;
+	-webkit-border-image: url('../grayButton.png') 13 stretch stretch;
+	-moz-border-image: url('../grayButton.png') 13 stretch stretch;
+	border-image: url('../grayButton.png') 13 stretch stretch;
+	padding: 0;
+}
+jobutton:hover, joButton:focus {
+/*	background: rgba(0, 0, 0, .7); */
+	-webkit-border-image: url('../blueButton.png') 13 stretch stretch;
+	-moz-border-image: url('../blueButton.png') 13 stretch stretch;
+	border-image: url('../blueButton.png') 13 stretch stretch;
+}
+joButton.disabled {
+	opacity: .4;
+	color: rgba(255, 255, 255, .4);
+	cursor: default;
+}
+joButton.disabled:hover, joButton.disabled:hover {
+	-webkit-border-image: url('../grayButton.png') 13 stretch stretch;
+	-moz-border-image: url('../grayButton.png') 13 stretch stretch;
+	border-image: url('../grayButton.png') 13 stretch stretch;
+}
+	
+jobutton, jotitle {
+	text-shadow: 0 0 5px #000;
+}
+
+joinput.password {
+	-webkit-text-security: disc;
+	-moz-text-security: disc;
+	-o-text-security: disc;
+	text-security: disc;	
+}
+
+jogroup {
+	display: block;
+	margin: 10px;
+	padding: 0;
+	border: 1px solid rgba(0, 0, 0, .5);
+	background: rgba(255, 255, 255, .2);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+h1 {
+	margin: 0 0 10px 0;
+}

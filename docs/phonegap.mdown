@@ -1,0 +1,14 @@
+PhoneGap
+========
+
+This excellent, lightweight mobile application library by [Nitobi](http://phonegap.com)
+neutralizes device differences and provides a stable webkit application shell. jo is
+designed to use PhoneGap out of the box, and it's highly recommended.
+
+LawnChair
+=========
+
+Another tool by [Nitobi](http://phonegap.com), LawnChair is a client-side storage
+solution which stores JSON objects (in SQLite or whatever the device supports). It looks
+promising, and the jo core has a special subclass of joDataSource called joLawn
+which folds Nitobi's library into the jo event model.
