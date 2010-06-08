@@ -3,7 +3,8 @@
 	=======
 	
 	Single-line text input control. When you instantiate or use `setData()`, you can
-	either pass in an initial value, or a reference to a joDataSource object.
+	either pass in an initial value or a reference to a joDataSource object which it,
+	like other joControl instances, will bind to.
 	
 	Use
 	---
@@ -99,22 +100,3 @@ joInput.extend(joControl, {
 	}
 });
 
-/**
-	joPasswordInput
-	===============
-	
-	Secret data input field.
-	
-	Extends
-	-------
-	
-	- joInput
-*/
-joPasswordInput = function(data) {
-	joInput.apply(this, arguments);
-};
-joPasswordInput.extend(joInput, {
-	createContainer: function() {
-		return joInput.prototype.createContainer.call(this, "joinput", "password");
-	}
-});
