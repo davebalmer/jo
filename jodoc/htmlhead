@@ -18,7 +18,7 @@ print <<ENDDOC
 	<meta name="format-detection" content="false">
 </head>
 <body>
-<cite>Jo<cite>JavaScript Application Framework for HTML5</cite></cite>
+<cite>Jo<cite>JavaScript App Framework</cite></cite>
 
 $file
 

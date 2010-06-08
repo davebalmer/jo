@@ -2,20 +2,16 @@
 	joSound
 	========
 	
-	Play preloaded sound effects. This module could be wildly different for
-	various platforms. Be warned.
+	Play preloaded sound effects using the HTML5 `Audio` object. This module could
+	be wildly different for various platforms. Be warned.
 
 	Methods
 	-------
 	
 	- `play()`
-
 	- `pause()`
-
 	- `rewind()`
-
 	- `load()`
-
 	- `setLoop(n)`
 	
 	  Tell the joSound to automatically loop `n` times. Set to `-1` to loop
@@ -26,6 +22,7 @@
 	
 	- `doneEvent`
 	- `errorEvent`
+
 */
 joSound = function(filename, loop) {
 	if (typeof Audio == 'undefined')

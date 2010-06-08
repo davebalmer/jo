@@ -19,7 +19,7 @@
 	
 	  Fired when data is loaded after an `execute()` or when data is cleared.
 	
-	- `xerrorEvent`
+	- `errorEvent`
 	
 	  Fired when some sort of SQL error happens.
 

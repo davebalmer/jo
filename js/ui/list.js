@@ -3,14 +3,25 @@
 	=======
 	
 	A widget class which expects an array of any data type and renders the
-	array as a list. The list widget handles DOM interactions with only a
-	single touch event, which it uses to determine which item was selected
-	and then fires a `selectEvent`.
+	array as a list. The list control handles DOM interactions with only a
+	single touch event to determine which item was selected.
 	
 	Extends
 	-------
 	
 	- joControl
+	
+	Events
+	------
+	
+	- `selectEvent`
+	
+	  Fired when an item is selected from the list. The data in the call is the
+	  index of the item selected.
+	
+	- `changeEvent`
+	
+	  Fired when the data is changed for the list.
 	
 	Methods
 	-------

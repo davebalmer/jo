@@ -3,23 +3,24 @@
 	==========
 	
 	Class for custom events using the Observer Pattern. This is designed to be used
-	inside a subject to create events observers can subscribe to. Unlike the classical
-	observer pattern, a subject can fire more than one event and when called, an
-	observer gets data from the observer as well as a reference to the observer. Very
-	similar to YUI 2.x event model.
+	inside a subject to create events observers can subscribe to. Unlike the classic
+	observer pattern, a subject can fire more than one event and when called, and
+	each observer gets data from the subject. This is very similar to YUI 2.x event model.
 	
 	Methods
 	-------
 	
 	- `fire(data)`
 	
-	  Calls subscriber methods for all observers, and passes in: `data`, `subject` and
-	  the `data` which was passed in the `subscribe()` method (if any).
+	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
+	  a reference to the `subject` and any static `data` which was passed in the
+	  `subscribe()` call.
 	
 	- `subscribe(Function, context, data)`
-	- `unsubscribe(Function, context, data)`
+	- `unsubscribe(Function, context)`
 	
-	  Both `context` and `data` are optional.
+	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
+	  approach instead of passing in the `context` as a separate argument.
 	
 	Use
 	-----

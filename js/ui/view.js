@@ -2,29 +2,27 @@
 	joView
 	=======
 	
-	Base class for widows, widgets and other visual doo-dads.
+	Base class for all other views, containers, controls and other visual doo-dads.
 	
 	Use
 	-----
 	
 		var x = new joView(data);
+	
+	Where `data` is either a text or HTML string, an HTMLElement, or any joView object
+	or subclass.
 		
 	Methods
 	-------
 	
 	- `setData(data)`
 	- `getData()`
+	- `createContainer(type, classname)`
 	- `setContainer(element)`
 	- `getContainer()`
-	- `createContainer(type, classname)`
 	- `clear()`
 	- `refresh()`
 	
-	CSS
-	---
-	
-	`div.view`
-
 */
 joView = function(data) {
 	this.changeEvent = new joSubject(this);

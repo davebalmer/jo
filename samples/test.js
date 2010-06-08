@@ -104,7 +104,7 @@ var App = (function() {
 		}, this);
 
 		moreback.selectEvent.subscribe(function() { stack.pop(); }, this);
-		button.selectEvent.subscribe(click, this);
+		button.selectEvent.subscribe(click.bind(this));
 		backbutton.selectEvent.subscribe(back, this);
 		html.selectEvent.subscribe(link, this);
 		

@@ -2,10 +2,9 @@
 	joStack
 	========
 	
-	Stack widget which keeps an array of views which can be pushed and popped.
+ 	A UI container which keeps an array of views which can be pushed and popped.
 	The DOM elements for a given view are removed from the DOM tree when popped
-	but a reference is kept to them, so we keep the render tree clean but don't
-	have to redraw every time we put something back on the stack.
+	so we keep the render tree clean.
 
 	Extends
 	-------
@@ -24,6 +23,10 @@
 	- `back()`
 	- `setLocked(boolean)`
 	
+	  The `setLocked()` method tells the stack to keep the first view pushed onto the
+	  stack set; that is, `pop()` won't remove it. Most apps will probably use this,
+	  so setting it as a default for now.
+	
 	Events
 	------
 	
@@ -37,17 +40,12 @@
 	-----
 	
 	Should set classNames to new/old views to allow for CSS transitions to be set
-	(swiping in/out, cross fading, etc). Currently, it does none of this; fast but
-	not too exciting.
+	(swiping in/out, cross fading, etc). Currently, it does none of this.
 	
 	Also, some weirdness with the new `forward()` and `back()` methods in conjuction
 	with `push()` -- need to work on that, or just have your app rigged to `pop()`
 	on back to keep the nesting simple.
 	
-	The `setLocked()` method tells the stack to keep the first view pushed onto the
-	stack set; that is, `pop()` won't remove it. Most apps will probably use this,
-	so setting it as a default for now.
-
 */
 joStack = function(data) {
 	this.visible = false;

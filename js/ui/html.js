@@ -10,10 +10,9 @@
 	data inside your app, but it is _not_ recommended you allow external
 	JavaScript inside the HTML chunk in question.
 	
-	Also keep in mind that your document already _has_ `<html>`, `<head>` and
-	`<body>` tags. When you use the `setData()` method on this view, it will
-	only use the contents of the `<body>` tag (if found) to avoid weird
-	issues.
+	Also keep in mind that your app document already _has_ `<html>`, `<head>` and
+	`<body>` tags. When you use the `setData()` method on this view, _make sure
+	you don't use any of these tags_ to avoid weird issues.
 	
 	> In a future version, it is feasible to load in stylesheets references in
 	> the HTML document's `<head>` section. For now, that entire can of worms

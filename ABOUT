@@ -4,7 +4,6 @@ About
 =====
 
 jo is a lightweight JavaScript framework designed for HTML5 apps.
-Small enough for mobile devices yet powerful enough for desktop applications.
 
 jo does
 --------
@@ -12,7 +11,6 @@ jo does
 - Embrace JavaScript's object model and loosely typed nature
 - Leverage CSS3 to handle as much of the pretty presentation and animation as possible
 - Provide a consistent and modular event model between objects
-- Reduce levels of pseudo-namespacing to improve performance
 - Wrap DOM and device-specific events into a cohesive gesture system
 - Insulate developers from different persistent storage solutions
 - Play nicely with other libraries like PhoneGap
@@ -20,18 +18,19 @@ jo does
 jo doesn't
 -----------
 
+- Use a lot of resources
 - Depend on other frameworks
+- Have a lot of browser dependent code
+- Require detailed knowledge of the DOM
 - Force you to deeper into its framework than you want to go
-- Take up a ton of memory or hard drive space
-- Eat a bunch of your CPU cycles
 - Use `$` and other arcane looking symbols in place of proper identifiers
 
 Author
 ------
 
 Dave Balmer:
-[homepage](http://davebalmer.wordpress.com),
-[twitter @balmer](http://twitter.com/balmer),
+[davebalmer.wordpress.com](http://davebalmer.wordpress.com),
+[follow @balmer on Twitter](http://twitter.com/balmer),
 or email [dbalmerjr@gmail.com](mailto:dbalmerjr@gmail.com)
 
 
@@ -40,9 +39,8 @@ Philosophy
 
 If you want to jam an existing web page into an application framework, jo probably isn't
 for you. jo is designed to create applications. While it will play nicely with a mixture
-of new and old web development techniques, its aim is to serve as a cross-platform
-framework. jo treats WebKit and HTML5 as a development stack, and does not require a deep
-knowledge of DOM manipulation.
+of new and old web development techniques, it uses HTML5 as a development stack and does
+not require direct DOM manipulation.
 
 Application Stack
 -----------------
@@ -59,9 +57,9 @@ Documentation
 
 All documentation for the framework is based on
 [Markdown](http://daringfireball.net/projects/markdown/syntax)
-and provides a simple, natural and flexible way to document
-the code.
+and provides a simple, natural and flexible way to document the code. This simple set
+of `perl` scripts has become its own tool called joDoc.
 
-This simple set of `perl` scripts has become its own tool called joDoc.
+> Currently joDoc is included with jo, but in the future it will have its own codebase.
 
 - - -

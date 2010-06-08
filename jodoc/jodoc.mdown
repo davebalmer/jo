@@ -1,13 +1,8 @@
 joDoc
 =====
 
-joDoc is a markup-based code documentation scheme for JavaScript. It was created out of
-frustration working with various documentation systems currently available.
-
-JavaScript is an extremely expressive language which is often difficult to describe in
-terms of meta data and fields. Often, important information that needs to be documented
-just doesn't fit into a neat, tidy spot.
-
+joDoc is a plain text code documentation scheme for JavaScript. It was created out of
+frustration felt working with various documentation systems available.
 
 Source code formatting
 ----------------------
@@ -52,26 +47,29 @@ Can't get much more flexible than that.
 Comparison
 ----------
 
+JavaScript is an extremely expressive language which is often difficult to describe in
+terms of meta data and fields. Often, important information that needs to be documented
+just doesn't fit into a neat, tidy spot.
+
 ### jsdoc
 
-jsdoc in its various incarnations and some of its spawn like yuidoc take that approach
-that "what was good for Java is fine for JavaScript". All these flavors are based on
-javadoc formatting, and have been in use for some years.
+jsdoc in its various incarnations and some of its spawn like yuidoc take the approach
+that "what is good for Java is good for JavaScript". All these flavors are based on
+javadoc formatting, and have been in use for some time.
 
 Aside from the regimented markup being a bit odd to read (admit it, even Java developers
 don't _love_ it), it suffers from an inflexibility with regard to all the coding
-patterns available with JavaScript. Basically, it fails due to the same reason that all
-the JavaScript OOP libraries which attempt to make a classical OOP model (i.e. Java)
-abstraction on top of JavaScript's natural way of doing things. These solutions, while
-influential in the idea that _some_ form consistent coding approach could help us make
-better code, have been left behind as unnecessary.
+patterns available with JavaScript. Basically, it fails due for the same reason that all
+JavaScript libraries which attempt to subvert JavaScript's natural object model fail.
+These solutions, while influential in the idea that _some_ form consistent coding
+approach could help us make better code, are not in the spirit of embracing JavaScript.
 
-Why then do so many developers continue to use a documentation tool which was born of the
-same well-meaning yet mismatched logic?
+Why then do so many developers continue to use a _documentation_ tool which was born
+of the same well-meaning yet misguided logic of "let's pretend JavaScript is Java"?
 
-###Natural Docs
+### Natural Docs
 
-Excellent effort, but complex to setup and also tries to make a regimented system for
+Excellent effort, but complex to set up and also tries to make a regimented system for
 documenting source code. It is extendable, but again, we have a documentation solution
 which is trying to force JavaScript into a more limited set of features.
 
@@ -120,10 +118,10 @@ For those who want more insight into how the documentation is created:
 
 This produces a bundle of files which can be used a couple of ways:
 
-1. a loose set of files which is used by the joDoc application (written
+1. A loose set of files which is used by the joDoc application (written
    using the jo library, of course)
 
-2. an alternative "single page" view of all the documentation (which some
+2. An alternative "single page" view of all the documentation (which some
    people really like)
 
 3. Your own collection of files with some other organization means (which

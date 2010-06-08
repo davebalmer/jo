@@ -2,7 +2,7 @@
 	joFocus
 	=======
 	
-	Singleton which manages global input and event focus.
+	Singleton which manages global input and event focus among joControl objects.
 	
 	Methods
 	-------

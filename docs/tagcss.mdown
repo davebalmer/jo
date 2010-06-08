@@ -10,11 +10,10 @@ stylesheet that most closely matches your application (or device native controls
 HTML Tags
 =========
 
-One other trick it exploits is the fact that modern browser engines treat unknown
+One feature jo exploits is the fact that modern browser engines treat unknown
 tags as -- _tags_. So instead of mucking up your application's DOM and CSS space with
-a horde of `div` tags with different CSS classes, it's using namespaced tags which
-are outside of your document's CSS tag spacing (except body, everything inherits
-from that).
+a horde of `div` tags with different CSS classes, it uses namespaced tags which
+are outside of your document's typical CSS name space (except `body`).
 
 Special Tag Examples
 --------------------
@@ -29,10 +28,3 @@ Special Tag Examples
 One side benefit of this is that it is possible to load styled HTML content from
 another source and not have that content's CSS corrupt your application's user
 interface.
-
-> _Note:_ this has only been tested with WebKit and Gecko engines. This might fail
-> spectacularly on less capable engines, but it's likely that those crude devices
-> would need some special love in the way of a special library build of the code
-> in any case.
-
-

@@ -2,13 +2,23 @@
 	joEvent
 	========
 	
-	Singleton with event model utility medthods.
+	Singleton with DOM event model utility methods. Ideally, application-level
+	code shouldn't have to use this, but library code does.
 	
 	Methods
 	-------
 	- `on(HTMLElement, event, Function, context, data)`
+	
+	  Set a DOM event listener for an HTMLElement which calls a given Function
+	  with an optional context for `this` and optional static data.
+	
 	- `stop(event)`
+	
+	  Prevent default and stop event propogation.
+	
 	- `getTarget(event)`
+	
+	  Returns the HTMLElement which a DOM event relates to.
 
 */
 

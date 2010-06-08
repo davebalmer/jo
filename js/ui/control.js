@@ -2,7 +2,9 @@
 	joControl
 	=========
 	
-	Interactive, data-driven control class.
+	Interactive, data-driven control class which may be bound to a joDataSource,
+	can receive focus events, and can fire off important events which other objects
+	can listen for and react to.
 	
 	Extends
 	-------
@@ -12,6 +14,7 @@
 	Events
 	------
 	
+	- `changeEvent`
 	- `selectEvent`
 	
 	Methods

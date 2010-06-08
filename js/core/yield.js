@@ -2,15 +2,15 @@
 	joYield
 	========
 	
-	Utility function which calls a given method after `n` milliseconds
-	with optional context.
+	Utility function which calls a given method within a given context after `n`
+	milliseconds with optional static data.
 
 	Use
 	-----
 	
 		joYield(Function, context, delay, data);
 	
-	Note that delay defaults to 100ms if not specified, and data is optional.
+	Note that delay defaults to 100ms if not specified, and `data` is optional.
 
 */
 function joYield(call, context, delay, data) {

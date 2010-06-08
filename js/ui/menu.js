@@ -2,8 +2,7 @@
 	joMenu
 	======
 	
-	Simple menu class with optional icons. This is a control, so you should
-	place it inside a container object of some sort (e.g. joCard).
+	Simple menu class with optional icons.
 	
 	Extends
 	-------
@@ -53,16 +52,6 @@
 	
 	> Look for a formalized card dispatcher to be added to the application layer
 	> for jo at some point in the future.
-
-	CSS
-	---
-	
-		<jomenu>
-			<jomenuitem>
-				<img><jomenutitle></jomenutitle>
-			</jomenuitem>
-			:
-		</jomenu>
 
 */
 joMenu = function(data) {

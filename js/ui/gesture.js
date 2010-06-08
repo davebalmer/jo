@@ -3,6 +3,9 @@
 	=========
 	
 	Experimental global gesture handler (keyboard, dpad, back, home, flick?).
+	This needs a lot more fleshing out, so it's not ready for general
+	concumption.
+
 */
 joGesture = {
 	load: function() {

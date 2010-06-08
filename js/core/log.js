@@ -18,10 +18,6 @@
 	produce a string version of each argument (where appropriate; browser debuggers tend to
 	display objects nicely) in the same console line. Simple, effective, easy to use.
 
-	> Note that even for browser development, this is preferable to blindly using
-	> `console.log()`, because you're going to get silent errors on FireFox if the user
-	> isn't running FireBug, for example.
-
 */
 
 joLog = function() {

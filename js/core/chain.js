@@ -2,10 +2,11 @@
 	joChain
 	========
 	
-	Class which strings asyncronous calls together. In serious need
-	of rework; doesn't meet original goal of serializing these calls.
-	This class might become deprecated.
+	Class which strings asyncronous calls together.
 	
+	> In serious need of rework; doesn't meet original goal of sequencing
+	> these calls. This class might also become deprecated.
+
 	Methods
 	-------
 	

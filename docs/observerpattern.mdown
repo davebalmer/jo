@@ -1,12 +1,13 @@
 Observer Pattern
 ================
 
-jo uses a variant on this OOP pattern quite extensively for asynchronous notifications
-between objects. When you think about JavaScript, most of the interesting things that
+jo uses a variant on this OOP pattern quite extensively for notifications
+between objects.
+
+When you think about JavaScript, most of the interesting things that
 happen are asynchronous: XHR calls, loading scripts, accessing at database, making
 device-specific system calls; even user interactions are all asynchronous in nature.
 
 Instead of trying to hide from this often complex-looking stuff, jo embraces it and
 provides a scheme to wrap all these different use cases in a consistent interface
 using joSubject.
-

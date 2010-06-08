@@ -2,8 +2,9 @@
 	joContainer
 	============
 	
-	A view which is designed to contain other views and widgets. Subclass to provide
-	different layout methods.
+	A view which is designed to contain other views and controls. Subclass to provide
+	different layout types. A container can be used to intantiate an entire tree of
+	controls at once, and is a very powerful UI component in jo.
 	
 	Use
 	-----
@@ -17,7 +18,7 @@
 		// HTMLElement
 		var w = new joContainer(joDOM.get("mydiv"));
 		
-		// deeply nested inline structure with text, HTML, joViews or HTMLElements
+		// nested inline structure with text, HTML, joViews or HTMLElements
 		var z = new joContainer([
 			new joTitle("Hello"),
 			new joList([
@@ -36,6 +37,11 @@
 	-------
 	
 	- joView
+	
+	Events
+	------
+	
+	- `changeEvent`
 	
 	Methods
 	-------
