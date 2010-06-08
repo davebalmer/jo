@@ -1,156 +1,63 @@
 /**
-- - -
-
 	jo
 	===
 
-	Singleton which the framework uses to store global infomation.
-	
-	Properties
-	----------
-	
-	- `version` is a String
-	- `platform` is a String
-	- `language` is an Array
+	Singleton which the framework uses to store global infomation. It also is
+	responsible for initializing the rest of the framework, detecting your environment,
+	and notifying your application when jo is ready to use.
 	
 	Methods
 	-------
 	
+	- `load()`
+	
+	  This method should be called after your DOM is loaded and before your app uses
+	  jo. Typically, you can call this function from your document's `onLoad` method,
+	  but it is recommended you use more device-specific "ready" notification if
+	  they are available.
+	
 	- `getPlatform()`
+	
+	  Returns the platform you're running in as a string. Usually this is not needed,
+	  but can be useful.
+	
 	- `getVersion()`
-	- `getLanguage()`
-
-	- `setLanguage(primary, secondary, ...)`
-		
-	  You can use any string code for your language file, but it is recommended you use
-	  the same codes used by browsers for consistency. You can specify more than one
-	  code, and the corresponding files are loaded in order. This allows you to have
-	  a specific subset of strings for a locale with a given language and a fallback
-	  chain to more generalized strings.
+	
+	  Returns the version of jo you loaded in the form of a string (e.g. `0.1.1`).
 
 	Events
 	------
 	
 	- `loadEvent`
 	- `unloadEvent`
-
-	Class Hierarchy
-	===============
-
-	The following is a class hierarchy for the framework, organized
-	by general function.
 	
-	> Note: these names are subject to refactoring. Trying out
-	> Objective-C style naming conventions (e.g. `joList` instead of
-	> `jo.Widget.ListView`). We'll see how it goes but so far I like it.
-
-	User Interface
-	--------------
-
-	* joView
-		* joContainer
-			* joAlert
-			* joCard
-			* joDialog
-			* joFieldset
-			* joLayout
-		* joControl
-			* joButton
-			* joCheckBox
-			* joInput
-				* joDateTime
-				* joPasswordInput
-				* joText
-			* joList
-				* joMenu
-				* joTabBar
-				* joToggle
-			* joSelect
-			* joScroller
-			* joKnob
-			* joSlider
-		* joDivider
-		* joLabel
-		* joStack
-		* joTable
-		* joTitle
-
-	Data
-	----
-
-	* joDatabase
-	* joDataSource
-		* joFileDataSource
-		* joSQLDataSource
-	* joFile
-
-	Events
-	------
-
-	* joDispatch
-	* joEvent
-	* joSubject
-
-	> Future additions: The following are currently being designed as a way
-	> to abstract differences in DOM event calls between devices:  joTouch,
-	> joGesture, joKeyboard, joJoystick, joOrientation. Loose names for now,
-	> probably end up with something completely different.
-
-	Processing
-	----------
-
-	* joChain
-	* joYield
-	* joWait
-
-	Utility
-	-------
-
-	* joDOM
-	* joJSON
-	* joLocal
-	* joString
-	* joTime
-
-	Debugging
-	---------
-	* joLog
-
-	Application
-	-----------
-
-	* jo
-	* joClipboard
-	* joDevice
-	* joFocus
-	* joPreference
-	* joUser
+	  These events are fired after jo loads or unloads, and can be used in your
+	  application to perform initialization or cleanup tasks.
 
 	Function
 	========
 	
-	jo extends the Function object to add a few goodies.
-	The goal here is to augment JavaScript in a farily non-intrusive
-	way to give us some big benefits.
+	jo extends the Function object to add a few goodies which augment JavaScript
+	in a farily non-intrusive way.
 	
 	Methods
 	-------
 	
-	- `bind(Function)`
-	
-	  Returns a private function wrapper which automagically resolves
-	  context for `this` when your method is called.
-
 	- `extend(superclass, prototype)`
 	
-	  Gives you an easy way to extend a class using JavaScript's natural
-	  prototypal inheritance. See Class Patterns for more information.
+	  Gives you an easy way to extend a class using JavaScript's natural prototypal
+	  inheritance. See Class Patterns for more information.
+	
+	- `bind(context)`
+
+	  Returns a private function wrapper which automagically resolves context
+	  for `this` when your method is called.
 	
 	HTMLElement
 	===========
 	
-	Standard DOM element for JavaScript. Most of the jo widgets deal
-	with these, but your application shouldn't need to.
+	This is a standard DOM element for JavaScript. Most of the jo views, continers
+	and controls deal with these so your application doesn't need to.
 
 	Methods
 	-------
@@ -187,11 +94,11 @@ Function.prototype.extend = function(superclass, proto) {
 
 // add bind() method if we don't have it already
 if (typeof Function.prototype.bind === 'undefined') {
-	Function.prototype.bind = function() {
+	Function.prototype.bind = function(context) {
 		var self = this;
 
 		function callbind() {
-			return self.apply(self, arguments);
+			return self.apply(context, arguments);
 		}
 
 		return callbind;
@@ -200,22 +107,48 @@ if (typeof Function.prototype.bind === 'undefined') {
 
 // just a place to hang our hat
 jo = {
-	platform: "Safari",
+	platform: "webkit",
 	version: "0.0.1",
-	language: [ "en" ],
+	
+	useragent: [
+		'ipad',
+		'iphone',
+		'webos',
+		'android',
+		'opera',
+		'chrome',
+		'safari',
+		'mozilla',
+		'gecko',
+		'explorer'
+	],
 	
 	load: function(call, context) {
 		joDOM.enable();
+		
+		this.loadEvent = new joSubject(this);
+		this.unloadEvent = new joSubject(this);
 
 		document.body.onMouseDown = function(e) { e.preventDefault(); };
 		document.body.onDragStart = function(e) { e.preventDefault(); };
+
+		// quick test to see which environment we're in
+		if (typeof navigator == 'object' && navigator.userAgent) {
+			var agent = navigator.userAgent.toLowerCase();
+			for (var i = 0; i < this.useragent.length; i++) {
+				if (agent.indexOf(this.useragent[i]) >= 0) {
+					this.platform = this.useragent[i];
+					break;
+				}
+			}
+		}
 		
-		joGesture.load();
-		
-//		if (window && typeof window.onFocus !== 'undefined')
-//			window.onFocus = joFocus.refresh;
-		
-		// call some device specific stuff or whatever
+		if (joGesture)
+			joGesture.load();
+
+		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
+
+		this.loadEvent.fire();
 	},
 	
 	getPlatform: function() {
