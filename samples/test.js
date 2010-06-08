@@ -25,9 +25,9 @@ var App = (function() {
 		// so in theory you could replace it or remove it.
 		// a more practical case would be to use the loadCSS() method
 		// to load in an additional stylesheet
-		cssnode = joDOM.applyCSS("jocard { background-color: #ccc; background-image: url(brushedgrey.png); background-repeat: no-repeat; background-attachment: fixed; -webkit-background-origin: content-box; -webkit-background-size: 100%; background-size: 100.5%; -moz-background-size: 100%; } .htmlgroup { background: #fff; }");
+		cssnode = joDOM.applyCSS("jocard { background-color: #ccc; background-image: url(../css/aluminum/brushedgrey.png); background-repeat: no-repeat; background-attachment: fixed; -webkit-background-origin: content-box; -webkit-background-size: 100%; background-size: 100.5%; -moz-background-size: 100%; } .htmlgroup { background: #fff; }");
 		
-		bodycssnode = joDOM.loadCSS("docs/doc.css");
+		bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
 				
 		stack = new joStack();
 		stack.setStyle("page");
