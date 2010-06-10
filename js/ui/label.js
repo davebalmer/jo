@@ -15,8 +15,6 @@ joLabel = function(data) {
 	joControl.apply(this, arguments);
 };
 joLabel.extend(joControl, {
-	createContainer: function() {
-		return joDOM.create("jolabel");
-	}
+	tagName: "jolabel"
 });
 

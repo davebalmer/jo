@@ -38,9 +38,7 @@ joHTML = function(data) {
 	joControl.apply(this, arguments);
 };
 joHTML.extend(joControl, {
-	createContainer: function() {
-		return joDOM.create("johtml");
-	},
+	tagName: "johtml",
 	
 	setEvents: function() {
 		// limited events, no focus for example

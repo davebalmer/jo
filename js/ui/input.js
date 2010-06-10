@@ -44,12 +44,26 @@ joInput = function(data) {
 	joControl.apply(this, arguments);
 };
 joInput.extend(joControl, {
+	tagName: "joinput",
+	
 	setData: function(data) {
 		if (data !== this.data) {
 			this.data = data;
-			this.container.innerHTML = data;
+			
+			if (typeof this.container.value != "undefined")
+				this.container.value = data;
+			else
+				this.container.innerHTML = data;
+
 			this.changeEvent.fire(this.data);
 		}
+	},
+	
+	getData: function() {
+		if (typeof this.container.value != "undefined")
+			return this.container.value;
+		else
+			return this.container.innerHTML;
 	},
 	
 	enable: function() {
@@ -62,8 +76,8 @@ joInput.extend(joControl, {
 		joControl.prototype.disable.call(this);
 	},	
 	
-	createContainer: function(tag, classname) {
-		var o = joDOM.create(tag || "joinput", classname);
+	createContainer: function() {
+		var o = joDOM.create(this);
 		
 		if (!o)
 			return;
@@ -94,7 +108,7 @@ joInput.extend(joControl, {
 	},
 	
 	storeData: function() {
-		this.data = this.container.innerHTML;
+		this.data = this.getData();
 		if (this.dataSource)
 			this.dataSource.set(this.value);
 	}

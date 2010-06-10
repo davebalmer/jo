@@ -14,8 +14,6 @@ joDivider = function(data) {
 	joView.apply(this, arguments);
 };
 joDivider.extend(joView, {
-	createContainer: function() {
-		return joDOM.create("jodivider");
-	}
+	tagName: "jodivider"
 });
 

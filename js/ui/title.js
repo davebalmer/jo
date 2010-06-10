@@ -14,8 +14,6 @@ joTitle = function(data) {
 	joControl.apply(this, arguments);
 };
 joTitle.extend(joControl, {
-	createContainer: function() {
-		return joDOM.create("jotitle");
-	}
+	tagName: "jotitle"
 });
 

@@ -61,9 +61,7 @@ joContainer = function(data) {
 	joView.apply(this, arguments);
 };
 joContainer.extend(joView, {
-	createContainer: function(tag, classname) {
-		return joDOM.create(tag || "jocontainer", classname);
-	},
+	tagName: "jocontainer",
 	
 	getContent: function() {
 		return this.container.childNodes;

@@ -33,9 +33,7 @@ joView = function(data) {
 		this.setData(data);
 };
 joView.prototype = {
-	getTag: function() {
-		return this.tag;
-	},
+	tagName: "joview",
 	
 	getContainer: function() {
 		return this.container;
@@ -48,10 +46,12 @@ joView.prototype = {
 			this.container = this.createContainer();
 		
 		this.setEvents();
+		
+		return this;
 	},
 	
-	createContainer: function(tag, classname) {
-		return joDOM.create(tag || "joview", classname);
+	createContainer: function() {
+		return joDOM.create(this);
 	},
 
 	clear: function() {
@@ -66,6 +66,8 @@ joView.prototype = {
 	setData: function(data) {
 		this.data = data;
 		this.refresh();
+		
+		return this;
 	},
 
 	getData: function() {
@@ -88,6 +90,8 @@ joView.prototype = {
 	
 	setStyle: function(style) {
 		joDOM.setStyle(this.container, style);
+		
+		return this;
 	},
 	
 	setEvents: function() {}

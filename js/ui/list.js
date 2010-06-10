@@ -75,12 +75,10 @@ joList = function(container, data) {
 	joControl.apply(this, arguments);
 };
 joList.extend(joControl, {
+	tagName: "jolist",
+	
 	setDefault: function(msg) {
 		this.defaultMessage = msg;
-	},
-	
-	createContainer: function(tag, classname) {
-		return joDOM.create(tag || "jolist", classname);
 	},
 	
 	draw: function() {

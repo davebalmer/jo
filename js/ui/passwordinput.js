@@ -17,7 +17,5 @@ joPasswordInput = function(data) {
 	joInput.apply(this, arguments);
 };
 joPasswordInput.extend(joInput, {
-	createContainer: function() {
-		return joInput.prototype.createContainer.call(this, "joinput", "password");
-	}
+	className: "password"
 });

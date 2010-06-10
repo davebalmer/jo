@@ -20,6 +20,8 @@ joTabBar = function() {
 	joList.apply(this, arguments);
 };
 joTabBar.extend(joList, {
+	tagName: "jotabbar",
+	
 	formatItem: function(data, index) {
 		var o = document.createElement("li");
 
@@ -32,9 +34,5 @@ joTabBar.extend(joList, {
 		o.setAttribute("index", index);
 		
 		return o;
-	},
-	
-	createContainer: function(tag, classname) {
-		return joDOM.create(tag || "jolist", classname);
 	}
 });

@@ -19,11 +19,12 @@
 	
 	- joControl
 	
-	CSS
-	---
-
-	`button`
-
+	Methods
+	-------
+	
+	- enable()
+	- disable()
+	
 */
 
 joButton = function(data, classname) {
@@ -34,8 +35,10 @@ joButton = function(data, classname) {
 		this.container.className = classname;
 };
 joButton.extend(joControl, {
-	createContainer: function(tag, classname) {
-		var o = joDOM.create(tag || "jobutton", classname);
+	tagName: "jobutton",
+	
+	createContainer: function() {
+		var o = joDOM.create(this);
 		o.setAttribute("tabindex", "1");
 		
 		return o;

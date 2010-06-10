@@ -65,6 +65,8 @@ joStack = function(data) {
 	this.index = 0;
 };
 joStack.extend(joView, {
+	tagName: "jostack",
+	
 	setEvents: function() {
 		// do not setup DOM events for the stack
 	},
@@ -196,9 +198,5 @@ joStack.extend(joView, {
 
 			joYield(this.hideEvent.fire, this.hideEvent, 500);
 		}
-	},
-	
-	createContainer: function(tag, classname) {
-		return joDOM.create(tag || "jostack", classname);
 	}
 });

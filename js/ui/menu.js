@@ -58,10 +58,8 @@ joMenu = function(data) {
 	joList.apply(this, arguments);
 };
 joMenu.extend(joList, {
-	createContainer: function() {
-		return joDOM.create("jomenu");
-	},
-	
+	tagName: "jomenu",
+
 	fireSelect: function(index) {
 		if (typeof this.data[index].id !== "undefined" && this.data[index].id)
 			this.selectEvent.fire(this.data[index].id);

@@ -24,8 +24,6 @@ joCard = function(data) {
 	joContainer.apply(this, arguments);
 };
 joCard.extend(joContainer, {
-	createContainer: function() {
-		return joDOM.create("jocard");
-	}
+	tagName: "jocard"
 });
 

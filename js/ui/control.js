@@ -47,6 +47,8 @@ joControl = function(data) {
 	}
 };
 joControl.extend(joView, {
+	tagName: "jocontrol",
+	
 	setEvents: function() {
 		// not sure what we want to do here, want to use
 		// gesture system, but that's not defined

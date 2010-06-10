@@ -19,7 +19,5 @@ joFooter = function(data) {
 	joContainer.apply(this, arguments);
 };
 joFooter.extend(joContainer, {
-	createContainer: function() {
-		return joDOM.create("jofooter");
-	}
+	tagName: "jofooter"
 });
