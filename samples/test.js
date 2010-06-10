@@ -16,7 +16,16 @@ var App = (function() {
 	var blipsound = new joSound("blip2.wav");
 	var bloopsound = new joSound("blip0.wav");
 	var cancelbutton;
-	
+
+	/*
+		EXAMPLE: if you want to configure what HTML tag and optional CSS class name a given
+		UI class creates, you can change that by altering the properties in the class directly.
+		NOTE: this should be done after jo is loaded, but before you create any new UI objects.
+	*/
+	// uncomment to try this out:
+	//	joPasswordInput.prototype.tagName = "input";
+	//	joPasswordInput.prototype.className = "stuff";
+
 	function init() {
 		joLog("App.init()");
 		
