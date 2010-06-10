@@ -14,7 +14,6 @@
 	
 	- `scrollBy(position)`
 	- `scrollTo(position)`
-
 	- `scrollToView(joView)`
 	
 	  Scrolls to make the top of the specified view visible.
@@ -26,6 +25,8 @@
 	- `flick` physics defined for flicking
 	- `flickback` snap-back physics after a flick
 	
+	> Not ready for use; going through a re-write.
+
 */
 
 joScroller = function(data) {
