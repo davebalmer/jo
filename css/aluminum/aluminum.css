@@ -54,9 +54,9 @@ jotitle {
 	padding: 10px 5px;
 */
 	border-size: 1px;
-	-webkit-border-image: url('titletop.png') 1 stretch stretch;
-	-moz-border-image: url('titletop.png') 1 stretch stretch;
-	border-image: url('titletop.png') 1 stretch stretch;
+	-webkit-border-image: url(titletop.png) 1 stretch stretch;
+	-moz-border-image: url(titletop.png) 1 stretch stretch;
+	border-image: url(titletop.png) 1 stretch stretch;
 	padding: 9px 5px;
 	
 	margin: 0;
@@ -263,16 +263,16 @@ jobutton {
 */
 	background-color: transparent;
 	border-width: 13px;
-	-webkit-border-image: url('grayButton.png') 13 stretch stretch;
-	-moz-border-image: url('grayButton.png') 13 stretch stretch;
-	border-image: url('grayButton.png') 13 stretch stretch;
+	-webkit-border-image: url(grayButton.png) 13 stretch stretch;
+	-moz-border-image: url(grayButton.png) 13 stretch stretch;
+	border-image: url(grayButton.png) 13 stretch stretch;
 	padding: 0;
 }
 jobutton:hover, joButton:focus {
 /*	background: rgba(0, 0, 0, .7); */
-	-webkit-border-image: url('blueButton.png') 13 stretch stretch;
-	-moz-border-image: url('blueButton.png') 13 stretch stretch;
-	border-image: url('blueButton.png') 13 stretch stretch;
+	-webkit-border-image: url(blueButton.png) 13 stretch stretch;
+	-moz-border-image: url(blueButton.png) 13 stretch stretch;
+	border-image: url(blueButton.png) 13 stretch stretch;
 }
 joButton.disabled {
 	opacity: .4;
@@ -280,9 +280,9 @@ joButton.disabled {
 	cursor: default;
 }
 joButton.disabled:hover, joButton.disabled:hover {
-	-webkit-border-image: url('grayButton.png') 13 stretch stretch;
-	-moz-border-image: url('grayButton.png') 13 stretch stretch;
-	border-image: url('grayButton.png') 13 stretch stretch;
+	-webkit-border-image: url(grayButton.png) 13 stretch stretch;
+	-moz-border-image: url(grayButton.png) 13 stretch stretch;
+	border-image: url(grayButton.png) 13 stretch stretch;
 }
 	
 jobutton, jotitle {
@@ -309,4 +309,19 @@ jogroup {
 
 h1 {
 	margin: 0 0 10px 0;
+}
+
+jocard {
+	background-color: #ccc;
+	background-image: url(brushedgrey.png);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	-webkit-background-origin: content-box;
+	-webkit-background-size: 100%;
+	background-size: 100.5%;
+	-moz-background-size: 100%;
+}
+
+.htmlgroup {
+	background: #fff;
 }
