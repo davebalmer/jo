@@ -1,6 +1,3 @@
-#export GRROK_ID = com.grrok.pokerdrops
-#export GRROK_VER = 1.0.7
-
 all: js docs
 
 docs:
