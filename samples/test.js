@@ -1,5 +1,15 @@
+/*
+	NOTE:
+	What follows is a mishmash of coding techniques put together as a rough
+	test for the library. It it not intended as a "best practice" coding exmaple,
+	but reather shows off some of the many approaches you can use to interact
+	with the Jo framework.
+*/
+
+// required:
 jo.load();
 
+// placed in a module pattern, not a terrible idea for application level code
 var App = (function() {
 	var stack;
 	var button;
@@ -23,24 +33,20 @@ var App = (function() {
 		NOTE: this should be done after jo is loaded, but before you create any new UI objects.
 	*/
 	// uncomment to try this out:
-	//	joPasswordInput.prototype.tagName = "input";
-	//	joPasswordInput.prototype.className = "stuff";
+//		joInput.prototype.tagName = "input";
+//		joInput.prototype.className = "stuff";
 
-	function init() {
-		joLog("App.init()");
-		
+	function init() {		
 		// silly, but you you can load style tags with a string
 		// which may be moderately useful. the node is returned,
 		// so in theory you could replace it or remove it.
 		// a more practical case would be to use the loadCSS() method
 		// to load in an additional stylesheet
-//		cssnode = joDOM.applyCSS("jocard { background-color: #ccc; background-image: url(../css/aluminum/brushedgrey.png); background-repeat: no-repeat; background-attachment: fixed; -webkit-background-origin: content-box; -webkit-background-size: 100%; background-size: 100.5%; -moz-background-size: 100%; } .htmlgroup { background: #fff; }");
 		cssnode = joDOM.applyCSS(".htmlgroup { background: #fff; }");
 		
 		bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
 				
-		stack = new joStack();
-		stack.setStyle("page");
+		stack = new joStack().setStyle("page");
 		
 		login = new joCard([
 			new joTitle("Login"),
@@ -49,6 +55,16 @@ var App = (function() {
 				nameinput = new joInput("Dave"),
 				new joLabel("Password"),
 				new joPasswordInput("heyjo"),
+			]),
+			new joDivider(),
+			new joExpando([
+				new joExpandoTitle("Advanced Settings"),
+				new joGroup([
+					new joLabel("Domain"),
+					new joInput("localhost"),
+					new joLabel("Port"),
+					new joInput("80")
+				])
 			]),
 			new joFooter([
 				new joDivider(),

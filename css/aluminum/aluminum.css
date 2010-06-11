@@ -322,6 +322,106 @@ jocard {
 	-moz-background-size: 100%;
 }
 
+joexpando {
+	display: block;
+	margin: 0;
+}
+
+joexpando.open {
+	margin-bottom: 10px;
+}
+
+joexpando > *:first-child {
+	-webkit-transform: none;
+	opacity: 1;
+	overflow: visible;
+	height: auto;
+}
+
+joexpandotitle {
+	color: #fff;
+	display: block;
+	background: rgba(0, 0, 0, .2);
+	-webkit-border-radius: 1.2em;
+	-moz-border-radius: 1.2em;
+	border-radius: 1.2em;
+	padding: 10px;
+	border: 1px solid rgba(0, 0, 0, .8);
+	margin: 10px 10px 0 10px;
+	position: relative;
+	cursor: pointer;
+}
+
+joexpando.open > joexpandotitle {
+}
+
+joexpandotitle joicon {
+	position: absolute;
+	border: none;
+	display: block;
+	height: 32px;
+	width: 32px;
+	right: 0px;
+	top: 13%;
+	background: url(expando.png) no-repeat;
+
+	-webkit-transform-origin: 11px 16px 0;
+	-webkit-transform: rotateZ(0);
+	-webkit-transition: -webkit-transform .2s ease-out;
+
+	-moz-transform-origin: 11px 16px 0;
+	-moz-transform: rotateZ(0);
+	-moz-transition: -moz-transform .2s ease-out;
+
+	-o-transform-origin: 11px 16px 0;
+	-o-transform: rotateZ(0);
+	-o-transition: -o-transform .2s ease-out;
+}
+
+joexpando.open > joexpandotitle joicon {
+	-webkit-transform: rotateZ(90deg);
+	-moz-transform: rotateZ(90deg);
+	-o-transform: rotateZ(90deg);
+}
+
+jostack {
+	-webkit-perspective: 400px;
+	-moz-perspective: 400px;
+	-o-perspective: 400px;
+}
+
+joexpando > *:last-child {
+	height: 0;
+	overflow: hidden;
+	opacity: 0;
+
+	-webkit-transform-style: preserve-3d;
+	-webkit-transform: rotateX(-45deg);
+	-webkit-transform-origin: 0 0 0;
+	-webkit-transition: -webkit-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+
+	-moz-transform-style: preserve-3d;
+	-moz-transform: rotateX(-45deg);
+	-moz-transform-origin: 0 0 0;
+	-moz-transition: -moz-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+
+	-o-transform-style: preserve-3d;
+	-o-transform: rotateX(-45deg);
+	-o-transform-origin: 0 0 0;
+	-o-transform: scaleY(1);
+	-o-transition: -o-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+}
+
+joexpando.open > *:last-child {
+	height: 100%;
+	overflow: visible;
+	opacity: 1;
+
+	-webkit-transform: rotateX(0);
+	-moz-transform: rotateX(0);
+	-o-transform: rotateX(0);
+}
+
 .htmlgroup {
 	background: #fff;
 }
