@@ -33,11 +33,11 @@ joGesture = {
 		if (!e)
 			var e = window.event;
 	
-		joLog("keyup", e.keyCode, e.charCode);
+//		joLog("keyup", e.keyCode, e.charCode);
 
 		if (e.keyCode == 18) {
 			this.altkey = false;
-			joLog("alt OFF");
+//			joLog("alt OFF");
 			return;
 		}
 
@@ -72,7 +72,7 @@ joGesture = {
 		if (!e)
 			var e = window.event;
 			
-		joLog("keydown", e.keyCode, e.charCode);
+//		joLog("keydown", e.keyCode, e.charCode);
 
 		if (e.keyCode == 27) {
 			this.backEvent.fire("back");
@@ -85,7 +85,7 @@ joGesture = {
 		}
 		
 		if (e.keyCode == 18) {
-			joLog("alt ON");
+//			joLog("alt ON");
 			this.altkey = true;
 			return;
 		}
