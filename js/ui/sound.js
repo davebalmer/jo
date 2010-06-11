@@ -20,33 +20,34 @@
 	Events
 	------
 	
-	- `doneEvent`
+	- `endedEvent`
 	- `errorEvent`
 
 */
-joSound = function(filename, loop) {
+joSound = function(filename, repeat) {
+	this.endedEvent = new joSubject(this);
+	this.errorEvent = new joSubject(this);
+	
 	if (typeof Audio == 'undefined')
 		return;
 
-//	if (typeof Mojo != 'undefined')
-//		filename = Mojo.appPath + filename;
-
 	this.filename = filename;
-
 	this.audio = new Audio();
+	this.audio.autoplay = false;
 	
 	if (!this.audio)
 		return;
 		
-	this.audio.src = filename;
-	this.audio.autoplay = false;
-
-	// makes webOS 1.3.5 happy
-	this.audio.load();
-	this.pause();
+	joYield(function() {
+		this.audio.src = filename;
+		this.audio.load();
+	}, this, 5);
 	
-	if (loop)
-		joEvent.on(this.audio, "ended", this.play, this);
+	this.setRepeatCount(repeat);
+
+	joEvent.on(this.audio, "ended", this.onEnded, this);
+
+//	this.pause();
 };
 joSound.prototype = {
 	play: function() {
@@ -54,6 +55,20 @@ joSound.prototype = {
 			return;
 
 		this.audio.play();
+	},
+
+	onEnded: function(e) {
+		this.endedEvent.fire(this.repeat);
+
+		if (++this.repeat < this.repeatCount)
+			this.play();
+		else
+			this.repeat = 0;
+	},
+	
+	setRepeatCount: function(repeat) {
+		this.repeatCount = repeat;
+		this.repeat = 0;
 	},
 	
 	pause: function() {
@@ -73,15 +88,19 @@ joSound.prototype = {
 		catch (e) {
 			joLog("joSound: can't rewind...");
 		}
+		
+		this.repeat = 0;
 	},
 
 	stop: function() {
 		this.pause();
 		this.rewind();
+		
+		this.repeat = 0;
 	},
 	
 	setVolume: function(vol) {
-		if (!this.audio)
+		if (!this.audio || vol < 0 || vol > 1)
 			return;
 
 		this.audio.volume = vol;
