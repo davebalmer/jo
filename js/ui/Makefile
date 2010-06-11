@@ -6,6 +6,7 @@ UI = gesture.js \
 	footer.js \
 	stack.js \
 	scroller.js \
+	expando.js \
 	control.js \
 	button.js \
 	input.js \
