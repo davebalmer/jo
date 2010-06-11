@@ -9,10 +9,13 @@ Mac OSX, Linux & BSD
 --------------------
 
 	cd jo
-	make
+	make -B
 
 If you do not have `make` installed, you may want to install and update your
-copy of XCode which is freely available form Apple.
+copy of XCode which is freely available form Apple. The `-B` is required, because
+we want to force `make` to build everything without checking dependancies.
+
+> Note: the Makefiles will be getting smarter very soon.
 
 Windows
 -------
