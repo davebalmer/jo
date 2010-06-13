@@ -425,3 +425,39 @@ joexpando.open > *:last-child {
 .htmlgroup {
 	background: #fff;
 }
+
+/*
+joscroller {
+	display: block;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+joscroller > * {
+}
+
+.flick {
+	-webkit-transition: top 1s ease-in;
+	-webkit-transition: top 1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.flickback {
+	-webkit-transition: top .2s ease-out;
+	-webkit-transition: top .2s cubic-bezier(0, 0, 0.4, 1);
+}
+
+*/
+
+jostack {
+	position: relative;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+jostack.hide {
+	opacity: 0;
+}
+
+
