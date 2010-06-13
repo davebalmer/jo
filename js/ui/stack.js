@@ -63,6 +63,8 @@ joStack = function(data) {
 	
 	this.data = [];
 	this.index = 0;
+	this.lastIndex = 0;
+	this.lastNode = null;
 };
 joStack.extend(joView, {
 	tagName: "jostack",
@@ -92,29 +94,61 @@ joStack.extend(joView, {
 	draw: function() {
 		if (!this.container)
 			this.createContainer();
-		
-		if (this.container.childNodes && this.container.childNodes.length) {
-			// TODO: add CSS className to views transitioning in and out
-			// fine for now, but should allow for transitions later
-			// opera sucks, so
-			this.container.innerHTML = "";
-//			this.container.removeChild(this.container.childNodes[0]);
+
+		var container = this.container;
+		var oldchild = this.lastNode;
+		var newchild = getnode(this.data[this.index]);
+
+		function getnode(o) {
+			return (typeof o.container !== "undefined") ? o.container : o;
 		}
-
-		var o = this.data[this.index];
-
-		if (!o)
+		
+		if (!newchild)
 			return;
-			
-		if (o.container) {
-			this.container.appendChild(o.container);
-
-			if (typeof o.activate !== 'undefined')
-				o.activate();
+		
+		if (this.index > this.lastIndex) {
+			var oldclass = "prev";
+			var newclass = "next";
+			joDOM.addCSSClass(newchild, newclass);
+		}
+		else if (this.index < this.lastIndex) {
+			var oldclass = "next";
+			var newclass = "prev";
+			joDOM.addCSSClass(newchild, newclass);
 		}
 		else {
-			this.container.appendChild(o);
+			container.innerHTML = "";
 		}
+
+		joLog("appendChild");
+		container.appendChild(newchild);
+
+		// trigger animation
+		joYield(animate, this, 1);
+		
+		function animate() {
+			joLog("animate");
+
+			if (newclass && newchild)
+				joDOM.removeCSSClass(newchild, newclass);
+
+			if (oldclass && oldchild)
+				joDOM.addCSSClass(oldchild, oldclass);
+
+			// TODO: add transition end event if available, this as fallback
+			setTimeout(cleanup, 800);
+		}
+		
+		function cleanup() {
+			if (oldchild && oldchild !== newchild)
+				container.removeChild(oldchild);
+		}
+		
+		if (typeof this.data[this.index].activate !== "undefined")
+			this.data[this.index].activate.call(this.data[this.index]);
+		
+		this.lastIndex = this.index;
+		this.lastNode = newchild;
 		
 		// while we're using scrollTop instead of joScroller, reset top position
 		this.container.scrollTop = "0";
@@ -148,9 +182,9 @@ joStack.extend(joView, {
 			this.index = this.data.length - 1;
 
 			this.draw();
-
-			if (typeof o.deactivate !== 'undefined')
-				o.deactivate();
+			
+			if (typeof o.activate !== "undefined")
+				o.deactivate.call(o);
 
 			if (!this.data.length)
 				this.hide();
