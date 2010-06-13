@@ -38,10 +38,10 @@ joScroller = function(data) {
 joScroller.velocity = 10;
 joScroller.extend(joContainer, {
 	setEvents: function() {
-		joEvent.on(this.container, "mousedown", this.onDown, this);
-		joEvent.on(this.container, "mouseup", this.onUp, this);
-		joEvent.on(this.container, "mousemove", this.onMove, this);
-		joEvent.on(this.container, "mouseout", this.onOut, this);
+		joEvent.on(this.container, "dragstart", this.onDown, this);
+		joEvent.on(this.container, "dragend", this.onUp, this);
+		joEvent.on(this.container, "dragover", this.onMove, this);
+		joEvent.on(this.container, "dragout", this.onOut, this);
 	},
 	
 	onFlick: function(e) {
@@ -51,6 +51,7 @@ joScroller.extend(joContainer, {
 	},
 	
 	onDown: function(e) {
+		joLog("onDown");
 		joEvent.stop(e);
 
 		this.points = [];
@@ -58,11 +59,12 @@ joScroller.extend(joContainer, {
 		this.inMotion = true;
 		this.quickSnap = false;
 
-		jsDOM.removeCSSClass(this.data, "flick");
-		jsDOM.removeCSSClass(this.data, "flickback");
+		joDOM.removeCSSClass(this.data, "flick");
+		joDOM.removeCSSClass(this.data, "flickback");
 	},
 	
 	onMove: function(e) {
+		joLog("onMove");
 		e.preventDefault();
 
 		// TODO: move the page to follow the mouse
@@ -89,6 +91,8 @@ joScroller.extend(joContainer, {
 	},
 
 	onUp: function (e) {
+		joLog("onUp");
+		
 		if (!this.inMotion)
 			return;
 
@@ -156,12 +160,12 @@ joScroller.extend(joContainer, {
 				this.quickSnap = false;
 		}
 		
-		if (this.data.offsetTop != dy)
-			this.data.style.top = dy + "px";
+		if (this.container.childNodes[0].offsetTop != dy)
+			this.container.childNodes[0].style.marginTop = dy + "px";
 	},
 	
 	snapBack: function() {
-		var top = parseInt(this.data.style.top);
+		var top = parseInt(this.data.style.marginTop);
 
 		if (isNaN(top))
 			top = 0;
@@ -172,8 +176,8 @@ joScroller.extend(joContainer, {
 		jsDOM.removeCSSClass(this.data, 'flick');
 		jsDOM.addCSSClass(this.data, 'flickback');
 		if (dy > 0)
-			this.data.style.top = "0px";
+			this.container.childNodes[0].style.marginTop = "0px";
 		else if (dy < max)
-			this.data.style.top = max + "px";
+			this.container.childNodes[0].style.marginTop = max + "px";
 	}
 });
