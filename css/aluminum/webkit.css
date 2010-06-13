@@ -1,0 +1,43 @@
+jostack {
+	position: relative;
+	overflow: hidden;
+	overflow-y: scroll;
+	-webkit-transition: opacity .4s ease-out;
+	-moz-transition: opacity .4s ease-out;
+	-o-transition: opacity .4s ease-out;
+}
+
+jostack > * {
+	-webkit-transform-origin: 50% 200% 0;
+	-webkit-transform: rotateZ(0);
+	-webkit-transition: -webkit-transform .8s ease-out;
+
+	-moz-transform-origin: 50% 200% 0;
+	-moz-transform: rotateZ(0);
+	-moz-transition: -moz-transform .8s ease-out;
+
+	-o-transform-origin: 50% 200% 0;
+	-o-transform: rotateZ(0);
+	-o-transition: -o-transform .8s ease-out;
+}
+
+jostack > .next {
+	z-index: -1;
+	position: absolute;
+	top: 0;
+
+/*	-webkit-transform: rotateZ(45deg); */
+	-webkit-transform: rotateZ(45deg);
+	-moz-transform: rotateZ(45deg);
+	-o-transform: rotateZ(45deg);
+}
+
+jostack > .prev {
+	z-index: 1;
+	position: absolute;
+	top: 0;
+
+	-webkit-transform: rotateZ(-45deg);
+	-moz-transform: rotateZ(-45deg);
+	-o-transform: rotateZ(-45deg);
+}

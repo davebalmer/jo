@@ -1,0 +1,15 @@
+jostack {
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+jostack > * {
+}
+
+jostack > .next {
+	display: none;
+}
+
+jostack > .prev {
+	display: none;
+}
