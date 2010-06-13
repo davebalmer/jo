@@ -24,6 +24,11 @@
 	- `getVersion()`
 	
 	  Returns the version of jo you loaded in the form of a string (e.g. `0.1.1`).
+	
+	- `matchPlatform("mozilla chrome")
+	  
+	  Feed in a string list of desired platforms, and returns true if the platform
+	  is in the test list.
 
 	Events
 	------
@@ -108,7 +113,7 @@ if (typeof Function.prototype.bind === 'undefined') {
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.0.1",
+	version: "0.0.2",
 	
 	useragent: [
 		'ipad',
@@ -153,6 +158,10 @@ jo = {
 	
 	getPlatform: function() {
 		return this.platform;
+	},
+	
+	matchPlatform: function(test) {
+		return (test.indexOf(this.platform) >= 0);
 	},
 	
 	getVersion: function() {
