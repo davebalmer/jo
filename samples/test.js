@@ -44,8 +44,24 @@ var App = (function() {
 		// to load in an additional stylesheet
 		cssnode = joDOM.applyCSS(".htmlgroup { background: #fff; }");
 		
-		bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
-				
+		// more css, but deferred loading until after the app initializes
+		joYield(function() {
+			bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
+			
+			// dynamic CSS loading based on platform, in this case FireFox
+			// doesn't do stack transitions well, so we're downshifting
+
+			if (jo.matchPlatform("chrome iphone ipad webkit safari webos"))
+				joDOM.loadCSS("../css/aluminum/webkit.css");
+			else
+				joDOM.loadCSS("../css/aluminum/gecko.css");
+			
+			// as an optimization, I recommend in a downloadable app that
+			// you create a custom CSS file for each platform using some
+			// sort of make-like process.
+		}, this);
+		
+		// chaining is supported on constructors and any setters
 		stack = new joStack().setStyle("page");
 		
 		login = new joCard([
@@ -69,10 +85,14 @@ var App = (function() {
 			new joFooter([
 				new joDivider(),
 				button = new joButton("Login"),
-				cancelbutton = new joButton("Cancel")
+				cancelbutton = new joButton("Back")
 			])
 		]);
-		cancelbutton.disable();
+//	was demoing how to disable a control, but decided having a "back"
+// button was more important right now
+//		cancelbutton.disable();
+		cancelbutton.selectEvent.subscribe(back, this);
+		
 		login.activate = function() {
 			joFocus.set(nameinput);
 			
