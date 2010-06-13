@@ -87,34 +87,44 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
-		var n = node.className.split(/\s+/);
+		if (typeof node.className != "undefined") {
+			var n = node.className.split(/\s+/);
 
-		for (var i = 0, l = n.length; i < l; i++) {
-			if (n[i] == classname)
-				return;
+			for (var i = 0, l = n.length; i < l; i++) {
+				if (n[i] == classname)
+					return;
+			}
+			n.push(classname);
+			node.className = n.join(" ");
 		}
-		n.push(classname);
-		node.className = n.join(" ");
+		else {
+			node.className = classname;
+		}
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
-		var n = node.className.split(/\s+/);
+		if (typeof node.className != "undefined") {
+			var n = node.className.split(/\s+/);
 
-		for (var i = 0, l = n.length; i < l; i++) {
-			if (n[i] == classname) {
-				if (l == 1)
-					node.className = "";
-				else {
-					n.splice(i, i);
-					node.className = n.join(" ");
+			for (var i = 0, l = n.length; i < l; i++) {
+				if (n[i] == classname) {
+					if (l == 1)
+						node.className = "";
+					else {
+						n.splice(i, i);
+						node.className = n.join(" ");
+					}
+					return;
 				}
-				return;
+			}
+
+			if (toggle) {
+				n.push(classname);
+				node.className = n.join(" ");
 			}
 		}
-
-		if (toggle) {
-			n.push(classname);
-			node.className = n.join(" ");
+		else {
+			node.className = classname;
 		}
 	},
 
