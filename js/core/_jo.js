@@ -25,10 +25,10 @@
 	
 	  Returns the version of jo you loaded in the form of a string (e.g. `0.1.1`).
 	
-	- `matchPlatform("mozilla chrome")
+	- `matchPlatform(string)`
 	  
-	  Feed in a string list of desired platforms, and returns true if the platform
-	  is in the test list.
+	  Feed in a string list of desired platforms (e.g. `"mozilla chrome ipad"`),
+	  and returns true if the identified platform is in the test list.
 
 	Events
 	------
