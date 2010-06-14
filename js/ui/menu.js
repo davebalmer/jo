@@ -41,7 +41,7 @@
 				stack.push(visitCard);
 				break;
 			}
-		}
+		});
 	
 	Advanced Use
 	------------
@@ -49,9 +49,13 @@
 	This could actually be called "more consistent and simple" use. If your menus
 	are static, you could always setup an id-based dispatch delegate which pushes
 	the appropriate card based on the menu `id` selected.
+
+	You could use the `id` in conjunction with view keys you create with joCache.
+	The handler would then something like:
 	
-	> Look for a formalized card dispatcher to be added to the application layer
-	> for jo at some point in the future.
+		menu.selectEvent.subscribe(function(id) {
+			mystack.push(joCache.get(id));
+		});
 
 */
 joMenu = function(data) {
