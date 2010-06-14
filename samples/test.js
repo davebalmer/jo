@@ -135,7 +135,8 @@ var App = (function() {
 			list = new joMenu([
 				{ title: "Login", id: "login" },
 				{ title: "Checklist", id: "checklist" },
-				{ title: "Help", id: "help" }
+				{ title: "Help", id: "help" },
+				{ title: "On Demand View", id: "test" }
 			])
 		]);
 		menu.activate = function() {
@@ -147,6 +148,32 @@ var App = (function() {
 			if (id == "login") {
 				stack.push(login);
 			}
+			else if (id == "test") {
+				stack.push(joCache.get("test"));
+			}
+		}, this);
+		
+		// we can defer creating views until they're needed
+		// using joCache
+		joCache.set("test", function() {
+			var back;
+
+			joLog("creating test view on demand");
+
+			var card = new joCard([
+				new joTitle("Home"),
+				new joGroup([
+					new joCaption("This view was created on-demand using joCache.get('test'). From now on, this view will not be recreated, but pulled from the cache.")
+				]),
+				new joDivider(),
+				back = new joButton("Back")
+			]);
+
+			back.selectEvent.subscribe(function() {
+				stack.pop();
+			});
+
+			return card;
 		}, this);
 
 		moreback.selectEvent.subscribe(function() { stack.pop(); }, this);
