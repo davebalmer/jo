@@ -6,6 +6,7 @@ CORE = log.js \
 	yield.js \
 	chain.js \
 	clipboard.js \
+	cache.js
 
 all:
 	cat $(CORE) >> ../jo.js
