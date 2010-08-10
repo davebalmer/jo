@@ -20,7 +20,7 @@ joview, jotitle, jolabel, jocard, jodivider, jocontrol, jocontainer, jocaption, 
 	background: transparent;
 }
 
-jodivider, jolabel, joinput, jocontrol {
+jodivider, jolabel, joinput, jotextarea, jocontrol {
 	margin: 0 10px 0 10px;
 }
 
@@ -68,7 +68,7 @@ jotitle {
 jocontainer {
 }
 
-joinput {
+joinput, jotextarea {
 	cursor: text;
 	display: block;
 	border: 1px solid #000;
@@ -88,16 +88,20 @@ joinput {
 	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
 }
-joinput.disabled {
+joinput.disabled, jotextarea.disabled {
 	color: #666;
 	cursor: text;
 }
 
-joinput.focus {
+joinput.focus, jotextarea.focus {
 	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	background: rgba(255, 255, 255, .8);
+}
+
+jotextarea {
+	white-space: normal;
 }
 
 jostack {
