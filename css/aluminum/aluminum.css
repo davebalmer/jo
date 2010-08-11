@@ -3,6 +3,7 @@ body {
 	padding: 0;
 	background: #000;
 	word-wrap: break-word;
+	overflow: hidden;
 }
 
 joview, jotitle, jolabel, jocard, jodivider, jocontrol, jocontainer, jocaption, jobutton, jotabbar, jolist, jomenu {
@@ -101,8 +102,6 @@ joinput.focus {
 }
 
 jostack {
-	overflow-y: auto;
-	overflow-x: hidden;
 	display: block;
 	padding: 0;
 	margin: 0;
@@ -131,13 +130,13 @@ jocard {
 	margin: 0 0 -10px 0;
 	padding: 0;
 	min-height: 100%;
-	background: #ccc;
 	-webkit-box-orient: vertical;
 	-webkit-box-align: stretch;
 	-moz-box-orient: vertical;
 	-moz-box-align: stretch;
 	box-orient: vertical;
 	box-align: stretch;
+	
 }
 jocard>* {
 	display: block;
@@ -210,12 +209,12 @@ jolistitem.selected {
 	background: #bbb;
 }
 
-jomenu {
+jomenu, jolist {
 	display: block;
 	margin: 0 0 10px 0;
 }
 
-jomenuitem {
+jolistitem, jomenuitem {
 	border-bottom: 1px solid rgba(0, 0, 0, .4);
 	border-top: 1px solid rgba(255, 255, 255, .8);
 	display: block;
@@ -232,7 +231,7 @@ jomenuitem img {
 	display: inline;
 }
 
-jomenuitem.selected {
+jolistitem.selected, jomenuitem.selected {
 	border-top: 1px solid rgba(0, 0, 0, .8);
 	border-bottom: 1px solid rgba(255, 255, 255, .4);
 	background: rgba(0, 64, 255, .4);
@@ -311,15 +310,17 @@ h1 {
 	margin: 0 0 10px 0;
 }
 
-jocard {
+jostack {
 	background-color: #ccc;
 	background-image: url(brushedgrey.png);
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	-webkit-background-origin: content-box;
-	-webkit-background-size: 100%;
-	background-size: 100.5%;
-	-moz-background-size: 100%;
+	-webkit-background-size: 100% 100%;
+	background-origin: content-box;
+	background-size: 100% 100%;
+	-moz-background-origin: content-box;
+	-moz-background-size: 100% 100%;
 }
 
 joexpando {
@@ -426,16 +427,18 @@ joexpando.open > *:last-child {
 	background: #fff;
 }
 
-/*
 joscroller {
+	position: absolute;
 	display: block;
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
+	-webkit-transition: top 0s ease;
 }
 joscroller > * {
+	position: absolute;
 }
 
 .flick {
@@ -444,16 +447,13 @@ joscroller > * {
 }
 
 .flickback {
-	-webkit-transition: top .2s ease-out;
-	-webkit-transition: top .2s cubic-bezier(0, 0, 0.4, 1);
+	-webkit-transition: top .1s ease-out;
+	-webkit-transition: top .1s cubic-bezier(0, 0, 0.4, 1);
 }
-
-*/
 
 jostack {
 	position: relative;
-	overflow: hidden;
-	overflow-y: scroll;
+	overflow: auto;
 }
 
 jostack.hide {
