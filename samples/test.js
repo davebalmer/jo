@@ -8,6 +8,7 @@
 
 // required:
 jo.load();
+jo.setDebug(true);
 
 // placed in a module pattern, not a terrible idea for application level code
 var App = (function() {
@@ -64,30 +65,34 @@ var App = (function() {
 		// chaining is supported on constructors and any setters
 		stack = new joStack().setStyle("page");
 		
-		login = new joCard([
-			new joTitle("Login"),
-			new joGroup([
-				new joLabel("Username"),
-				nameinput = new joInput("Dave"),
-				new joLabel("Password"),
-				new joPasswordInput("heyjo"),
-			]),
-			new joDivider(),
-			new joExpando([
-				new joExpandoTitle("Advanced Settings"),
-				new joGroup([
-					new joLabel("Domain"),
-					new joInput("localhost"),
-					new joLabel("Port"),
-					new joInput("80")
+		login = new joScroller(
+			new joCard(
+				new joContainer([
+					new joTitle("Login"),
+					new joGroup([
+						new joLabel("Username"),
+						nameinput = new joInput("Dave"),
+						new joLabel("Password"),
+						new joPasswordInput("heyjo"),
+					]),
+					new joDivider(),
+					new joExpando([
+						new joExpandoTitle("Advanced Settings"),
+						new joGroup([
+							new joLabel("Domain"),
+							new joInput("localhost"),
+							new joLabel("Port"),
+							new joInput("80")
+						])
+					]),
+					new joFooter([
+						new joDivider(),
+						button = new joButton("Login"),
+						cancelbutton = new joButton("Back")
+					])
 				])
-			]),
-			new joFooter([
-				new joDivider(),
-				button = new joButton("Login"),
-				cancelbutton = new joButton("Back")
-			])
-		]);
+			)
+		);
 //	was demoing how to disable a control, but decided having a "back"
 // button was more important right now
 //		cancelbutton.disable();
@@ -160,14 +165,19 @@ var App = (function() {
 
 			joLog("creating test view on demand");
 
-			var card = new joCard([
-				new joTitle("Home"),
-				new joGroup([
-					new joCaption("This view was created on-demand using joCache.get('test'). From now on, this view will not be recreated, but pulled from the cache.")
-				]),
-				new joDivider(),
-				back = new joButton("Back")
-			]);
+			var card = new joCard(
+				new joScroller(
+					new joContainer([
+						new joTitle("Home"),
+						new joGroup([
+							new joCaption("This view was created on-demand using joCache.get('test'). From now on, this view will not be recreated, but pulled from the cache."),
+							new joHTML("This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>")
+						]),
+						new joDivider(),
+						back = new joButton("Back")
+					])
+				)
+			);
 
 			back.selectEvent.subscribe(function() {
 				stack.pop();
@@ -187,6 +197,7 @@ var App = (function() {
 		joGesture.forwardEvent.subscribe(stack.forward, stack);
 		joGesture.backEvent.subscribe(stack.pop, stack);
 		
+//		var scroller = new joScroller(stack);
 		document.body.appendChild(stack.container);
 
 		stack.push(menu);
