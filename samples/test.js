@@ -6,8 +6,10 @@
 	with the Jo framework.
 */
 
-// required:
+// required
 jo.load();
+
+// not required
 jo.setDebug(true);
 
 // placed in a module pattern, not a terrible idea for application level code
