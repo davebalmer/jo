@@ -62,6 +62,9 @@ joHTML.extend(joControl, {
 		}
 		
 		function findhref(node) {
+			if (!node)
+				return null;
+
 			if (node.href)
 				return node;
 				

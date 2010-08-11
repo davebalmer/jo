@@ -31,17 +31,20 @@
 
 joScroller = function(data) {
 	this.points = [];
+	this.eventset = false;
 
 	// Call Super
 	joContainer.apply(this, arguments);
 };
 joScroller.velocity = 10;
 joScroller.extend(joContainer, {
+	tagName: "joscroller",
+	
 	setEvents: function() {
-		joEvent.on(this.container, "dragstart", this.onDown, this);
-		joEvent.on(this.container, "dragend", this.onUp, this);
-		joEvent.on(this.container, "dragover", this.onMove, this);
-		joEvent.on(this.container, "dragout", this.onOut, this);
+		joEvent.on(this.container, "mousedown", this.onDown, this);
+		joEvent.on(this.container, "mouseup", this.onUp, this);
+		joEvent.on(this.container, "mousemove", this.onMove, this);
+		joEvent.on(this.container, "mouseout", this.onOut, this);
 	},
 	
 	onFlick: function(e) {
@@ -51,7 +54,7 @@ joScroller.extend(joContainer, {
 	},
 	
 	onDown: function(e) {
-		joLog("onDown");
+//		joLog("onDown");
 		joEvent.stop(e);
 
 		this.points = [];
@@ -64,12 +67,13 @@ joScroller.extend(joContainer, {
 	},
 	
 	onMove: function(e) {
-		joLog("onMove");
+//		joLog("onMove");
 		e.preventDefault();
 
 		// TODO: move the page to follow the mouse
 		if (this.inMotion) {
 //			joLog("move");
+			joEvent.stop(e);
 			var point = this.getMouse(e);
 			
 			var y = point.y - this.points[0].y;
@@ -91,7 +95,7 @@ joScroller.extend(joContainer, {
 	},
 
 	onUp: function (e) {
-		joLog("onUp");
+//		joLog("onUp");
 		
 		if (!this.inMotion)
 			return;
@@ -109,12 +113,17 @@ joScroller.extend(joContainer, {
 
 		// if the velocity is "high" then it was a flick
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
-			joDOM.addCSSClass(this.data, "flick");
+			joDOM.addCSSClass(this.container.childNodes[0], "flick");
 
-			var flick = dy * (this.data.offsetHeight / this.container.offsetHeight);
+			var flick = dy * (this.container.childNodes[0].offsetHeight / this.container.offsetHeight);
+
+//			joYield(this.snapBack, this, 1000);
+			if (!this.eventset) {
+				this.eventset = true;
+				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", this.snapBack, this);
+			}
 
 			this.scrollBy(flick, false);
-			joYield(this.snapBack, this, 1000);
 		}
 		else {
 			this.snapBack();
@@ -122,29 +131,32 @@ joScroller.extend(joContainer, {
 	},
 	
 	getMouse: function(e) {
+//		joLog(e.screenX, e.screenY, e.pageX, e.pageY, e.target, e.source);
 		// TODO: This is picking up the element being touched's mouse position, so
 		// need to follow the event chain up to the scroller's container.
 		return { x: e.screenX, y: e.screenY };
 	},
 	
 	scrollToElement: function (e) {
-//		jsDOM.addCSSClass(this.data, "flick");
-//		this.data.style.top = -e.offsetTop + jsDOM.getClientHeight() / 5 + "px";
+//		joDOM.addCSSClass(this.data, "flick");
+//		this.data.style.top = -e.offsetTop + joDOM.getClientHeight() / 5 + "px";
 	},
 	
 	scrollBy: function(y, test) {
-		var top = this.data.offsetTop;
+		var top = this.container.childNodes[0].offsetTop;
 
 		if (isNaN(top))
 			top = 0;
 
 		var dy = Math.floor(top + y);
 		
-		if (this.data.offsetHeight <= this.container.offsetHeight)
+		if (this.container.childNodes[0].offsetHeight <= this.container.offsetHeight)
 			return;
 			
-		var max = 0 - this.data.offsetHeight + this.container.offsetHeight;
-		var bump = Math.floor(this.container.offsetHeight * 0.2);
+		var max = 0 - this.container.childNodes[0].offsetHeight + this.container.offsetHeight;
+//		var bump = Math.floor(this.container.offsetHeight * 0.2);
+		
+		var bump = 100;
 
 		var ody = dy;
 		
@@ -161,23 +173,24 @@ joScroller.extend(joContainer, {
 		}
 		
 		if (this.container.childNodes[0].offsetTop != dy)
-			this.container.childNodes[0].style.marginTop = dy + "px";
+			this.container.childNodes[0].style.top = dy + "px";
 	},
 	
 	snapBack: function() {
-		var top = parseInt(this.data.style.marginTop);
+		var top = parseInt(this.container.childNodes[0].style.top);
 
 		if (isNaN(top))
 			top = 0;
 
 		var dy = top;
-		var max = 0 - this.data.offsetHeight + this.container.offsetHeight;
+		var max = 0 - this.container.childNodes[0].offsetHeight + this.container.offsetHeight;
 
-		jsDOM.removeCSSClass(this.data, 'flick');
-		jsDOM.addCSSClass(this.data, 'flickback');
+		joDOM.removeCSSClass(this.data, 'flick');
+		joDOM.addCSSClass(this.data, 'flickback');
+		
 		if (dy > 0)
-			this.container.childNodes[0].style.marginTop = "0px";
+			this.container.childNodes[0].style.top = "0px";
 		else if (dy < max)
-			this.container.childNodes[0].style.marginTop = max + "px";
+			this.container.childNodes[0].style.top = max + "px";
 	}
 });

@@ -152,6 +152,8 @@ joStack.extend(joView, {
 		
 		// while we're using scrollTop instead of joScroller, reset top position
 		this.container.scrollTop = "0";
+		if (this.container.firstChild)
+			this.container.firstChild.scrollTop = "0";
 	},
 	
 	isVisible: function() {

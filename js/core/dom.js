@@ -197,9 +197,10 @@ joDOM = {
 		
 		css.rel = 'stylesheet';
 		css.type = 'text/css';
-		css.href = filename;
+		css.href = filename + (jo.debug ? ("?" + joTime.timestamp()) : "");
 
-		document.body.appendChild(css);
+		if (!oldnode)
+			document.body.appendChild(css);
 		
 		return css;
 	}		

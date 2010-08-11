@@ -128,6 +128,11 @@ jo = {
 		'explorer'
 	],
 	
+	debug: false,
+	setDebug: function(state) {
+		this.debug = state;
+	},
+	
 	load: function(call, context) {
 		joDOM.enable();
 		

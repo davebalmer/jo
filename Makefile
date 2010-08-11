@@ -1,4 +1,4 @@
-all: js docs
+all: js
 
 docs:
 	$(MAKE) -C ./docs

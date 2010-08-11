@@ -139,7 +139,7 @@ var App = (function() {
 			new joTitle("Menu"),
 			list = new joMenu([
 				{ title: "Login", id: "login" },
-				{ title: "Checklist", id: "checklist" },
+				{ title: "Textarea", id: "textarea" },
 				{ title: "Help", id: "help" },
 				{ title: "On Demand View", id: "test" }
 			])
@@ -150,12 +150,10 @@ var App = (function() {
 		};
 
 		list.selectEvent.subscribe(function(id) {
-			if (id == "login") {
+			if (id == "login")
 				stack.push(login);
-			}
-			else if (id == "test") {
-				stack.push(joCache.get("test"));
-			}
+			else if (id != "help")
+				stack.push(joCache.get(id));
 		}, this);
 		
 		// we can defer creating views until they're needed
@@ -165,19 +163,37 @@ var App = (function() {
 
 			joLog("creating test view on demand");
 
-			var card = new joCard(
-				new joScroller(
-					new joContainer([
-						new joTitle("Home"),
-						new joGroup([
-							new joCaption("This view was created on-demand using joCache.get('test'). From now on, this view will not be recreated, but pulled from the cache."),
-							new joHTML("This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>This is a test<br>")
-						]),
-						new joDivider(),
-						back = new joButton("Back")
-					])
-				)
-			);
+			var card = new joCard([
+				new joTitle("On-Demand View"),
+				new joGroup([
+					new joCaption("This view was created on-demand using joCache.get('test'). From now on,"
+					+ "this view will not be recreated, but pulled from the cache.")
+				]),
+				new joDivider(),
+				back = new joButton("Back")
+			]);
+
+			back.selectEvent.subscribe(function() {
+				stack.pop();
+			});
+
+			return card;
+		}, this);
+		
+		joCache.set("textarea", function() {
+			var back;
+			
+			var card = new joCard([
+				new joTitle("Auto-sized Textarea"),
+				new joLabel(),
+				new joTextarea("Here is some sample text in a multiline joTextarea control."
+				+ " As you type, it will grow, but stop at its max height.").setStyle({
+					minHeight: "100px",
+					maxHeight: "300px"
+				}),
+				new joDivider(),
+				back = new joButton("Back")
+			]);
 
 			back.selectEvent.subscribe(function() {
 				stack.pop();

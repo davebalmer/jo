@@ -25,6 +25,8 @@
 	
 */
 joView = function(data) {
+//	joLog("new view", this.tagName);
+	
 	this.changeEvent = new joSubject(this);
 
 	this.setContainer();
