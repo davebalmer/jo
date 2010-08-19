@@ -10,6 +10,7 @@ UI = gesture.js \
 	control.js \
 	button.js \
 	input.js \
+	textarea.js \
 	focus.js \
 	list.js \
 	tabbar.js \

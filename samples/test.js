@@ -54,8 +54,10 @@ var App = (function() {
 			// dynamic CSS loading based on platform, in this case FireFox
 			// doesn't do stack transitions well, so we're downshifting
 
-			if (jo.matchPlatform("chrome iphone ipad webkit safari webos"))
+			if (jo.matchPlatform("iphone ipad safari"))
 				joDOM.loadCSS("../css/aluminum/webkit.css");
+			else if (jo.matchPlatform("chrome webkit webos"))
+				joDOM.loadCSS("../css/aluminum/chrome.css");
 			else
 				joDOM.loadCSS("../css/aluminum/gecko.css");
 			

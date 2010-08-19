@@ -140,7 +140,7 @@ jocard {
 	-moz-box-align: stretch;
 	box-orient: vertical;
 	box-align: stretch;
-	
+	background-color: rgba(255, 255, 255, .2);
 }
 jocard>* {
 	display: block;
