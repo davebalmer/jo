@@ -6,7 +6,7 @@ body {
 	overflow: hidden;
 }
 
-joview, jotitle, jolabel, jocard, jodivider, jocontrol, jocontainer, jocaption, jobutton, jotabbar, jolist, jomenu {
+joview, jotitle, jolabel, jocard, jotable, jodivider, jocontrol, jocontainer, jocaption, jobutton, jotabbar, jolist, jomenu {
 	text-align: left;
 	display: block;
 	padding: 0;
@@ -144,9 +144,11 @@ jocard {
 }
 jocard>* {
 	display: block;
+/*
 	-webkit-box-flex: 0;
 	-moz-box-flex: 0;
 	box-flex: 0;
+*/
 }
 
 jofooter {
@@ -154,34 +156,33 @@ jofooter {
 	display: -webkit-box;
 	display: -moz-box;
 	display: box;
-/*
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-*/
+
 	-webkit-box-flex: 2;
 	-webkit-box-orient: vertical;
 	-webkit-box-align: stretch;
 	-webkit-box-pack: end;
+
 	-moz-box-flex: 2;
 	-moz-box-orient: vertical;
 	-moz-box-align: stretch;
 	-moz-box-pack: end;
+
 	box-flex: 2;
 	box-orient: vertical;
 	box-align: stretch;
 	box-pack: end;
+
 	margin: 0;
 }
 jofooter>* {
-	display: block;
-	-webkit-box-align: start;
-	-moz-box-align: start;
-	box-align: start;
-	-webkit-box-flex: 0;
-	-moz-box-flex: 0;
-	box-flex: 0;
+	-webkit-box-align: end;
+	-moz-box-align: end;
+	box-align: end;
+/*
+	-webkit-box-flex: 2;
+	-moz-box-flex: 2;
+	box-flex: 2;
+*/
 }
 
 johtml {
@@ -195,7 +196,7 @@ johtml>* {
 	margin-right: 0;
 }
 
-jolist {
+jolist, jotable {
 	display: block;
 	margin: 0 0 10px 0;
 }
@@ -209,11 +210,11 @@ jolistitem {
 	cursor: pointer;
 }
 
-jolistitem.selected {
+jolistitem.selected, jotable .selected {
 	background: #bbb;
 }
 
-jomenu, jolist {
+jomenu, jolist, jotable {
 	display: block;
 	margin: 0 0 10px 0;
 }
@@ -464,4 +465,53 @@ jostack.hide {
 	opacity: 0;
 }
 
+joflexrow {
+	display: block;
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+/*
+	-webkit-box-flex: 1;
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+	-moz-box-flex: 1;
+	-moz-box-orient: horizontal;
+	-moz-box-align: stretch;
+	box-flex: 1;
+	box-orient: vertical;
+	box-align: stretch;
+*/
+	margin: 0;
+}
+
+joflexrow>* {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+}
+
+joflexcol {
+	display: block;
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+
+	-webkit-box-flex: 1;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-flex: 1;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-flex: 1;
+	box-orient: vertical;
+	box-align: stretch;
+
+	margin: 0;
+}
+
+joflexcol>* {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+}
 

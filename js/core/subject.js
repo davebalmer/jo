@@ -74,7 +74,7 @@ joSubject.prototype = {
 		
 		this.subscriptions.push(o);
 	
-		return true;
+		return this.subject;
 	},
 	
 	unsubscribe: function(call, observer) {
@@ -88,6 +88,8 @@ joSubject.prototype = {
 			&& (this.subscriptions[i].observer == "undefined" || this.subscriptions[i].observer === observer))
 				this.subscriptions[i].slice(i, 1);
 		}
+		
+		return this.subject;
 	},
 
 	fire: function(data) {

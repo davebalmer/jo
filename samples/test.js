@@ -144,7 +144,8 @@ var App = (function() {
 			list = new joMenu([
 				{ title: "Login", id: "login" },
 				{ title: "Textarea", id: "textarea" },
-				{ title: "Help", id: "help" },
+				{ title: "Table", id: "table" },
+				{ title: "Remote", id: "remote" },
 				{ title: "On Demand View", id: "test" }
 			])
 		]);
@@ -186,7 +187,7 @@ var App = (function() {
 		
 		joCache.set("textarea", function() {
 			var back;
-			
+
 			var card = new joCard([
 				new joTitle("Auto-sized Textarea"),
 				new joLabel(),
@@ -205,6 +206,69 @@ var App = (function() {
 
 			return card;
 		}, this);
+		
+		joCache.set("table", function() {
+			var back;
+			
+			var card = new joCard([
+				new joTitle("Table Example"),
+				new joGroup(
+					new joTable([
+						["Name", "Phone", "Email"],
+						["Bob", "555-1234", "bob@bob.not"],
+						["Candy", "555-2345", "candy@candy.not"],
+						["Doug", "555-3456", "doug@doug.not"],
+						["Evan", "555-4567", "evan@evan.not"],
+						["Frank", "555-5678", "frank@frank.not"]
+					]).selectEvent.subscribe(function(index, table) {
+						joLog("table cell:", table.getRow(), table.getCol());
+					}, this)
+				),
+				new joDivider(),
+				back = new joButton("Back")
+			]);
+
+			back.selectEvent.subscribe(function() {
+				stack.pop();
+			});
+
+			return card;
+		});
+
+		joCache.set("remote", function() {
+			var card = new joCard([
+				new joTitle("Remote Example"),
+				new joCaption(),
+				new joFlexcol([
+					new joFlexrow([
+						new joButton("1"),
+						new joButton("2"),
+						new joButton("3")
+					]),
+					new joFlexrow([
+						new joButton("4"),
+						new joButton("5"),
+						new joButton("6")
+					]),
+					new joFlexrow([
+						new joButton("7"),
+						new joButton("8"),
+						new joButton("9")
+					]),
+					new joFlexrow([
+						new joButton("."),
+						new joButton("0")
+					])
+				]),
+				new joDivider(),
+				new joButton("Back").selectEvent.subscribe(function() {
+					stack.pop();
+				}, this)
+			]);
+
+			return card;
+		});
+
 
 		moreback.selectEvent.subscribe(function() { stack.pop(); }, this);
 		button.selectEvent.subscribe(click.bind(this));

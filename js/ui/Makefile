@@ -21,7 +21,9 @@ UI = gesture.js \
 	sound.js \
 	passwordinput.js \
 	divider.js \
-	label.js
+	label.js \
+	table.js \
+	flexrow.js
 
 ui:
 	cat $(UI) >> ../jo.js
