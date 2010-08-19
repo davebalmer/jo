@@ -581,7 +581,7 @@ joSubject.prototype = {
 		
 		this.subscriptions.push(o);
 	
-		return true;
+		return this.subject;
 	},
 	
 	unsubscribe: function(call, observer) {
@@ -595,6 +595,8 @@ joSubject.prototype = {
 			&& (this.subscriptions[i].observer == "undefined" || this.subscriptions[i].observer === observer))
 				this.subscriptions[i].slice(i, 1);
 		}
+		
+		return this.subject;
 	},
 
 	fire: function(data) {
@@ -1242,6 +1244,74 @@ joPreference.prototype = {
 			return this.preference[key];
 	}
 };
+
+/**
+	joState
+	=======
+	
+	State machine class, very useful for complex ascyncronous processes.
+*/
+
+joState = function(states) {
+	this.state = states || {};
+
+	this.doneEvent = new joSubject(this);
+	this.errorEvent = new joSubject(this);
+
+	// if no start method was defined, we short circuit the whole thing
+	if (!this.state.start)
+		this.state.start = this.done;
+};
+joState.prototype = {
+	start: function() {
+		this.arguments = arguments;
+		this.state.start.apply(this, arguments);
+	},
+	
+	setNext: function(next) {
+		this.nextState = next;
+	},
+	
+	next: function() {
+		var state = this.state[this.nextState].apply(this, arguments);
+	},
+	
+	error: function() {
+		joLog.apply(this, arguments);
+	},
+	
+	done: function() {
+		this.setNext(null);
+		this.doneEvent.fire(arguments);
+	}
+};
+
+
+
+var x = new joState({
+	start: function(name) {
+		if (!name)
+			this.error("No name specified.");
+
+		console.log("start:", name);
+		return "check";
+	},
+	
+	check: function(name) {
+		if (name.length > 5)
+			return "big";
+		else
+			return "small";
+	},
+	
+	big: function(name) {
+		joLog("big name", name);
+	},
+	
+	small: function(name) {
+		joLog("small name", name);
+	}
+});
 
 /**
 	joGesture
@@ -2416,6 +2486,59 @@ joInput.extend(joControl, {
 });
 
 /**
+	joTextarea
+	==========
+	
+	Multi-line text input control. When you instantiate or use `setData()`, you can
+	either pass in an initial value or a reference to a joDataSource object which it,
+	like other joControl instances, will bind to.
+	
+	Basically, this is just a multi-line version of joInput.
+	
+	Use
+	---
+	
+		// simple multi-line field
+		var sample = "This is some sample text to edit.";
+		var x = new joTextarea(sample);
+		
+		// setting the style inline using chaining
+		var f = new joTextarea(sample).setStyle({
+			minHeight: "100px",
+			maxHeight: "300px"
+		});
+		
+		// adding a simple change event handler using chaining
+		var h = new joTextarea(sample).changeEvent.subscribe(function(data) {
+			joLog("text area changed:", data);
+		});
+
+		// attach the value to a preference
+		var y = new joTextarea(joPreference.bind("username"));
+		
+		// attach input control to a custom joDataSource
+		var username = new joDataSource("bob");
+		var z = new joTextarea(username);
+	
+	Extends
+	-------
+	
+	- joInput
+	
+*/
+joTextarea = function(data) {
+	joInput.apply(this, arguments);
+};
+joTextarea.extend(joInput, {
+	tagName: "jotextarea",
+	
+	onKeyDown: function(e) {
+		// here we want the enter key to work, overriding joInput's behavior
+		return false;
+	}
+});
+
+/**
 	joFocus
 	=======
 	
@@ -2585,7 +2708,7 @@ joList.extend(joControl, {
 		|| !this.container['childNodes'])
 			return;
 
-		var node = this.container.childNodes[this.index];
+		var node = this.getNode(this.index);
 		if (node) {
 			if (this.lastNode)
 				joDOM.removeCSSClass(this.lastNode, "selected");
@@ -2600,7 +2723,7 @@ joList.extend(joControl, {
 		|| !this.container['childNodes'])
 			return;
 
-		var node = this.container.childNodes[this.index];
+		var node = this.getNode(this.index);
 		if (node) {
 			if (this.lastNode)
 				joDOM.removeCSSClass(this.lastNode, "selected");
@@ -2613,6 +2736,10 @@ joList.extend(joControl, {
 			this.fireSelect(index);
 	},
 	
+	getNode: function(index) {
+		return this.container.childNodes[index];
+	},
+
 	fireSelect: function(index) {
 		this.selectEvent.fire(index);
 	},
@@ -2622,9 +2749,14 @@ joList.extend(joControl, {
 	},
 	
 	onMouseDown: function(e) {
-		var node = joDOM.getParentWithin(joEvent.getTarget(e), this.container);
-		var index = this.getNodeIndex(node);
+		var node = joEvent.getTarget(e);
+		var index = -1;
 		
+		while (index == -1 && node !== this.container) {
+			index = node.getAttribute("index") || -1;
+			node = node.parentNode;
+		}
+
 		if (index >= 0) {
 			joEvent.stop(e);
 
@@ -3104,3 +3236,124 @@ joLabel.extend(joControl, {
 	tagName: "jolabel"
 });
 
+/**
+	joTable
+	=======
+	
+	Table control.
+	
+	Extends
+	-------
+	
+	- joList
+	
+	Methods
+	-------
+	
+	- setCell(row, column)
+	
+	  Sets the active cell for the table, also makes it editiable and sets focus.
+	
+	- getRow(), getCol()
+	
+	  Return the current row or column
+	
+	Use
+	---
+	
+		var x = new joTable([
+			["Nickname", "Phone", "Email"],
+			["Bob", "555-1234", "bob@bobco.not"],
+			["Jo", "555-3456", "jo@joco.not"],
+			["Jane", "555-6789", "jane@janeco.not"]
+		]);
+		
+		s.selectEvent.subscribe(function(cell) {
+			joLog("Table cell clicked:", cell.row, cell.col);
+		});
+*/
+
+joTable = function(data) {
+	joList.apply(this, arguments);
+};
+joTable.extend(joList, {
+	tagName: "jotable",
+	
+	// default row formatter
+	formatItem: function(row, index) {
+		var tr = document.createElement("tr");
+		
+		for (var i = 0, l = row.length; i < l; i++) {
+			var o = document.createElement(index ? "td" : "th");
+			o.innerHTML = row[i];
+			
+			// this is a little brittle, but plays nicely with joList's select event
+			o.setAttribute("index", index * l + i);
+			tr.appendChild(o);
+		}
+		
+		return tr;
+	},
+
+	// override joList's getNode
+	getNode: function(index) {
+		var row = this.getRow(index);
+		var col = this.getCol(index);
+		
+		return this.container.childNodes[row].childNodes[col];
+	},
+	
+	getRow: function(index) {
+		if (typeof index == "undefined")
+			var index = this.getIndex();
+			
+		var rowsize = this.data[0].length;
+		return Math.floor(index / rowsize);
+	},
+
+	getCol: function(index) {
+		if (typeof index == "undefined")
+			var index = this.getIndex();
+			
+		var rowsize = this.data[0].length;
+		return index % rowsize;
+	}	
+});
+
+/**
+	joFlexrow
+	=========
+	
+	Uses the box model to stretch elements evenly across a row.
+	
+	Extends
+	-------
+	
+	- joContainer
+
+*/
+joFlexrow = function(data) {
+	joContainer.apply(this, arguments);
+};
+joFlexrow.extend(joContainer, {
+	tagName: "joflexrow"
+});
+
+/**
+	joFlexcol
+	=========
+	
+	Uses the box model to stretch elements evenly across a column.
+	
+	Extends
+	-------
+	
+	- joContainer
+
+*/
+joFlexcol = function(data) {
+	joContainer.apply(this, arguments);
+};
+joFlexcol.extend(joContainer, {
+	tagName: "joflexcol"
+});

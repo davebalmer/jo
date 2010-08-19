@@ -117,7 +117,7 @@ joList.extend(joControl, {
 		|| !this.container['childNodes'])
 			return;
 
-		var node = this.container.childNodes[this.index];
+		var node = this.getNode(this.index);
 		if (node) {
 			if (this.lastNode)
 				joDOM.removeCSSClass(this.lastNode, "selected");
@@ -132,7 +132,7 @@ joList.extend(joControl, {
 		|| !this.container['childNodes'])
 			return;
 
-		var node = this.container.childNodes[this.index];
+		var node = this.getNode(this.index);
 		if (node) {
 			if (this.lastNode)
 				joDOM.removeCSSClass(this.lastNode, "selected");
@@ -145,6 +145,10 @@ joList.extend(joControl, {
 			this.fireSelect(index);
 	},
 	
+	getNode: function(index) {
+		return this.container.childNodes[index];
+	},
+
 	fireSelect: function(index) {
 		this.selectEvent.fire(index);
 	},
@@ -154,9 +158,14 @@ joList.extend(joControl, {
 	},
 	
 	onMouseDown: function(e) {
-		var node = joDOM.getParentWithin(joEvent.getTarget(e), this.container);
-		var index = this.getNodeIndex(node);
+		var node = joEvent.getTarget(e);
+		var index = -1;
 		
+		while (index == -1 && node !== this.container) {
+			index = node.getAttribute("index") || -1;
+			node = node.parentNode;
+		}
+
 		if (index >= 0) {
 			joEvent.stop(e);
 
