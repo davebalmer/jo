@@ -1,0 +1,35 @@
+/* simplified CSS3 transitions for less advanced webkits */
+jostack {
+	position: relative;
+	-webkit-transition: opacity .4s ease-out;
+}
+
+jostack > * {
+/*	-webkit-transform-origin: 50% 100% 0; */
+	-webkit-transform: rotateZ(0);
+	-webkit-transition: -webkit-transform .4s ease-out;
+
+	outline: 1px solid transparent;
+}
+
+jostack > .next {
+	z-index: -1;
+	position: absolute;
+	top: 0;
+
+	-webkit-transform: translateX(100%);
+/*	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5); */
+	
+/*	outline: 1px solid #000; */
+}
+
+jostack > .prev {
+	z-index: 1;
+	position: absolute;
+	top: 0;
+
+	-webkit-transform: translateX(-100%);
+/*	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5); */
+
+/*	outline: 1px solid #000; */
+}
