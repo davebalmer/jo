@@ -41,6 +41,16 @@ joGesture = {
 			return;
 		}
 
+		if (e.keyCode == 27) {
+			if (jo.flag.stopback) {
+				joEvent.stop(e);
+				joEvent.preventDefault(e);
+			}
+
+			this.backEvent.fire("back");
+			return;
+		}
+
 		if (!this.altkey)
 			return;
 		
@@ -72,22 +82,17 @@ joGesture = {
 		if (!e)
 			var e = window.event;
 			
-//		joLog("keydown", e.keyCode, e.charCode);
-
 		if (e.keyCode == 27) {
-			this.backEvent.fire("back");
-			return;
-		}
-		
-		if (e.keyCode == 13 && joFocus.get() instanceof joInput) {
 			joEvent.stop(e);
-			return;
+			joEvent.preventDefault(e);
+		}
+		else if (e.keyCode == 13 && joFocus.get() instanceof joInput) {
+			joEvent.stop(e);
+		}
+		else if (e.keyCode == 18) {
+			this.altkey = true;
 		}
 		
-		if (e.keyCode == 18) {
-//			joLog("alt ON");
-			this.altkey = true;
-			return;
-		}
+		return;
 	}
 };
