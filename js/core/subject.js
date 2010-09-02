@@ -4,26 +4,45 @@
 	
 	Class for custom events using the Observer Pattern. This is designed to be used
 	inside a subject to create events observers can subscribe to. Unlike the classic
-	observer pattern, a subject can fire more than one event and when called, and
+	observer pattern, a subject can fire more than one event when called, and
 	each observer gets data from the subject. This is very similar to YUI 2.x event model.
+	
+	You can also "lock" the notification chain by using the `capture()` method, which
+	tells the event to only notify the most recent subscriber (observer) which requested
+	to capture the event exclusively.
 	
 	Methods
 	-------
 	
+	- `subscribe(Function, context, data)`
+
+	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
+	  approach instead of passing in the `context` as a separate argument. All subscribers
+	  will be notified when the event is fired.
+
+	- `unsubscribe(Function, context)`
+	
+	  Does what you'd think.
+
 	- `fire(data)`
 	
 	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
 	  a reference to the `subject` and any static `data` which was passed in the
 	  `subscribe()` call.
 	
-	- `subscribe(Function, context, data)`
-	- `unsubscribe(Function, context)`
+	- `capture(Function, context, data)`
 	
-	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
-	  approach instead of passing in the `context` as a separate argument.
+	  Only the last subscriber to capture this event will be notified until it is
+	  released. Note that you can stack `capture()` calls to produce a modal event
+	  heiarchy.
+	
+	- `release(Function, context)`
+	
+	  Removes the most recent subscription called with `capture()`, freeing up the next
+	  subscribers in the list to be notified the next time the event is fired.
 	
 	Use
-	-----
+	---
 	
 	### In the subject (or "publisher") object
 	
@@ -58,12 +77,6 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 		
-/*
-		var observer = observer || this;
-
-		if (typeof data == 'undefined')
-			var data = "";
-*/
 		var o = { "call": call };
 
 		if (observer)
@@ -81,40 +94,53 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 
-//		var observer = observer || this;
-
 		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
-			if (this.subscriptions[i].call === call
-			&& (this.subscriptions[i].observer == "undefined" || this.subscriptions[i].observer === observer))
-				this.subscriptions[i].slice(i, 1);
+			var sub = this.subscriptions[i];
+			if (sub.call === call && (typeof sub.observer == "undefined" || sub.observer === observer))
+				sub.slice(i, 1);
 		}
 		
 		return this.subject;
 	},
 
 	fire: function(data) {
-		if (typeof data == 'undefined')
+		if (typeof data === 'undefined')
 			var data = "";
-		
+			
 		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
-			var subjectdata = (typeof this.subscriptions[i].data !== 'undefined') ? this.subscriptions[i].data : null;
-
-			// support for Function.bind()
-			if (this.subscriptions[i].observer) {
-				this.subscriptions[i].call.call(
-					this.subscriptions[i].observer,
-					data,
-					this.subject,
-					subjectdata
-				);				
-			}
-			else {
-				this.subscriptions[i].call(
-					data,
-					this.subject,
-					subjectdata
-				);				
-			}
+			var sub = this.subscriptions[i];
+			var subjectdata = (typeof sub.data !== 'undefined') ? sub.data : null;
+			
+			if (sub.observer)
+				sub.call.call(sub.observer, data, this.subject, subjectdata);
+			else
+				sub.call(data, this.subject, subjectdata);
+			
+			// if this subscriber wants to capture events,
+			// stop calling other subscribers
+			if (sub.capture)
+				break;
 		}
+	},
+
+	capture: function(call, observer, data) {
+		if (!call)
+			return false;
+
+		var o = { "call": call, capture: true };
+
+		if (observer)
+			o.observer = observer;
+
+		if (data)
+			o.data = data;
+			
+		this.subscriptions.unshift(o);
+
+		return this.subject;
+	},
+	
+	release: function(call, observer) {
+		return this.unsubscribe(call, observer);
 	}
 };
