@@ -1,13 +1,13 @@
 /* simplified CSS3 transitions for less advanced webkits */
 jostack {
 	position: relative;
-	-webkit-transition: opacity .4s ease-out;
+	-webkit-transition: opacity .2s ease-out;
 }
 
 jostack > * {
 /*	-webkit-transform-origin: 50% 100% 0; */
 	-webkit-transform: rotateZ(0);
-	-webkit-transition: -webkit-transform .4s ease-out;
+	-webkit-transition: -webkit-transform .2s ease-out;
 
 	outline: 1px solid transparent;
 }

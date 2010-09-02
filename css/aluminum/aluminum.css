@@ -72,7 +72,7 @@ jocontainer {
 joinput, jotextarea {
 	cursor: text;
 	display: block;
-	border: 1px solid #000;
+	border: 2px solid #000;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -304,7 +304,7 @@ jogroup {
 	display: block;
 	margin: 10px;
 	padding: 0;
-	border: 1px solid rgba(0, 0, 0, .5);
+	border: 2px solid rgba(0, 0, 0, .5);
 	background: rgba(255, 255, 255, .2);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -352,7 +352,7 @@ joexpandotitle {
 	-moz-border-radius: 1.2em;
 	border-radius: 1.2em;
 	padding: 10px;
-	border: 1px solid rgba(0, 0, 0, .8);
+	border: 2px solid rgba(0, 0, 0, .8);
 	margin: 10px 10px 0 10px;
 	position: relative;
 	cursor: pointer;
@@ -447,8 +447,8 @@ joscroller > * {
 }
 
 .flick {
-	-webkit-transition: top 1s ease-in;
-	-webkit-transition: top 1s cubic-bezier(0, 0, 0.2, 1);
+	-webkit-transition: top .5s ease-in;
+	-webkit-transition: top .5s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .flickback {

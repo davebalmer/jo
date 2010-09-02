@@ -1,24 +1,24 @@
 jostack {
 	position: relative;
-	-webkit-transition: opacity .4s ease-out;
-	-moz-transition: opacity .4s ease-out;
-	-o-transition: opacity .4s ease-out;
+	-webkit-transition: opacity .3s ease-out;
+	-moz-transition: opacity .3s ease-out;
+	-o-transition: opacity .3s ease-out;
 }
 
 jostack > * {
 	-webkit-transform-origin: 50% 100% 0;
 	-webkit-transform: rotateZ(0);
-	-webkit-transition: -webkit-transform .8s ease-out, outline .8s ease-out;
+	-webkit-transition: -webkit-transform .3s ease-out, outline .3s ease-out;
 
 	-moz-transform-origin: 50% 200% 0;
 	-moz-transform: rotateZ(0) translateZ(0);
-	-moz-transition: -moz-transform .8s ease-out;
+	-moz-transition: -moz-transform .3s ease-out;
 
 	-o-transform-origin: 50% 200% 0;
 	-o-transform: rotateZ(0);
-	-o-transition: -o-transform .8s ease-out;
+	-o-transition: -o-transform .3s ease-out;
 
-	outline: 1px solid transparent;
+/*	outline: 1px solid transparent; */
 }
 
 jostack > .next {
@@ -31,7 +31,7 @@ jostack > .next {
 	-o-transform: rotateZ(45deg);
 	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 	
-	outline: 1px solid #000;
+/*	outline: 1px solid #000; */
 }
 
 jostack > .prev {
@@ -44,5 +44,5 @@ jostack > .prev {
 	-o-transform: rotateZ(-45deg);
 	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 
-	outline: 1px solid #000;
+/*	outline: 1px solid #000; */
 }
