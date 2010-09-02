@@ -48,27 +48,30 @@ joScroller.extend(joContainer, {
 	},
 	
 	onFlick: function(e) {
-		var str = "";
-		for (var i in e)
-			str += "; " + i + "=" + e[i];
+//		var str = "";
+//		for (var i in e)
+//			str += "; " + i + "=" + e[i];
 	},
 	
 	onDown: function(e) {
 //		joLog("onDown");
 		joEvent.stop(e);
 
+		this.start = this.getMouse(e);
 		this.points = [];
-		this.points.unshift(this.getMouse(e));
+		this.points.unshift(this.start);
 		this.inMotion = true;
 		this.quickSnap = false;
-
-		joDOM.removeCSSClass(this.data, "flick");
-		joDOM.removeCSSClass(this.data, "flickback");
+		
+//		joEvent.preventDefault(e);
+		
+		joDOM.removeCSSClass(this.container.childNodes[0], "flick");
+		joDOM.removeCSSClass(this.container.childNodes[0], "flickback");
 	},
 	
 	onMove: function(e) {
 //		joLog("onMove");
-		e.preventDefault();
+//		e.preventDefault();
 
 		// TODO: move the page to follow the mouse
 		if (this.inMotion) {
@@ -78,6 +81,7 @@ joScroller.extend(joContainer, {
 			
 			var y = point.y - this.points[0].y;
 			this.points.unshift(point);
+
 			if (this.points.length > 5)
 				this.points.pop();
 			
@@ -95,29 +99,29 @@ joScroller.extend(joContainer, {
 	},
 
 	onUp: function (e) {
-//		joLog("onUp");
-		
 		if (!this.inMotion)
 			return;
 
-		joEvent.stop(e);
-
 		this.inMotion = false;
+
+		var end = this.getMouse(e);
+		
+		joEvent.stop(e);
+		if (Math.abs(this.start.y - end.y) > 10
+		|| Math.abs(this.start.x - end.x) > 10) {
+			joEvent.preventDefault(e);
+		}
 
 		var dy = 0;
 		for (var i = 0; i < this.points.length - 1; i++)
 			dy += (this.points[i].y - this.points[i + 1].y);
 		
-		if (this.points.length > 4)
-			e.preventDefault();
-
 		// if the velocity is "high" then it was a flick
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
 			joDOM.addCSSClass(this.container.childNodes[0], "flick");
 
 			var flick = dy * (this.container.childNodes[0].offsetHeight / this.container.offsetHeight);
 
-//			joYield(this.snapBack, this, 1000);
 			if (!this.eventset) {
 				this.eventset = true;
 				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", this.snapBack, this);
@@ -131,7 +135,6 @@ joScroller.extend(joContainer, {
 	},
 	
 	getMouse: function(e) {
-//		joLog(e.screenX, e.screenY, e.pageX, e.pageY, e.target, e.source);
 		// TODO: This is picking up the element being touched's mouse position, so
 		// need to follow the event chain up to the scroller's container.
 		return { x: e.screenX, y: e.screenY };
