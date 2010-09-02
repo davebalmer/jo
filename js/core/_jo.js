@@ -133,6 +133,10 @@ jo = {
 		this.debug = state;
 	},
 	
+	flag: {
+		stopback: false
+	},
+	
 	load: function(call, context) {
 		joDOM.enable();
 		
