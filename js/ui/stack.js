@@ -95,6 +95,10 @@ joStack.extend(joView, {
 		if (!this.container)
 			this.createContainer();
 
+		// short term hack for webos
+		// not happy with it but works for now
+		jo.flag.stopback = this.index ? true : false;
+
 		var container = this.container;
 		var oldchild = this.lastNode;
 		var newchild = getnode(this.data[this.index]);
@@ -136,7 +140,11 @@ joStack.extend(joView, {
 				joDOM.addCSSClass(oldchild, oldclass);
 
 			// TODO: add transition end event if available, this as fallback
-			setTimeout(cleanup, 800);
+//			setTimeout(cleanup, 300);
+			if (!this.eventset) {
+				this.eventset = true;
+				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", cleanup, this);
+			}
 		}
 		
 		function cleanup() {
