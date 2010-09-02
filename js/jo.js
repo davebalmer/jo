@@ -170,6 +170,10 @@ jo = {
 		this.debug = state;
 	},
 	
+	flag: {
+		stopback: false
+	},
+	
 	load: function(call, context) {
 		joDOM.enable();
 		
@@ -282,7 +286,7 @@ joDOM = {
 		if (typeof id == "string")
 			return document.getElementById(id);
 		else
-			return (typeof id == 'object' && id.tagName) ? id : null;
+			return (typeof id === 'object' && id.tagName) ? id : null;
 	},
 	
 	remove: function(node) {
@@ -304,7 +308,7 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
-		if (typeof node.className != "undefined") {
+		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
 			for (var i = 0, l = n.length; i < l; i++) {
@@ -320,7 +324,7 @@ joDOM = {
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
-		if (typeof node.className != "undefined") {
+		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
 			for (var i = 0, l = n.length; i < l; i++) {
@@ -353,7 +357,7 @@ joDOM = {
 		if (!this.enabled)
 			return null;
 
-		if (typeof tag == "object" && typeof tag.tagName == "string") {
+		if (typeof tag === "object" && typeof tag.tagName === "string") {
 			// being used to create a container for a joView
 			var o = document.createElement(tag.tagName);
 
@@ -462,7 +466,7 @@ joEvent = {
 		var call = call;
 		var data = data || "";
 
-		var wrappercall = function(e) {
+		function wrappercall(e) {
 			var target = joEvent.getTarget(e);
 			
 			if (context)
@@ -482,6 +486,8 @@ joEvent = {
 			e.stopPropagation();
 		else
 			e.cancelBubble = true;
+			
+//		e.preventDefault();
 	},
 	
 	preventDefault: function(e) {
@@ -511,26 +517,45 @@ joEvent = {
 	
 	Class for custom events using the Observer Pattern. This is designed to be used
 	inside a subject to create events observers can subscribe to. Unlike the classic
-	observer pattern, a subject can fire more than one event and when called, and
+	observer pattern, a subject can fire more than one event when called, and
 	each observer gets data from the subject. This is very similar to YUI 2.x event model.
+	
+	You can also "lock" the notification chain by using the `capture()` method, which
+	tells the event to only notify the most recent subscriber (observer) which requested
+	to capture the event exclusively.
 	
 	Methods
 	-------
 	
+	- `subscribe(Function, context, data)`
+
+	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
+	  approach instead of passing in the `context` as a separate argument. All subscribers
+	  will be notified when the event is fired.
+
+	- `unsubscribe(Function, context)`
+	
+	  Does what you'd think.
+
 	- `fire(data)`
 	
 	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
 	  a reference to the `subject` and any static `data` which was passed in the
 	  `subscribe()` call.
 	
-	- `subscribe(Function, context, data)`
-	- `unsubscribe(Function, context)`
+	- `capture(Function, context, data)`
 	
-	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
-	  approach instead of passing in the `context` as a separate argument.
+	  Only the last subscriber to capture this event will be notified until it is
+	  released. Note that you can stack `capture()` calls to produce a modal event
+	  heiarchy.
+	
+	- `release(Function, context)`
+	
+	  Removes the most recent subscription called with `capture()`, freeing up the next
+	  subscribers in the list to be notified the next time the event is fired.
 	
 	Use
-	-----
+	---
 	
 	### In the subject (or "publisher") object
 	
@@ -565,12 +590,6 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 		
-/*
-		var observer = observer || this;
-
-		if (typeof data == 'undefined')
-			var data = "";
-*/
 		var o = { "call": call };
 
 		if (observer)
@@ -588,41 +607,54 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 
-//		var observer = observer || this;
-
 		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
-			if (this.subscriptions[i].call === call
-			&& (this.subscriptions[i].observer == "undefined" || this.subscriptions[i].observer === observer))
-				this.subscriptions[i].slice(i, 1);
+			var sub = this.subscriptions[i];
+			if (sub.call === call && (typeof sub.observer == "undefined" || sub.observer === observer))
+				sub.slice(i, 1);
 		}
 		
 		return this.subject;
 	},
 
 	fire: function(data) {
-		if (typeof data == 'undefined')
+		if (typeof data === 'undefined')
 			var data = "";
-		
+			
 		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
-			var subjectdata = (typeof this.subscriptions[i].data !== 'undefined') ? this.subscriptions[i].data : null;
-
-			// support for Function.bind()
-			if (this.subscriptions[i].observer) {
-				this.subscriptions[i].call.call(
-					this.subscriptions[i].observer,
-					data,
-					this.subject,
-					subjectdata
-				);				
-			}
-			else {
-				this.subscriptions[i].call(
-					data,
-					this.subject,
-					subjectdata
-				);				
-			}
+			var sub = this.subscriptions[i];
+			var subjectdata = (typeof sub.data !== 'undefined') ? sub.data : null;
+			
+			if (sub.observer)
+				sub.call.call(sub.observer, data, this.subject, subjectdata);
+			else
+				sub.call(data, this.subject, subjectdata);
+			
+			// if this subscriber wants to capture events,
+			// stop calling other subscribers
+			if (sub.capture)
+				break;
 		}
+	},
+
+	capture: function(call, observer, data) {
+		if (!call)
+			return false;
+
+		var o = { "call": call, capture: true };
+
+		if (observer)
+			o.observer = observer;
+
+		if (data)
+			o.data = data;
+			
+		this.subscriptions.unshift(o);
+
+		return this.subject;
+	},
+	
+	release: function(call, observer) {
+		return this.unsubscribe(call, observer);
 	}
 };
 /**
@@ -1246,74 +1278,6 @@ joPreference.prototype = {
 };
 
 /**
-	joState
-	=======
-	
-	State machine class, very useful for complex ascyncronous processes.
-*/
-
-joState = function(states) {
-	this.state = states || {};
-
-	this.doneEvent = new joSubject(this);
-	this.errorEvent = new joSubject(this);
-
-	// if no start method was defined, we short circuit the whole thing
-	if (!this.state.start)
-		this.state.start = this.done;
-};
-joState.prototype = {
-	start: function() {
-		this.arguments = arguments;
-		this.state.start.apply(this, arguments);
-	},
-	
-	setNext: function(next) {
-		this.nextState = next;
-	},
-	
-	next: function() {
-		var state = this.state[this.nextState].apply(this, arguments);
-	},
-	
-	error: function() {
-		joLog.apply(this, arguments);
-	},
-	
-	done: function() {
-		this.setNext(null);
-		this.doneEvent.fire(arguments);
-	}
-};
-
-
-
-var x = new joState({
-	start: function(name) {
-		if (!name)
-			this.error("No name specified.");
-
-		console.log("start:", name);
-		return "check";
-	},
-	
-	check: function(name) {
-		if (name.length > 5)
-			return "big";
-		else
-			return "small";
-	},
-	
-	big: function(name) {
-		joLog("big name", name);
-	},
-	
-	small: function(name) {
-		joLog("small name", name);
-	}
-});
-
-/**
 	joGesture
 	=========
 	
@@ -1356,6 +1320,16 @@ joGesture = {
 			return;
 		}
 
+		if (e.keyCode == 27) {
+			if (jo.flag.stopback) {
+				joEvent.stop(e);
+				joEvent.preventDefault(e);
+			}
+
+			this.backEvent.fire("back");
+			return;
+		}
+
 		if (!this.altkey)
 			return;
 		
@@ -1387,23 +1361,18 @@ joGesture = {
 		if (!e)
 			var e = window.event;
 			
-//		joLog("keydown", e.keyCode, e.charCode);
-
 		if (e.keyCode == 27) {
-			this.backEvent.fire("back");
-			return;
-		}
-		
-		if (e.keyCode == 13 && joFocus.get() instanceof joInput) {
 			joEvent.stop(e);
-			return;
+			joEvent.preventDefault(e);
+		}
+		else if (e.keyCode == 13 && joFocus.get() instanceof joInput) {
+			joEvent.stop(e);
+		}
+		else if (e.keyCode == 18) {
+			this.altkey = true;
 		}
 		
-		if (e.keyCode == 18) {
-//			joLog("alt ON");
-			this.altkey = true;
-			return;
-		}
+		return;
 	}
 };/**
 	joView
@@ -1785,6 +1754,10 @@ joStack.extend(joView, {
 		if (!this.container)
 			this.createContainer();
 
+		// short term hack for webos
+		// not happy with it but works for now
+		jo.flag.stopback = this.index ? true : false;
+
 		var container = this.container;
 		var oldchild = this.lastNode;
 		var newchild = getnode(this.data[this.index]);
@@ -1826,7 +1799,11 @@ joStack.extend(joView, {
 				joDOM.addCSSClass(oldchild, oldclass);
 
 			// TODO: add transition end event if available, this as fallback
-			setTimeout(cleanup, 800);
+//			setTimeout(cleanup, 300);
+			if (!this.eventset) {
+				this.eventset = true;
+				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", cleanup, this);
+			}
 		}
 		
 		function cleanup() {
@@ -1976,27 +1953,30 @@ joScroller.extend(joContainer, {
 	},
 	
 	onFlick: function(e) {
-		var str = "";
-		for (var i in e)
-			str += "; " + i + "=" + e[i];
+//		var str = "";
+//		for (var i in e)
+//			str += "; " + i + "=" + e[i];
 	},
 	
 	onDown: function(e) {
 //		joLog("onDown");
 		joEvent.stop(e);
 
+		this.start = this.getMouse(e);
 		this.points = [];
-		this.points.unshift(this.getMouse(e));
+		this.points.unshift(this.start);
 		this.inMotion = true;
 		this.quickSnap = false;
-
-		joDOM.removeCSSClass(this.data, "flick");
-		joDOM.removeCSSClass(this.data, "flickback");
+		
+//		joEvent.preventDefault(e);
+		
+		joDOM.removeCSSClass(this.container.childNodes[0], "flick");
+		joDOM.removeCSSClass(this.container.childNodes[0], "flickback");
 	},
 	
 	onMove: function(e) {
 //		joLog("onMove");
-		e.preventDefault();
+//		e.preventDefault();
 
 		// TODO: move the page to follow the mouse
 		if (this.inMotion) {
@@ -2006,6 +1986,7 @@ joScroller.extend(joContainer, {
 			
 			var y = point.y - this.points[0].y;
 			this.points.unshift(point);
+
 			if (this.points.length > 5)
 				this.points.pop();
 			
@@ -2023,29 +2004,29 @@ joScroller.extend(joContainer, {
 	},
 
 	onUp: function (e) {
-//		joLog("onUp");
-		
 		if (!this.inMotion)
 			return;
 
-		joEvent.stop(e);
-
 		this.inMotion = false;
+
+		var end = this.getMouse(e);
+		
+		joEvent.stop(e);
+		if (Math.abs(this.start.y - end.y) > 10
+		|| Math.abs(this.start.x - end.x) > 10) {
+			joEvent.preventDefault(e);
+		}
 
 		var dy = 0;
 		for (var i = 0; i < this.points.length - 1; i++)
 			dy += (this.points[i].y - this.points[i + 1].y);
 		
-		if (this.points.length > 4)
-			e.preventDefault();
-
 		// if the velocity is "high" then it was a flick
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
 			joDOM.addCSSClass(this.container.childNodes[0], "flick");
 
 			var flick = dy * (this.container.childNodes[0].offsetHeight / this.container.offsetHeight);
 
-//			joYield(this.snapBack, this, 1000);
 			if (!this.eventset) {
 				this.eventset = true;
 				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", this.snapBack, this);
@@ -2059,7 +2040,6 @@ joScroller.extend(joContainer, {
 	},
 	
 	getMouse: function(e) {
-//		joLog(e.screenX, e.screenY, e.pageX, e.pageY, e.target, e.source);
 		// TODO: This is picking up the element being touched's mouse position, so
 		// need to follow the event chain up to the scroller's container.
 		return { x: e.screenX, y: e.screenY };
@@ -2579,7 +2559,7 @@ joFocus = {
 	},
 	
 	refresh: function() {
-		joLog("joFocus.refresh()");
+//		joLog("joFocus.refresh()");
 		if (this.last)
 			this.last.focus();
 	},

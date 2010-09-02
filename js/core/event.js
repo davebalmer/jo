@@ -38,7 +38,7 @@ joEvent = {
 		var call = call;
 		var data = data || "";
 
-		var wrappercall = function(e) {
+		function wrappercall(e) {
 			var target = joEvent.getTarget(e);
 			
 			if (context)
@@ -58,6 +58,8 @@ joEvent = {
 			e.stopPropagation();
 		else
 			e.cancelBubble = true;
+			
+//		e.preventDefault();
 	},
 	
 	preventDefault: function(e) {

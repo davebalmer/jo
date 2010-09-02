@@ -65,7 +65,7 @@ joDOM = {
 		if (typeof id == "string")
 			return document.getElementById(id);
 		else
-			return (typeof id == 'object' && id.tagName) ? id : null;
+			return (typeof id === 'object' && id.tagName) ? id : null;
 	},
 	
 	remove: function(node) {
@@ -87,7 +87,7 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
-		if (typeof node.className != "undefined") {
+		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
 			for (var i = 0, l = n.length; i < l; i++) {
@@ -103,7 +103,7 @@ joDOM = {
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
-		if (typeof node.className != "undefined") {
+		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
 			for (var i = 0, l = n.length; i < l; i++) {
@@ -136,7 +136,7 @@ joDOM = {
 		if (!this.enabled)
 			return null;
 
-		if (typeof tag == "object" && typeof tag.tagName == "string") {
+		if (typeof tag === "object" && typeof tag.tagName === "string") {
 			// being used to create a container for a joView
 			var o = document.createElement(tag.tagName);
 

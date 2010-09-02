@@ -39,7 +39,7 @@ joFocus = {
 	},
 	
 	refresh: function() {
-		joLog("joFocus.refresh()");
+//		joLog("joFocus.refresh()");
 		if (this.last)
 			this.last.focus();
 	},
