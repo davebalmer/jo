@@ -30,7 +30,11 @@ joEvent = {
 		return e.target ? e.target : e.srcElement;
 	},
 
-	on: function(element, event, call, context, data) {
+	capture: function(element, event, call, context, data) {
+		this.on(element, event, call, context, data, true);
+	},
+
+	on: function(element, event, call, context, data, capture) {
 		if (!call || !element)
 			return;
 
@@ -50,7 +54,7 @@ joEvent = {
 		if (!window.addEventListener)
 			element.attachEvent("on" + event, wrappercall);
 		else
-			element.addEventListener(event, wrappercall, false);
+			element.addEventListener(event, wrappercall, capture || false);
 	},
 
 	stop: function(e) {
@@ -58,8 +62,6 @@ joEvent = {
 			e.stopPropagation();
 		else
 			e.cancelBubble = true;
-			
-//		e.preventDefault();
 	},
 	
 	preventDefault: function(e) {
