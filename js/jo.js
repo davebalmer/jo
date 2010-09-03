@@ -458,7 +458,11 @@ joEvent = {
 		return e.target ? e.target : e.srcElement;
 	},
 
-	on: function(element, event, call, context, data) {
+	capture: function(element, event, call, context, data) {
+		this.on(element, event, call, context, data, true);
+	},
+
+	on: function(element, event, call, context, data, capture) {
 		if (!call || !element)
 			return;
 
@@ -478,7 +482,7 @@ joEvent = {
 		if (!window.addEventListener)
 			element.attachEvent("on" + event, wrappercall);
 		else
-			element.addEventListener(event, wrappercall, false);
+			element.addEventListener(event, wrappercall, capture || false);
 	},
 
 	stop: function(e) {
@@ -486,8 +490,6 @@ joEvent = {
 			e.stopPropagation();
 		else
 			e.cancelBubble = true;
-			
-//		e.preventDefault();
 	},
 	
 	preventDefault: function(e) {
@@ -1278,6 +1280,44 @@ joPreference.prototype = {
 };
 
 /**
+	joScript
+	========
+	
+	Script tag loader function which can be used to dynamically load script
+	files or make RESTful calls to many JSON services (provided they have some
+	sort of callback ability).
+	
+	> Need a URL with some examples of this.
+	
+	Arguments
+	---------
+	
+	- url
+	- callback
+	- context (usually `this`, and is optional)
+
+	Returns
+	-------
+	
+	Returns a reference to the `script` tag which was created in the DOM to make
+	this request.
+*/
+
+function joScript(url, call, context) {
+	var node = joDOM.create('script');
+	node.onload = handler;
+	node.src = url;
+	document.body.appendChild(node);
+	
+	function handler() {
+		call.call(context || this, node);
+		
+		// cleanup
+		document.body.removeChild(node);
+	}
+}	
+
+/**
 	joGesture
 	=========
 	
@@ -1944,8 +1984,10 @@ joScroller = function(data) {
 joScroller.velocity = 10;
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
+	moved: false,
 	
 	setEvents: function() {
+		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
@@ -1956,6 +1998,14 @@ joScroller.extend(joContainer, {
 //		var str = "";
 //		for (var i in e)
 //			str += "; " + i + "=" + e[i];
+	},
+	
+	onClick: function(e) {
+		if (this.moved) {
+			this.moved = false;
+			joEvent.stop(e);
+			joEvent.preventDefault(e);
+		}
 	},
 	
 	onDown: function(e) {
@@ -1989,8 +2039,16 @@ joScroller.extend(joContainer, {
 
 			if (this.points.length > 5)
 				this.points.pop();
+
+			var self = this;
+			this.timer = window.setTimeout(function() {
+				if (self.points.length > 1)
+					self.points.pop();
+			}, 100);
 			
 			this.scrollBy(y, true);
+
+			this.moved = true;
 		}
 	},
 
@@ -2001,6 +2059,7 @@ joScroller.extend(joContainer, {
 //			joEvent.stop(e);
 //			this.onUp(e);
 //		}
+		this.moved = false;
 	},
 
 	onUp: function (e) {
@@ -2040,14 +2099,11 @@ joScroller.extend(joContainer, {
 	},
 	
 	getMouse: function(e) {
-		// TODO: This is picking up the element being touched's mouse position, so
-		// need to follow the event chain up to the scroller's container.
 		return { x: e.screenX, y: e.screenY };
 	},
 	
 	scrollToElement: function (e) {
-//		joDOM.addCSSClass(this.data, "flick");
-//		this.data.style.top = -e.offsetTop + joDOM.getClientHeight() / 5 + "px";
+		this.scrollTo(e.offsetTop);
 	},
 	
 	scrollBy: function(y, test) {
@@ -2062,10 +2118,7 @@ joScroller.extend(joContainer, {
 			return;
 			
 		var max = 0 - this.container.childNodes[0].offsetHeight + this.container.offsetHeight;
-//		var bump = Math.floor(this.container.offsetHeight * 0.2);
-		
 		var bump = 100;
-
 		var ody = dy;
 		
 		if (dy > bump)
@@ -2083,7 +2136,12 @@ joScroller.extend(joContainer, {
 		if (this.container.childNodes[0].offsetTop != dy)
 			this.container.childNodes[0].style.top = dy + "px";
 	},
-	
+
+	scrollTo: function(y) {
+		joDOM.removeCSSClass(this.data, 'flick');
+		this.container.childNodes[0].style.top = y + "px";
+	},
+
 	snapBack: function() {
 		var top = parseInt(this.container.childNodes[0].style.top);
 
