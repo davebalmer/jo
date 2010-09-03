@@ -6,29 +6,32 @@ jostack {
 
 jostack > * {
 /*	-webkit-transform-origin: 50% 100% 0; */
-	-webkit-transform: rotateZ(0);
-	-webkit-transition: -webkit-transform .2s ease-out;
+/*	-webkit-transform: rotateZ(0); */
+/*	-webkit-transition: -webkit-transform .4s ease-out; */
+	-webkit-transition: opacity 0s ease;
 
-	outline: 1px solid transparent;
+/*	outline: 1px solid transparent; */
 }
 
 jostack > .next {
-	z-index: -1;
+	z-index: 1;
 	position: absolute;
 	top: 0;
+	opacity: 0;
 
-	-webkit-transform: translateX(100%);
+/*	-webkit-transform: translateX(100%); */
 /*	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5); */
 	
 /*	outline: 1px solid #000; */
 }
 
 jostack > .prev {
-	z-index: 1;
+	z-index: -1;
 	position: absolute;
 	top: 0;
+	opacity: 0;
 
-	-webkit-transform: translateX(-100%);
+/*	-webkit-transform: translateX(-100%); */
 /*	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5); */
 
 /*	outline: 1px solid #000; */

@@ -12,7 +12,7 @@ joview, jotitle, jolabel, jocard, jotable, jodivider, jocontrol, jocontainer, jo
 	padding: 0;
 	margin: 0;
 	
-	font: normal 18px "Verdana";
+	font: normal 18px "Apres", "Verdana";
 	color: #000;
 	position: relative;
 	-webkit-user-select: none;
@@ -72,7 +72,7 @@ jocontainer {
 joinput, jotextarea {
 	cursor: text;
 	display: block;
-	border: 2px solid #000;
+	border: 1px solid #000;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -123,7 +123,7 @@ jostack.page {
 	height: 480px;
 	width: 320px;
 */
-	background-color: #222;
+/*	background-color: #828384; */
 }
 
 jocard {
@@ -140,7 +140,7 @@ jocard {
 	-moz-box-align: stretch;
 	box-orient: vertical;
 	box-align: stretch;
-	background-color: rgba(255, 255, 255, .2);
+/*	background-color: rgba(255, 255, 255, .2); */
 }
 jocard>* {
 	display: block;
@@ -265,18 +265,40 @@ jobutton {
 	border-top-color: #fff;
 	border-bottom-color: #000;
 */
-	background-color: transparent;
+	background-color: rgba(0, 0, 0, .6);
+
+/*
 	border-width: 13px;
 	-webkit-border-image: url(grayButton.png) 13 stretch stretch;
 	-moz-border-image: url(grayButton.png) 13 stretch stretch;
 	border-image: url(grayButton.png) 13 stretch stretch;
-	padding: 0;
+*/
+	padding: 10px 0;
+	-webkit-border-radius: 10px;
+	border: 1px solid rgba(0, 0, 0, .8);
+	background-image: url(shiny.png);
+
+	background-repeat: no-repeat;
+
+/*	
+	-webkit-background-origin: content-box;
+	-webkit-background-size: 100% 100%;
+	background-origin: content-box;
+	background-size: 100% 100%;
+	-moz-background-origin: content-box;
+	-moz-background-size: 100% 100%;
+*/
+	background-position: top left;
+	background-size: 100% 50%;
 }
 jobutton:hover, joButton:focus {
-/*	background: rgba(0, 0, 0, .7); */
+	background-color: rgba(0, 64, 255, .4);
+
+/*
 	-webkit-border-image: url(blueButton.png) 13 stretch stretch;
 	-moz-border-image: url(blueButton.png) 13 stretch stretch;
 	border-image: url(blueButton.png) 13 stretch stretch;
+*/
 }
 joButton.disabled {
 	opacity: .4;
@@ -284,9 +306,15 @@ joButton.disabled {
 	cursor: default;
 }
 joButton.disabled:hover, joButton.disabled:hover {
+	opacity: .4;
+	color: rgba(255, 255, 255, .4);
+	background-color: inherit;
+	cursor: default;
+	/*
 	-webkit-border-image: url(grayButton.png) 13 stretch stretch;
 	-moz-border-image: url(grayButton.png) 13 stretch stretch;
 	border-image: url(grayButton.png) 13 stretch stretch;
+	*/
 }
 	
 jobutton, jotitle {
@@ -304,7 +332,7 @@ jogroup {
 	display: block;
 	margin: 10px;
 	padding: 0;
-	border: 2px solid rgba(0, 0, 0, .5);
+	border: 1px solid rgba(0, 0, 0, .5);
 	background: rgba(255, 255, 255, .2);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -316,7 +344,7 @@ h1 {
 }
 
 jostack {
-	background-color: #ccc;
+	background-color: #99c;
 	background-image: url(brushedgrey.png);
 	background-repeat: no-repeat;
 	background-attachment: fixed;
@@ -348,14 +376,31 @@ joexpandotitle {
 	color: #fff;
 	display: block;
 	background: rgba(0, 0, 0, .2);
-	-webkit-border-radius: 1.2em;
-	-moz-border-radius: 1.2em;
-	border-radius: 1.2em;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 	padding: 10px;
-	border: 2px solid rgba(0, 0, 0, .8);
+	border: 1px solid rgba(0, 0, 0, .8);
 	margin: 10px 10px 0 10px;
 	position: relative;
 	cursor: pointer;
+
+	border: 1px solid rgba(0, 0, 0, .8);
+	background-image: url(shiny.png);
+
+	background-repeat: no-repeat;
+
+/*	
+	-webkit-background-origin: content-box;
+	-webkit-background-size: 100% 100%;
+	background-origin: content-box;
+	background-size: 100% 100%;
+	-moz-background-origin: content-box;
+	-moz-background-size: 100% 100%;
+*/
+	background-position: top left;
+	background-size: 100% 50%;
+	
 }
 
 joexpando.open > joexpandotitle {
