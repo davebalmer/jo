@@ -39,8 +39,10 @@ joScroller = function(data) {
 joScroller.velocity = 10;
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
+	moved: false,
 	
 	setEvents: function() {
+		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
@@ -51,6 +53,14 @@ joScroller.extend(joContainer, {
 //		var str = "";
 //		for (var i in e)
 //			str += "; " + i + "=" + e[i];
+	},
+	
+	onClick: function(e) {
+		if (this.moved) {
+			this.moved = false;
+			joEvent.stop(e);
+			joEvent.preventDefault(e);
+		}
 	},
 	
 	onDown: function(e) {
@@ -84,8 +94,16 @@ joScroller.extend(joContainer, {
 
 			if (this.points.length > 5)
 				this.points.pop();
+
+			var self = this;
+			this.timer = window.setTimeout(function() {
+				if (self.points.length > 1)
+					self.points.pop();
+			}, 100);
 			
 			this.scrollBy(y, true);
+
+			this.moved = true;
 		}
 	},
 
@@ -96,6 +114,7 @@ joScroller.extend(joContainer, {
 //			joEvent.stop(e);
 //			this.onUp(e);
 //		}
+		this.moved = false;
 	},
 
 	onUp: function (e) {
@@ -135,14 +154,11 @@ joScroller.extend(joContainer, {
 	},
 	
 	getMouse: function(e) {
-		// TODO: This is picking up the element being touched's mouse position, so
-		// need to follow the event chain up to the scroller's container.
 		return { x: e.screenX, y: e.screenY };
 	},
 	
 	scrollToElement: function (e) {
-//		joDOM.addCSSClass(this.data, "flick");
-//		this.data.style.top = -e.offsetTop + joDOM.getClientHeight() / 5 + "px";
+		this.scrollTo(e.offsetTop);
 	},
 	
 	scrollBy: function(y, test) {
@@ -157,10 +173,7 @@ joScroller.extend(joContainer, {
 			return;
 			
 		var max = 0 - this.container.childNodes[0].offsetHeight + this.container.offsetHeight;
-//		var bump = Math.floor(this.container.offsetHeight * 0.2);
-		
 		var bump = 100;
-
 		var ody = dy;
 		
 		if (dy > bump)
@@ -178,7 +191,12 @@ joScroller.extend(joContainer, {
 		if (this.container.childNodes[0].offsetTop != dy)
 			this.container.childNodes[0].style.top = dy + "px";
 	},
-	
+
+	scrollTo: function(y) {
+		joDOM.removeCSSClass(this.data, 'flick');
+		this.container.childNodes[0].style.top = y + "px";
+	},
+
 	snapBack: function() {
 		var top = parseInt(this.container.childNodes[0].style.top);
 
