@@ -227,6 +227,7 @@ jolistitem, jomenuitem {
 	padding: 10px;
 	cursor: pointer;
 	background: rgba(255, 255, 255, .4);
+	-webkit-user-drag: element;
 }
 
 jomenuitem img {
@@ -485,20 +486,20 @@ joscroller {
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
-	-webkit-transition: top 0s ease;
+/*	-webkit-transition: top 0s ease; */
 }
 joscroller > * {
 	position: absolute;
 }
 
 .flick {
-	-webkit-transition: top .5s ease-in;
-	-webkit-transition: top .5s cubic-bezier(0, 0, 0.2, 1);
+	-webkit-transition: top 1.8s ease-in;
+	-webkit-transition: top 1.8s cubic-bezier(0, .5, 0, 1);
 }
 
 .flickback {
-	-webkit-transition: top .1s ease-out;
-	-webkit-transition: top .1s cubic-bezier(0, 0, 0.4, 1);
+	-webkit-transition: top .2s ease-out;
+	-webkit-transition: top .2s cubic-bezier(0, 0, 0.4, 1);
 }
 
 jostack {
