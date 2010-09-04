@@ -17,16 +17,7 @@
 	- `scrollToView(joView)`
 	
 	  Scrolls to make the top of the specified view visible.
-
-	CSS
-	---
 	
-	- `div.joScroller`
-	- `flick` physics defined for flicking
-	- `flickback` snap-back physics after a flick
-	
-	> Not ready for use; going through a re-write.
-
 */
 
 joScroller = function(data) {
@@ -36,27 +27,29 @@ joScroller = function(data) {
 	// Call Super
 	joContainer.apply(this, arguments);
 };
-joScroller.velocity = 10;
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
 	moved: false,
+	inMotion: false,
+	pacer: 0,
+	velocity: 1.4,
+	bump: 50,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
-		joEvent.on(this.container, "mouseout", this.onOut, this);
+//		joEvent.capture(this.container, "mouseout", this.onOut, this);
 	},
 	
 	onFlick: function(e) {
-//		var str = "";
-//		for (var i in e)
-//			str += "; " + i + "=" + e[i];
+		// placeholder
 	},
 	
 	onClick: function(e) {
 		if (this.moved) {
+			joLog("onClick, moved");
 			this.moved = false;
 			joEvent.stop(e);
 			joEvent.preventDefault(e);
@@ -64,57 +57,56 @@ joScroller.extend(joContainer, {
 	},
 	
 	onDown: function(e) {
-//		joLog("onDown");
 		joEvent.stop(e);
 
+		this.reset();
+
+		var node = this.container.childNodes[0];
+		
+		joDOM.removeCSSClass(node, "flick");
+		joDOM.removeCSSClass(node, "flickback");
+
 		this.start = this.getMouse(e);
-		this.points = [];
 		this.points.unshift(this.start);
 		this.inMotion = true;
+	},
+	
+	reset: function() {
+		this.points = [];
 		this.quickSnap = false;
-		
-//		joEvent.preventDefault(e);
-		
-		joDOM.removeCSSClass(this.container.childNodes[0], "flick");
-		joDOM.removeCSSClass(this.container.childNodes[0], "flickback");
+		this.moved = false;
+		this.inMotion = false;
 	},
 	
 	onMove: function(e) {
-//		joLog("onMove");
-//		e.preventDefault();
+		if (!this.inMotion)
+			return;
+		
+		joEvent.stop(e);
+		var point = this.getMouse(e);
+		
+		var y = point.y - this.points[0].y;
+		this.points.unshift(point);
 
-		// TODO: move the page to follow the mouse
-		if (this.inMotion) {
-//			joLog("move");
-			joEvent.stop(e);
-			var point = this.getMouse(e);
-			
-			var y = point.y - this.points[0].y;
-			this.points.unshift(point);
+		if (this.points.length > 5)
+			this.points.pop();
 
-			if (this.points.length > 5)
-				this.points.pop();
+		// cleanup points if the user drags slowly to avoid unwanted flicks
+		var self = this;
+		this.timer = window.setTimeout(function() {
+			if (self.points.length > 1)
+				self.points.pop();
+		}, 100);
+		
+		this.scrollBy(y, true);
 
-			var self = this;
-			this.timer = window.setTimeout(function() {
-				if (self.points.length > 1)
-					self.points.pop();
-			}, 100);
-			
-			this.scrollBy(y, true);
-
+		if (!this.moved && this.points.length > 3)
 			this.moved = true;
-		}
 	},
 
 	onOut: function(e) {
-//		this.inMotion = false;
-//		var target = joDOM.getParentWithin(joEvent.getTarget(e), this.container);
-//		if (target !== this.data) {
-//			joEvent.stop(e);
-//			this.onUp(e);
-//		}
-		this.moved = false;
+		// placeholder
+		this.reset();
 	},
 
 	onUp: function (e) {
@@ -124,12 +116,9 @@ joScroller.extend(joContainer, {
 		this.inMotion = false;
 
 		var end = this.getMouse(e);
+		var node = this.container.firstChild;
 		
 		joEvent.stop(e);
-		if (Math.abs(this.start.y - end.y) > 10
-		|| Math.abs(this.start.x - end.x) > 10) {
-			joEvent.preventDefault(e);
-		}
 
 		var dy = 0;
 		for (var i = 0; i < this.points.length - 1; i++)
@@ -137,13 +126,13 @@ joScroller.extend(joContainer, {
 		
 		// if the velocity is "high" then it was a flick
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
-			joDOM.addCSSClass(this.container.childNodes[0], "flick");
+			joDOM.addCSSClass(node, "flick");
 
-			var flick = dy * (this.container.childNodes[0].offsetHeight / this.container.offsetHeight);
+			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
 			if (!this.eventset) {
 				this.eventset = true;
-				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", this.snapBack, this);
+				joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
 			}
 
 			this.scrollBy(flick, false);
@@ -157,29 +146,29 @@ joScroller.extend(joContainer, {
 		return { x: e.screenX, y: e.screenY };
 	},
 	
-	scrollToElement: function (e) {
-		this.scrollTo(e.offsetTop);
+	scrollToElement: function (node) {
+		this.scrollTo(node.offsetTop);
 	},
 	
 	scrollBy: function(y, test) {
-		var top = this.container.childNodes[0].offsetTop;
+		var node = this.container.firstChild;
+		var top = node.offsetTop;
 
 		if (isNaN(top))
 			top = 0;
 
 		var dy = Math.floor(top + y);
 		
-		if (this.container.childNodes[0].offsetHeight <= this.container.offsetHeight)
+		if (node.offsetHeight <= this.container.offsetHeight)
 			return;
 			
-		var max = 0 - this.container.childNodes[0].offsetHeight + this.container.offsetHeight;
-		var bump = 100;
+		var max = 0 - node.offsetHeight + this.container.offsetHeight;
 		var ody = dy;
 		
-		if (dy > bump)
-			dy = bump;
-		else if (dy < max - bump)
-			dy = max - bump;
+		if (dy > this.bump)
+			dy = this.bump;
+		else if (dy < max - this.bump)
+			dy = max - this.bump;
 
 		if (test) {
 			if (ody != dy)
@@ -187,31 +176,35 @@ joScroller.extend(joContainer, {
 			else
 				this.quickSnap = false;
 		}
-		
-		if (this.container.childNodes[0].offsetTop != dy)
-			this.container.childNodes[0].style.top = dy + "px";
+
+		if (node.offsetTop != dy)
+			node.style.top = dy + "px";
 	},
 
 	scrollTo: function(y) {
-		joDOM.removeCSSClass(this.data, 'flick');
-		this.container.childNodes[0].style.top = y + "px";
+		var node = this.container.firstChild;
+		
+		joDOM.removeCSSClass(node, 'flick');
+		node.style.top = y + "px";
 	},
 
 	snapBack: function() {
-		var top = parseInt(this.container.childNodes[0].style.top);
-
+		var node = this.container.firstChild;
+		var top = parseInt(node.style.top);
 		if (isNaN(top))
 			top = 0;
 
 		var dy = top;
-		var max = 0 - this.container.childNodes[0].offsetHeight + this.container.offsetHeight;
+		var max = 0 - node.offsetHeight + this.container.offsetHeight;
 
-		joDOM.removeCSSClass(this.data, 'flick');
-		joDOM.addCSSClass(this.data, 'flickback');
+		joDOM.removeCSSClass(node, 'flick');
+		joDOM.addCSSClass(node, 'flickback');
 		
-		if (dy > 0)
-			this.container.childNodes[0].style.top = "0px";
-		else if (dy < max)
-			this.container.childNodes[0].style.top = max + "px";
+//		window.setTimeout(function() {
+			if (dy > 0)
+				node.style.top = "0px";
+			else if (dy < max)
+				node.style.top = max + "px";
+//		}, 1);
 	}
 });
