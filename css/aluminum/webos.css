@@ -1,0 +1,3 @@
+joscroller > * {
+	-webkit-user-drag: element;
+}
