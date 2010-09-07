@@ -76,16 +76,33 @@ joList = function(container, data) {
 };
 joList.extend(joControl, {
 	tagName: "jolist",
+	data: null,
+	defaultMessage: "",
 	
 	setDefault: function(msg) {
 		this.defaultMessage = msg;
+		
+		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
+			if (typeof msg === 'object') {
+				this.innerHTML = "";
+				if (msg instanceof joView)
+					this.container.appendChild(msg.container);
+				else if (msg instanceof HTMLElement)
+					this.container.appendChild(msg);
+			}
+			else {
+				this.innerHTML = msg;
+			}
+		}
+		
+		return this;
 	},
 	
 	draw: function() {
 		var html = "";
 		var length = 0;
 
-		if (this.data.length == 0 && typeof this.defaultMessage != "undefined") {
+		if ((typeof this.data === 'undefined' || !this.data.length) && this.defaultMessage) {
 			this.container.innerHTML = this.defaultMessage;
 			return;
 		}
@@ -99,7 +116,7 @@ joList.extend(joControl, {
 			if (typeof element == "string")
 				html += element;
 			else
-				this.container.appendChild(element);
+				this.container.appendChild((element instanceof joView) ? element.container : element);
 
 			++length;
 		}
@@ -119,8 +136,10 @@ joList.extend(joControl, {
 
 		var node = this.getNode(this.index);
 		if (node) {
-			if (this.lastNode)
+			if (this.lastNode) {
 				joDOM.removeCSSClass(this.lastNode, "selected");
+				this.index = null;
+			}
 		}
 	},
 	

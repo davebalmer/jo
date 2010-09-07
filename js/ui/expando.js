@@ -48,6 +48,9 @@ joExpando.extend(joContainer, {
 		this.setToggleEvent();
 	},
 	
+	setEvents: function() {
+	},
+	
 	setToggleEvent: function() {
 		joEvent.on(this.container.childNodes[0], "click", this.toggle, this);
 	},

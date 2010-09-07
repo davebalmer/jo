@@ -53,7 +53,6 @@ joControl.extend(joView, {
 		// not sure what we want to do here, want to use
 		// gesture system, but that's not defined
 		joEvent.on(this.container, "click", this.onMouseDown, this);
-
 		joEvent.on(this.container, "blur", this.onBlur, this);
 		joEvent.on(this.container, "focus", this.onFocus, this);
 	},
@@ -88,9 +87,11 @@ joControl.extend(joView, {
 	},
 	
 	onBlur: function(e) {
+		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
 		joLog("onBlur", this.data);
 		joEvent.stop(e);
 		this.blur();
+		this.changeEvent.fire(this.data);
 	},
 	
 	focus: function(e) {

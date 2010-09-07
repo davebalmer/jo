@@ -36,6 +36,9 @@ joView = function(data) {
 };
 joView.prototype = {
 	tagName: "joview",
+	busyNode: null,
+	container: null,
+	data: null,
 	
 	getContainer: function() {
 		return this.container;
@@ -82,6 +85,7 @@ joView.prototype = {
 
 		this.container.innerHTML = "";
 		this.draw();
+		this.setBusy(false);
 
 		this.changeEvent.fire(this.data);
 	},
@@ -94,6 +98,24 @@ joView.prototype = {
 		joDOM.setStyle(this.container, style);
 		
 		return this;
+	},
+	
+	setBusy: function(state, msg) {
+		if (state) {
+			if (!this.busyNode) {
+				this.busyNode = new joBusy(msg);
+			}
+			this.container.appendChild(this.busyNode.container);
+		}
+		else {
+			if (this.busyNode) {
+				try {
+					this.container.removeChild(this.busyNode.container);
+				}
+				catch(e) {
+				}
+			}
+		}
 	},
 	
 	setEvents: function() {}
