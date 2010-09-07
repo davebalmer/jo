@@ -23,7 +23,8 @@ UI = gesture.js \
 	divider.js \
 	label.js \
 	table.js \
-	flexrow.js
+	flexrow.js \
+	busy.js
 
 ui:
 	cat $(UI) >> ../jo.js
