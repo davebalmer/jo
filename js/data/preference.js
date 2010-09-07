@@ -2,7 +2,7 @@
 	joPreference
 	============
 
-	A singleton used for storing and retrieving preferences. Meant to be
+	A class used for storing and retrieving preferences. Meant to be
 	augmented with persistent storage methods for `set()` and `get()`.
 
 	> This is a work in progress, and totally subject to change. Binding
@@ -43,6 +43,7 @@
 
 joPreference = function(data) {
 	this.preference = data || {};
+	this.changeEvent = new joSubject(this);
 };
 joPreference.prototype = {
 	loadEvent: new joSubject(this),
@@ -73,13 +74,13 @@ joPreference.prototype = {
 		// might get ugly
 		if (key) {
 			// single key
-			this.dataSource.set(key, this.data[key].get());
+//			this.dataSource.set(key, this.data[key].get());
 		}
 		else {
 			// otherwise we save all our stuff
-			for (var i in this.data) {
-				this.dataSource.set(i, this.data[i].get());
-			}
+//			for (var i in this.data) {
+//				this.dataSource.set(i, this.data[i].get());
+//			}
 		}
 	},
 	
@@ -109,6 +110,7 @@ joPreference.prototype = {
 			this.preference[key].set(value);
 			
 		this.save(key);
+		this.changeEvent.fire(key);
 	},
 
 	bind: function(key) {
@@ -116,9 +118,11 @@ joPreference.prototype = {
 
 		// create new key if it doesn't exist
 		if (typeof this.preference[key] === 'undefined')
-			return new joDataSource();
+			return new joDataSource(key);
 		else
 			return this.preference[key];
 	}
 };
 
+		
+		
