@@ -889,6 +889,11 @@ joCache = {
 	}
 };
 
+var SEC = 1000;
+var MIN = 60 * SEC;
+var HOUR = 60 * MIN;
+var DAY = 24 * HOUR;
+
 joTime = {
 	timestamp: function() {
 		var now = new Date();
@@ -1159,7 +1164,7 @@ joSQLDataSource.prototype = {
 	joPreference
 	============
 
-	A singleton used for storing and retrieving preferences. Meant to be
+	A class used for storing and retrieving preferences. Meant to be
 	augmented with persistent storage methods for `set()` and `get()`.
 
 	> This is a work in progress, and totally subject to change. Binding
@@ -1200,6 +1205,7 @@ joSQLDataSource.prototype = {
 
 joPreference = function(data) {
 	this.preference = data || {};
+	this.changeEvent = new joSubject(this);
 };
 joPreference.prototype = {
 	loadEvent: new joSubject(this),
@@ -1230,13 +1236,13 @@ joPreference.prototype = {
 		// might get ugly
 		if (key) {
 			// single key
-			this.dataSource.set(key, this.data[key].get());
+//			this.dataSource.set(key, this.data[key].get());
 		}
 		else {
 			// otherwise we save all our stuff
-			for (var i in this.data) {
-				this.dataSource.set(i, this.data[i].get());
-			}
+//			for (var i in this.data) {
+//				this.dataSource.set(i, this.data[i].get());
+//			}
 		}
 	},
 	
@@ -1266,6 +1272,7 @@ joPreference.prototype = {
 			this.preference[key].set(value);
 			
 		this.save(key);
+		this.changeEvent.fire(key);
 	},
 
 	bind: function(key) {
@@ -1273,13 +1280,14 @@ joPreference.prototype = {
 
 		// create new key if it doesn't exist
 		if (typeof this.preference[key] === 'undefined')
-			return new joDataSource();
+			return new joDataSource(key);
 		else
 			return this.preference[key];
 	}
 };
 
-/**
+		
+		/**
 	joScript
 	========
 	
@@ -1452,6 +1460,9 @@ joView = function(data) {
 };
 joView.prototype = {
 	tagName: "joview",
+	busyNode: null,
+	container: null,
+	data: null,
 	
 	getContainer: function() {
 		return this.container;
@@ -1498,6 +1509,7 @@ joView.prototype = {
 
 		this.container.innerHTML = "";
 		this.draw();
+		this.setBusy(false);
 
 		this.changeEvent.fire(this.data);
 	},
@@ -1510,6 +1522,24 @@ joView.prototype = {
 		joDOM.setStyle(this.container, style);
 		
 		return this;
+	},
+	
+	setBusy: function(state, msg) {
+		if (state) {
+			if (!this.busyNode) {
+				this.busyNode = new joBusy(msg);
+			}
+			this.container.appendChild(this.busyNode.container);
+		}
+		else {
+			if (this.busyNode) {
+				try {
+					this.container.removeChild(this.busyNode.container);
+				}
+				catch(e) {
+				}
+			}
+		}
 	},
 	
 	setEvents: function() {}
@@ -1839,15 +1869,17 @@ joStack.extend(joView, {
 				joDOM.addCSSClass(oldchild, oldclass);
 
 			// TODO: add transition end event if available, this as fallback
-//			setTimeout(cleanup, 300);
 			if (!this.eventset) {
 				this.eventset = true;
 				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", cleanup, this);
 			}
+			else {
+				setTimeout(cleanup, 500);
+			}
 		}
 		
 		function cleanup() {
-			if (oldchild && oldchild !== newchild)
+			if (oldchild)
 				container.removeChild(oldchild);
 		}
 		
@@ -2091,10 +2123,6 @@ joScroller.extend(joContainer, {
 		return { x: e.screenX, y: e.screenY };
 	},
 	
-	scrollToElement: function (node) {
-		this.scrollTo(node.offsetTop);
-	},
-	
 	scrollBy: function(y, test) {
 		var node = this.container.firstChild;
 		var top = node.offsetTop;
@@ -2128,8 +2156,40 @@ joScroller.extend(joContainer, {
 
 	scrollTo: function(y) {
 		var node = this.container.firstChild;
+
+		if (typeof y == 'object') {
+			if (y instanceof HTMLElement)
+				var e = y;
+			else if (y instanceof joView)
+				var e = y.container;
+				
+			var t = 0 - e.offsetTop;
+			var h = e.offsetHeight;
+
+			var y = top;
+
+			var top = node.offsetTop;
+			var bottom = top - this.container.offsetHeight;
+
+			joLog("top", top, "bottom", bottom, "y", t, "h", h);
+
+			if (t - h < bottom)
+				y = (t - h) + this.container.offsetHeight;
+
+			if (y < t)
+				y = t;
+				
+			joLog("y1", y);
+		}
 		
-		joDOM.removeCSSClass(node, 'flick');
+		if (y < 0 - node.offsetHeight)
+			y = 0 - node.offsetHeight;
+		else if (y > 0)
+			y = 0;
+
+		joLog("y2", y);
+
+		joDOM.addCSSClass(node, 'flick');
 		node.style.top = y + "px";
 	},
 
@@ -2201,6 +2261,9 @@ joExpando.extend(joContainer, {
 	draw: function() {
 		joContainer.prototype.draw.apply(this, arguments);
 		this.setToggleEvent();
+	},
+	
+	setEvents: function() {
 	},
 	
 	setToggleEvent: function() {
@@ -2287,7 +2350,6 @@ joControl.extend(joView, {
 		// not sure what we want to do here, want to use
 		// gesture system, but that's not defined
 		joEvent.on(this.container, "click", this.onMouseDown, this);
-
 		joEvent.on(this.container, "blur", this.onBlur, this);
 		joEvent.on(this.container, "focus", this.onFocus, this);
 	},
@@ -2322,9 +2384,11 @@ joControl.extend(joView, {
 	},
 	
 	onBlur: function(e) {
+		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
 		joLog("onBlur", this.data);
 		joEvent.stop(e);
 		this.blur();
+		this.changeEvent.fire(this.data);
 	},
 	
 	focus: function(e) {
@@ -2698,16 +2762,33 @@ joList = function(container, data) {
 };
 joList.extend(joControl, {
 	tagName: "jolist",
+	data: null,
+	defaultMessage: "",
 	
 	setDefault: function(msg) {
 		this.defaultMessage = msg;
+		
+		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
+			if (typeof msg === 'object') {
+				this.innerHTML = "";
+				if (msg instanceof joView)
+					this.container.appendChild(msg.container);
+				else if (msg instanceof HTMLElement)
+					this.container.appendChild(msg);
+			}
+			else {
+				this.innerHTML = msg;
+			}
+		}
+		
+		return this;
 	},
 	
 	draw: function() {
 		var html = "";
 		var length = 0;
 
-		if (this.data.length == 0 && typeof this.defaultMessage != "undefined") {
+		if ((typeof this.data === 'undefined' || !this.data.length) && this.defaultMessage) {
 			this.container.innerHTML = this.defaultMessage;
 			return;
 		}
@@ -2721,7 +2802,7 @@ joList.extend(joControl, {
 			if (typeof element == "string")
 				html += element;
 			else
-				this.container.appendChild(element);
+				this.container.appendChild((element instanceof joView) ? element.container : element);
 
 			++length;
 		}
@@ -2741,8 +2822,10 @@ joList.extend(joControl, {
 
 		var node = this.getNode(this.index);
 		if (node) {
-			if (this.lastNode)
+			if (this.lastNode) {
 				joDOM.removeCSSClass(this.lastNode, "selected");
+				this.index = null;
+			}
 		}
 	},
 	
@@ -3387,4 +3470,15 @@ joFlexcol = function(data) {
 };
 joFlexcol.extend(joContainer, {
 	tagName: "joflexcol"
+});
+joBusy = function(data) {
+	joContainer.apply(this, arguments);
+};
+joBusy.extend(joContainer, {
+	tagName: "jobusy",
+	message: "",
+	
+	setEvents: function() {
+		return this;
+	}
 });
