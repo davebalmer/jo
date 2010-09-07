@@ -146,10 +146,6 @@ joScroller.extend(joContainer, {
 		return { x: e.screenX, y: e.screenY };
 	},
 	
-	scrollToElement: function (node) {
-		this.scrollTo(node.offsetTop);
-	},
-	
 	scrollBy: function(y, test) {
 		var node = this.container.firstChild;
 		var top = node.offsetTop;
@@ -183,8 +179,40 @@ joScroller.extend(joContainer, {
 
 	scrollTo: function(y) {
 		var node = this.container.firstChild;
+
+		if (typeof y == 'object') {
+			if (y instanceof HTMLElement)
+				var e = y;
+			else if (y instanceof joView)
+				var e = y.container;
+				
+			var t = 0 - e.offsetTop;
+			var h = e.offsetHeight;
+
+			var y = top;
+
+			var top = node.offsetTop;
+			var bottom = top - this.container.offsetHeight;
+
+			joLog("top", top, "bottom", bottom, "y", t, "h", h);
+
+			if (t - h < bottom)
+				y = (t - h) + this.container.offsetHeight;
+
+			if (y < t)
+				y = t;
+				
+			joLog("y1", y);
+		}
 		
-		joDOM.removeCSSClass(node, 'flick');
+		if (y < 0 - node.offsetHeight)
+			y = 0 - node.offsetHeight;
+		else if (y > 0)
+			y = 0;
+
+		joLog("y2", y);
+
+		joDOM.addCSSClass(node, 'flick');
 		node.style.top = y + "px";
 	},
 
