@@ -12,7 +12,7 @@
 	Model
 	-----
 	
-	Data is expected to be an array of `{ data: "", label: ""}` objects,
+	Data is expected to be an array of `{ type: "", label: ""}` objects,
 	in the display order for the bar.
 
 */
@@ -23,7 +23,7 @@ joTabBar.extend(joList, {
 	tagName: "jotabbar",
 	
 	formatItem: function(data, index) {
-		var o = document.createElement("li");
+		var o = document.createElement("jotab");
 
 		if (data.label)
 			o.innerHTML = data.label;
