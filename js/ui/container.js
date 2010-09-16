@@ -103,6 +103,7 @@ joContainer.extend(joView, {
 	refresh: function() {
 		this.container.innerHTML = "";
 		this.draw();
+		this.changeEvent.fire();
 	},
 	
 	draw: function() {
