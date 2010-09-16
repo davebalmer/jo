@@ -40,7 +40,6 @@ joScroller.extend(joContainer, {
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
-//		joEvent.capture(this.container, "mouseout", this.onOut, this);
 	},
 	
 	onFlick: function(e) {
@@ -49,7 +48,6 @@ joScroller.extend(joContainer, {
 	
 	onClick: function(e) {
 		if (this.moved) {
-			joLog("onClick, moved");
 			this.moved = false;
 			joEvent.stop(e);
 			joEvent.preventDefault(e);
@@ -61,7 +59,7 @@ joScroller.extend(joContainer, {
 
 		this.reset();
 
-		var node = this.container.childNodes[0];
+		var node = this.container.firstChild;
 		
 		joDOM.removeCSSClass(node, "flick");
 		joDOM.removeCSSClass(node, "flickback");
@@ -83,6 +81,8 @@ joScroller.extend(joContainer, {
 			return;
 		
 		joEvent.stop(e);
+		e.preventDefault();
+		
 		var point = this.getMouse(e);
 		
 		var y = point.y - this.points[0].y;
@@ -130,10 +130,10 @@ joScroller.extend(joContainer, {
 
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
-			if (!this.eventset) {
-				this.eventset = true;
-				joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
-			}
+//			if (!this.eventset) {
+//				this.eventset = true;
+			this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
+//			}
 
 			this.scrollBy(flick, false);
 		}
@@ -177,8 +177,11 @@ joScroller.extend(joContainer, {
 			node.style.top = dy + "px";
 	},
 
-	scrollTo: function(y) {
+	scrollTo: function(y, instant) {
 		var node = this.container.firstChild;
+		
+		if (!node)
+			return;
 
 		if (typeof y == 'object') {
 			if (y instanceof HTMLElement)
@@ -194,15 +197,11 @@ joScroller.extend(joContainer, {
 			var top = node.offsetTop;
 			var bottom = top - this.container.offsetHeight;
 
-			joLog("top", top, "bottom", bottom, "y", t, "h", h);
-
 			if (t - h < bottom)
 				y = (t - h) + this.container.offsetHeight;
 
 			if (y < t)
 				y = t;
-				
-			joLog("y1", y);
 		}
 		
 		if (y < 0 - node.offsetHeight)
@@ -210,9 +209,14 @@ joScroller.extend(joContainer, {
 		else if (y > 0)
 			y = 0;
 
-		joLog("y2", y);
+		if (!instant) {
+			joDOM.addCSSClass(node, 'flick');
+		}
+		else {
+			joDOM.removeCSSClass(node, 'flick');
+			joDOM.removeCSSClass(node, 'flickback');
+		}
 
-		joDOM.addCSSClass(node, 'flick');
 		node.style.top = y + "px";
 	},
 
@@ -224,6 +228,9 @@ joScroller.extend(joContainer, {
 
 		var dy = top;
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
+
+		if (this.eventset)
+			joEvent.remove(node, 'webkitTransitionEnd', this.eventset);
 
 		joDOM.removeCSSClass(node, 'flick');
 		joDOM.addCSSClass(node, 'flickback');
