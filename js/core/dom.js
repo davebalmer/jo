@@ -62,10 +62,15 @@ joDOM = {
 	enabled: false,
 	
 	get: function(id) {
-		if (typeof id == "string")
+		if (typeof id === "string") {
 			return document.getElementById(id);
-		else
-			return (typeof id === 'object' && id.tagName) ? id : null;
+		}
+		else if (typeof id === 'object') {
+			if (id instanceof joView)
+				return id.container;
+			else
+				return id;
+		}
 	},
 	
 	remove: function(node) {
@@ -180,11 +185,15 @@ joDOM = {
 			document.body.removeChild(oldnode);
 
 		var css = joDOM.create('jostyle');
-		css.innerHTML = "<style>" + style + "</style>";
+		css.innerHTML = '<style>' + style + '</style>';
 
 		document.body.appendChild(css);
 
 		return css;
+	},
+	
+	removeCSS: function(node) {
+		document.body.removeChild(node);
 	},
 	
 	loadCSS: function(filename, oldnode) {
@@ -204,4 +213,30 @@ joDOM = {
 		
 		return css;
 	}		
+};
+
+joCSSRule = function(data) {
+	this.setData(data);
+};
+joCSSRule.prototype = {
+	container: null,
+	
+	setData: function(data) {
+		this.data = data || "";
+		
+		if (data)
+			this.enable();
+	},
+	
+	clear: function() {
+		this.setData();
+	},
+	
+	disable: function() {
+		joDOM.removeCSS(this.container);
+	},
+	
+	enable: function() {
+		this.container = joDOM.applyCSS(this.data, this.container);
+	}
 };
