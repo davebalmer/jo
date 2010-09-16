@@ -150,7 +150,7 @@ if (typeof Function.prototype.bind === 'undefined') {
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.0.2",
+	version: "0.1.0",
 	
 	useragent: [
 		'ipad',
@@ -283,10 +283,15 @@ joDOM = {
 	enabled: false,
 	
 	get: function(id) {
-		if (typeof id == "string")
+		if (typeof id === "string") {
 			return document.getElementById(id);
-		else
-			return (typeof id === 'object' && id.tagName) ? id : null;
+		}
+		else if (typeof id === 'object') {
+			if (id instanceof joView)
+				return id.container;
+			else
+				return id;
+		}
 	},
 	
 	remove: function(node) {
@@ -401,11 +406,15 @@ joDOM = {
 			document.body.removeChild(oldnode);
 
 		var css = joDOM.create('jostyle');
-		css.innerHTML = "<style>" + style + "</style>";
+		css.innerHTML = '<style>' + style + '</style>';
 
 		document.body.appendChild(css);
 
 		return css;
+	},
+	
+	removeCSS: function(node) {
+		document.body.removeChild(node);
 	},
 	
 	loadCSS: function(filename, oldnode) {
@@ -425,6 +434,32 @@ joDOM = {
 		
 		return css;
 	}		
+};
+
+joCSSRule = function(data) {
+	this.setData(data);
+};
+joCSSRule.prototype = {
+	container: null,
+	
+	setData: function(data) {
+		this.data = data || "";
+		
+		if (data)
+			this.enable();
+	},
+	
+	clear: function() {
+		this.setData();
+	},
+	
+	disable: function() {
+		joDOM.removeCSS(this.container);
+	},
+	
+	enable: function() {
+		this.container = joDOM.applyCSS(this.data, this.container);
+	}
 };
 /**
 	joEvent
@@ -451,6 +486,14 @@ joDOM = {
 */
 
 joEvent = {
+	eventMap: {
+		"mousedown": "touchstart",
+		"mousemove": "touchmove",
+		"mouseup": "touchend",
+		"mouseout": "touchcancel"
+	},
+	touchy: false,
+	
 	getTarget: function(e) {
 		if (!e)
 			var e = window.event;
@@ -464,14 +507,27 @@ joEvent = {
 
 	on: function(element, event, call, context, data, capture) {
 		if (!call || !element)
-			return;
+			return false;
+			
+		if (this.touchy) {
+			if (this.eventMap[event])
+				event = this.eventMap[event];
+		}
 
 		var element = joDOM.get(element);
 		var call = call;
 		var data = data || "";
 
 		function wrappercall(e) {
-			var target = joEvent.getTarget(e);
+			// support touchy platforms,
+			// might reverse this to turn non-touch into touch
+			if (e.touches && e.touches.length == 1) {
+				var touches = e.touches[0];
+				e.pageX = touches.pageX;
+				e.pageY = touches.pageY;
+				e.screenX = touches.screenX;
+				e.screenY = touches.screenY;
+			}
 			
 			if (context)
 				call.call(context, e, data);
@@ -483,8 +539,14 @@ joEvent = {
 			element.attachEvent("on" + event, wrappercall);
 		else
 			element.addEventListener(event, wrappercall, capture || false);
+			
+		return wrappercall;
 	},
-
+	
+	remove: function(element, event, wrappercall) {
+		element.removeEventListener(event, wrappercall);
+	},
+		
 	stop: function(e) {
 		if (e.stopPropagation)
 			e.stopPropagation();
@@ -1649,6 +1711,7 @@ joContainer.extend(joView, {
 	refresh: function() {
 		this.container.innerHTML = "";
 		this.draw();
+		this.changeEvent.fire();
 	},
 	
 	draw: function() {
@@ -1797,6 +1860,7 @@ joStack = function(data) {
 };
 joStack.extend(joView, {
 	tagName: "jostack",
+	eventset: false,
 	
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -1830,7 +1894,8 @@ joStack.extend(joView, {
 
 		var container = this.container;
 		var oldchild = this.lastNode;
-		var newchild = getnode(this.data[this.index]);
+		var newnode = getnode(this.data[this.index]);
+		var newchild = this.getChildStyleContainer(newnode);
 
 		function getnode(o) {
 			return (typeof o.container !== "undefined") ? o.container : o;
@@ -1850,49 +1915,73 @@ joStack.extend(joView, {
 			joDOM.addCSSClass(newchild, newclass);
 		}
 		else {
-			container.innerHTML = "";
+//			this.getContentContainer().innerHTML = "";
 		}
 
-		joLog("appendChild");
-		container.appendChild(newchild);
+		this.appendChild(newnode);
 
-		// trigger animation
+		var self = this;
+		var transitionevent = null;
+
 		joYield(animate, this, 1);
 		
 		function animate() {
-			joLog("animate");
+			// FIXME: AHHH must have some sort of transition for this to work,
+			// need to check computed style for transition to make this
+			// better
+			if (typeof window.onwebkittransitionend !== 'undefined')
+				transitionevent = joEvent.on(newchild, "webkitTransitionEnd", cleanup, self);
+			else
+				joYield(cleanup, this, 200);
 
 			if (newclass && newchild)
 				joDOM.removeCSSClass(newchild, newclass);
 
 			if (oldclass && oldchild)
 				joDOM.addCSSClass(oldchild, oldclass);
-
-			// TODO: add transition end event if available, this as fallback
-			if (!this.eventset) {
-				this.eventset = true;
-				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", cleanup, this);
-			}
-			else {
-				setTimeout(cleanup, 500);
-			}
 		}
 		
 		function cleanup() {
-			if (oldchild)
-				container.removeChild(oldchild);
+			if (oldchild) {
+				self.removeChild(oldchild);
+				joDOM.removeCSSClass(oldchild, "next");
+				joDOM.removeCSSClass(oldchild, "prev");
+			}
+
+			if (newchild) {
+				if (transitionevent)
+					joEvent.remove(newchild, "webkitTransitionEnd", transitionevent);
+
+				joDOM.removeCSSClass(newchild, "next");
+				joDOM.removeCSSClass(newchild, "prev");
+			}
 		}
-		
+
 		if (typeof this.data[this.index].activate !== "undefined")
 			this.data[this.index].activate.call(this.data[this.index]);
 		
 		this.lastIndex = this.index;
 		this.lastNode = newchild;
-		
-		// while we're using scrollTop instead of joScroller, reset top position
-		this.container.scrollTop = "0";
-		if (this.container.firstChild)
-			this.container.firstChild.scrollTop = "0";
+	},
+
+	appendChild: function(child) {
+		this.container.appendChild(child);
+	},
+	
+	getChildStyleContainer: function(child) {
+		return child;
+	},
+	
+	getChild: function() {
+		return this.container.firstChild;
+	},
+
+	getContentContainer: function() {
+		return this.container;
+	},
+	
+	removeChild: function(child) {
+		this.container.removeChild(child);
 	},
 	
 	isVisible: function() {
@@ -1902,13 +1991,9 @@ joStack.extend(joView, {
 	push: function(o) {
 //		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
 //			return;
-		
 		this.data.push(o);
-			
 		this.index = this.data.length - 1;
-
 		this.draw();
-
 		this.pushEvent.fire(o);
 	},
 
@@ -1924,7 +2009,7 @@ joStack.extend(joView, {
 
 			this.draw();
 			
-			if (typeof o.activate !== "undefined")
+			if (typeof o.deactivate === "function")
 				o.deactivate.call(o);
 
 			if (!this.data.length)
@@ -2017,7 +2102,6 @@ joScroller.extend(joContainer, {
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
-//		joEvent.capture(this.container, "mouseout", this.onOut, this);
 	},
 	
 	onFlick: function(e) {
@@ -2026,7 +2110,6 @@ joScroller.extend(joContainer, {
 	
 	onClick: function(e) {
 		if (this.moved) {
-			joLog("onClick, moved");
 			this.moved = false;
 			joEvent.stop(e);
 			joEvent.preventDefault(e);
@@ -2038,7 +2121,7 @@ joScroller.extend(joContainer, {
 
 		this.reset();
 
-		var node = this.container.childNodes[0];
+		var node = this.container.firstChild;
 		
 		joDOM.removeCSSClass(node, "flick");
 		joDOM.removeCSSClass(node, "flickback");
@@ -2060,6 +2143,8 @@ joScroller.extend(joContainer, {
 			return;
 		
 		joEvent.stop(e);
+		e.preventDefault();
+		
 		var point = this.getMouse(e);
 		
 		var y = point.y - this.points[0].y;
@@ -2107,10 +2192,10 @@ joScroller.extend(joContainer, {
 
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
-			if (!this.eventset) {
-				this.eventset = true;
-				joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
-			}
+//			if (!this.eventset) {
+//				this.eventset = true;
+			this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
+//			}
 
 			this.scrollBy(flick, false);
 		}
@@ -2154,8 +2239,11 @@ joScroller.extend(joContainer, {
 			node.style.top = dy + "px";
 	},
 
-	scrollTo: function(y) {
+	scrollTo: function(y, instant) {
 		var node = this.container.firstChild;
+		
+		if (!node)
+			return;
 
 		if (typeof y == 'object') {
 			if (y instanceof HTMLElement)
@@ -2171,15 +2259,11 @@ joScroller.extend(joContainer, {
 			var top = node.offsetTop;
 			var bottom = top - this.container.offsetHeight;
 
-			joLog("top", top, "bottom", bottom, "y", t, "h", h);
-
 			if (t - h < bottom)
 				y = (t - h) + this.container.offsetHeight;
 
 			if (y < t)
 				y = t;
-				
-			joLog("y1", y);
 		}
 		
 		if (y < 0 - node.offsetHeight)
@@ -2187,9 +2271,14 @@ joScroller.extend(joContainer, {
 		else if (y > 0)
 			y = 0;
 
-		joLog("y2", y);
+		if (!instant) {
+			joDOM.addCSSClass(node, 'flick');
+		}
+		else {
+			joDOM.removeCSSClass(node, 'flick');
+			joDOM.removeCSSClass(node, 'flickback');
+		}
 
-		joDOM.addCSSClass(node, 'flick');
 		node.style.top = y + "px";
 	},
 
@@ -2201,6 +2290,9 @@ joScroller.extend(joContainer, {
 
 		var dy = top;
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
+
+		if (this.eventset)
+			joEvent.remove(node, 'webkitTransitionEnd', this.eventset);
 
 		joDOM.removeCSSClass(node, 'flick');
 		joDOM.addCSSClass(node, 'flickback');
@@ -2956,7 +3048,7 @@ joList.extend(joControl, {
 	Model
 	-----
 	
-	Data is expected to be an array of `{ data: "", label: ""}` objects,
+	Data is expected to be an array of `{ type: "", label: ""}` objects,
 	in the display order for the bar.
 
 */
@@ -2967,7 +3059,7 @@ joTabBar.extend(joList, {
 	tagName: "jotabbar",
 	
 	formatItem: function(data, index) {
-		var o = document.createElement("li");
+		var o = document.createElement("jotab");
 
 		if (data.label)
 			o.innerHTML = data.label;
@@ -2989,13 +3081,13 @@ joTabBar.extend(joList, {
 	Extends
 	-------
 	
-	- joView
+	- joContainer
 
 */
 joTitle = function(data) {
-	joControl.apply(this, arguments);
+	joContainer.apply(this, arguments);
 };
-joTitle.extend(joControl, {
+joTitle.extend(joContainer, {
 	tagName: "jotitle"
 });
 
@@ -3008,7 +3100,7 @@ joTitle.extend(joControl, {
 	Extends
 	-------
 	
-	- joView
+	- joControl
 	
 */
 joCaption = function(data) {
@@ -3476,9 +3568,127 @@ joBusy = function(data) {
 };
 joBusy.extend(joContainer, {
 	tagName: "jobusy",
-	message: "",
+	
+	draw: function() {
+		this.container.innerHTML = "";
+		for (var i = 0; i < 9; i++)
+			this.container.appendChild(joDom.create("jobusyblock"));
+	},
+	
+	setMessage: function(msg) {
+		this.message = msg || "";
+	},
 	
 	setEvents: function() {
 		return this;
 	}
+});
+joStackScroller = function(data) {
+	this.scrollers = [
+		new joScroller(),
+		new joScroller()
+	];
+	this.scroller = this.scrollers[0];
+
+	joStack.apply(this, arguments);
+//	console.log(this.scroller);
+	this.container.appendChild(this.scroller.container);
+//	console.log(this.container);
+};
+joStackScroller.extend(joStack, {
+	scrollerindex: 1,
+	scroller: null,
+	scrollers: [],
+	
+	switchScroller: function() {
+		this.scrollerindex = this.scrollerindex ? 0 : 1;
+		this.scroller = this.scrollers[this.scrollerindex];
+	},
+	
+	getLastScroller: function() {
+		return this.scrollers[this.scrollerindex ? 0 : 1];
+	},
+	
+	scrollTo: function(something) {
+		this.scroller.scrollTo(something);
+	},
+	
+	scrollBy: function(y) {
+		this.scroller.scrollBy(y);
+	},
+
+	getChildStyleContainer: function() {
+		return this.scroller.container;
+	},
+	
+	getContentContainer: function() {
+		return this.scroller.container;
+	},
+
+	appendChild: function(child) {
+		var scroller = this.scroller;
+		scroller.setData(child);
+		this.container.appendChild(scroller.container);
+	},
+	
+	getChild: function() {
+		return this.scroller.container || null;
+	},
+
+	forward: function() {
+		if (this.index < this.data.length - 1)
+			this.switchScroller();
+			
+		joStack.prototype.forward.call(this);
+	},
+	
+	back: function() {
+		if (this.index > 0)
+			this.switchScroller();
+
+		joStack.prototype.forward.call(this);
+	},
+
+	home: function() {
+		this.switchScroller();
+		joStack.prototype.push.call(this);
+	},
+		
+	push: function(o) {
+		this.switchScroller();
+
+		joDOM.removeCSSClass(o, 'flick');
+		joDOM.removeCSSClass(o, 'flickback');
+
+		this.scroller.setData(o);
+		this.scroller.scrollTo(0, true);
+
+		joStack.prototype.push.call(this, o);
+	},
+	
+	pop: function() {
+		if (this.data.length > this.locked)
+			this.switchScroller();
+
+		joStack.prototype.pop.call(this);
+	}
+});
+
+/**
+	joToolbar
+	=========
+
+	Locks UI controls to the bottom of whatever you put this container into.
+	
+	Extends
+	-------
+	
+	- joContainer
+
+*/
+joToolbar = function(data) {
+	joContainer.apply(this, arguments);
+};
+joToolbar.extend(joContainer, {
+	tagName: "jotoolbar"
 });
