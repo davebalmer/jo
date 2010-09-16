@@ -1,15 +1,15 @@
-jostack {
+jostack, jostackscroller > * {
 	overflow: hidden;
 	overflow-y: scroll;
 }
 
-jostack > * {
+jostack > *, jostackscroller > * > * {
 }
 
-jostack > .next {
+jostack > .next, jostackscroller > * > .next {
 	display: none;
 }
 
-jostack > .prev {
+jostack > .prev, jostackscroller > * > .prev {
 	display: none;
 }

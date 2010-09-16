@@ -8,7 +8,7 @@ jostack > * {
 /*	-webkit-transform-origin: 50% 100% 0; */
 /*	-webkit-transform: rotateZ(0); */
 /*	-webkit-transition: -webkit-transform .4s ease-out; */
-	-webkit-transition: opacity 0s ease;
+	-webkit-transition: opacity .1s ease;
 
 /*	outline: 1px solid transparent; */
 }
