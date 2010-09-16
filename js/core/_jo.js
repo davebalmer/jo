@@ -113,7 +113,7 @@ if (typeof Function.prototype.bind === 'undefined') {
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.0.2",
+	version: "0.1.0",
 	
 	useragent: [
 		'ipad',
