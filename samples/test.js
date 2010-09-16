@@ -9,6 +9,7 @@
 // required
 jo.load();
 
+
 // not required
 jo.setDebug(true);
 
@@ -57,7 +58,8 @@ var App = (function() {
 			if (jo.matchPlatform("iphone ipad safari"))
 				joDOM.loadCSS("../css/aluminum/webkit.css");
 			else if (jo.matchPlatform("chrome webkit webos"))
-				joDOM.loadCSS("../css/aluminum/chrome.css");
+				joDOM.loadCSS("../css/aluminum/webkit.css");
+//				joDOM.loadCSS("../css/aluminum/chrome.css");
 			else
 				joDOM.loadCSS("../css/aluminum/gecko.css");
 			
