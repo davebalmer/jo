@@ -7,13 +7,13 @@
 	Extends
 	-------
 	
-	- joView
+	- joContainer
 
 */
 joTitle = function(data) {
-	joControl.apply(this, arguments);
+	joContainer.apply(this, arguments);
 };
-joTitle.extend(joControl, {
+joTitle.extend(joContainer, {
 	tagName: "jotitle"
 });
 
