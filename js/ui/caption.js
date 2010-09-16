@@ -7,7 +7,7 @@
 	Extends
 	-------
 	
-	- joView
+	- joControl
 	
 */
 joCaption = function(data) {
