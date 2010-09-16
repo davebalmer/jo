@@ -24,7 +24,9 @@ UI = gesture.js \
 	label.js \
 	table.js \
 	flexrow.js \
-	busy.js
+	busy.js \
+	stackscroller.js \
+	toolbar.js
 
 ui:
 	cat $(UI) >> ../jo.js
