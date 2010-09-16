@@ -68,6 +68,7 @@ joStack = function(data) {
 };
 joStack.extend(joView, {
 	tagName: "jostack",
+	eventset: false,
 	
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -101,7 +102,8 @@ joStack.extend(joView, {
 
 		var container = this.container;
 		var oldchild = this.lastNode;
-		var newchild = getnode(this.data[this.index]);
+		var newnode = getnode(this.data[this.index]);
+		var newchild = this.getChildStyleContainer(newnode);
 
 		function getnode(o) {
 			return (typeof o.container !== "undefined") ? o.container : o;
@@ -121,49 +123,73 @@ joStack.extend(joView, {
 			joDOM.addCSSClass(newchild, newclass);
 		}
 		else {
-			container.innerHTML = "";
+//			this.getContentContainer().innerHTML = "";
 		}
 
-		joLog("appendChild");
-		container.appendChild(newchild);
+		this.appendChild(newnode);
 
-		// trigger animation
+		var self = this;
+		var transitionevent = null;
+
 		joYield(animate, this, 1);
 		
 		function animate() {
-			joLog("animate");
+			// FIXME: AHHH must have some sort of transition for this to work,
+			// need to check computed style for transition to make this
+			// better
+			if (typeof window.onwebkittransitionend !== 'undefined')
+				transitionevent = joEvent.on(newchild, "webkitTransitionEnd", cleanup, self);
+			else
+				joYield(cleanup, this, 200);
 
 			if (newclass && newchild)
 				joDOM.removeCSSClass(newchild, newclass);
 
 			if (oldclass && oldchild)
 				joDOM.addCSSClass(oldchild, oldclass);
-
-			// TODO: add transition end event if available, this as fallback
-			if (!this.eventset) {
-				this.eventset = true;
-				joEvent.on(this.container.childNodes[0], "webkitTransitionEnd", cleanup, this);
-			}
-			else {
-				setTimeout(cleanup, 500);
-			}
 		}
 		
 		function cleanup() {
-			if (oldchild)
-				container.removeChild(oldchild);
+			if (oldchild) {
+				self.removeChild(oldchild);
+				joDOM.removeCSSClass(oldchild, "next");
+				joDOM.removeCSSClass(oldchild, "prev");
+			}
+
+			if (newchild) {
+				if (transitionevent)
+					joEvent.remove(newchild, "webkitTransitionEnd", transitionevent);
+
+				joDOM.removeCSSClass(newchild, "next");
+				joDOM.removeCSSClass(newchild, "prev");
+			}
 		}
-		
+
 		if (typeof this.data[this.index].activate !== "undefined")
 			this.data[this.index].activate.call(this.data[this.index]);
 		
 		this.lastIndex = this.index;
 		this.lastNode = newchild;
-		
-		// while we're using scrollTop instead of joScroller, reset top position
-		this.container.scrollTop = "0";
-		if (this.container.firstChild)
-			this.container.firstChild.scrollTop = "0";
+	},
+
+	appendChild: function(child) {
+		this.container.appendChild(child);
+	},
+	
+	getChildStyleContainer: function(child) {
+		return child;
+	},
+	
+	getChild: function() {
+		return this.container.firstChild;
+	},
+
+	getContentContainer: function() {
+		return this.container;
+	},
+	
+	removeChild: function(child) {
+		this.container.removeChild(child);
 	},
 	
 	isVisible: function() {
@@ -173,13 +199,9 @@ joStack.extend(joView, {
 	push: function(o) {
 //		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
 //			return;
-		
 		this.data.push(o);
-			
 		this.index = this.data.length - 1;
-
 		this.draw();
-
 		this.pushEvent.fire(o);
 	},
 
@@ -195,7 +217,7 @@ joStack.extend(joView, {
 
 			this.draw();
 			
-			if (typeof o.activate !== "undefined")
+			if (typeof o.deactivate === "function")
 				o.deactivate.call(o);
 
 			if (!this.data.length)
