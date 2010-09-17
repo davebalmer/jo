@@ -100,23 +100,13 @@ joView.prototype = {
 		return this;
 	},
 	
-	setBusy: function(state, msg) {
-		if (state) {
-			if (!this.busyNode) {
-				this.busyNode = new joBusy(msg);
-			}
-			this.container.appendChild(this.busyNode.container);
-		}
-		else {
-			if (this.busyNode) {
-				try {
-					this.container.removeChild(this.busyNode.container);
-				}
-				catch(e) {
-				}
-			}
-		}
+	attach: function(parent) {
+		joDOM.get(parent).appendChild(this.container);
 	},
 	
+	detach: function(parent) {
+		joDOM.get(parent).removeChild(this.container);
+	},
+		
 	setEvents: function() {}
 };
