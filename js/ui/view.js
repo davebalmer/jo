@@ -25,8 +25,6 @@
 	
 */
 joView = function(data) {
-//	joLog("new view", this.tagName);
-	
 	this.changeEvent = new joSubject(this);
 
 	this.setContainer();
@@ -85,7 +83,6 @@ joView.prototype = {
 
 		this.container.innerHTML = "";
 		this.draw();
-		this.setBusy(false);
 
 		this.changeEvent.fire(this.data);
 	},
