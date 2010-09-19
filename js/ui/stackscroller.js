@@ -1,3 +1,21 @@
+/**
+	joStackScroller
+	===============
+	
+	What happens when you mix joStack and joScroller? You get this
+	class. Use exactly as you would joStack, only it automatically
+	puts a scroller in the stack as needed. At some point, this
+	might get folded into joStack, but for now it's a special class.
+	
+	It also handles the `scrollTo()` and `scrollBy()` methods from
+	joScroller.
+	
+	Extends
+	-------
+	- joStack
+	- joScroller
+*/
+
 joStackScroller = function(data) {
 	this.scrollers = [
 		new joScroller(),
