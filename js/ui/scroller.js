@@ -2,7 +2,26 @@
 	joScroller
 	==========
 	
-	A scroller container.
+	A scroller container. Ultimately, mobile webkit implementations
+	should properly support scrolling elements that have the CSS
+	`overflow` property set to `scroll` or `auto`. Why don't they,
+	anyway? Until some sanity is adopted, we need to handle this scrolling
+	issue ourselves. joScroller expects a single child to manage
+	scrolling for.
+	
+	Use
+	---
+	
+		// make a scroller and set its child later
+		var x = new joScroller();
+		x.setData(myCard);
+		
+		// define things inline, not always a good idea
+		var y = new joScroller(new joList(mydata));
+		
+		// you can dump a big hunk of HTML in there, too
+		// since jo wraps strings in a container element, this works
+		var z = new joScroller('Some giant HTML as a string');
 
 	Extends
 	-------
@@ -13,10 +32,16 @@
 	-------
 	
 	- `scrollBy(position)`
-	- `scrollTo(position)`
-	- `scrollToView(joView)`
+	- `scrollTo(position or joView or HTMLElement)`
 	
-	  Scrolls to make the top of the specified view visible.
+	  Scrolls to the position or the view or element. If you
+	  specify an element or view, make sure that element is a
+	  child node, or you'll get interesting results.
+
+	> Note that joScroller at this time only handles vertical scrolling.
+	> At some point, it will either be expanded to handle both directions,
+	> or more likely extended to make a horizontal scroller and a free
+	> scroller.
 	
 */
 
@@ -40,6 +65,7 @@ joScroller.extend(joContainer, {
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
+/*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
 	onFlick: function(e) {
@@ -63,6 +89,7 @@ joScroller.extend(joContainer, {
 		
 		joDOM.removeCSSClass(node, "flick");
 		joDOM.removeCSSClass(node, "flickback");
+		joDOM.removeCSSClass(node, "flickfast");
 
 		this.start = this.getMouse(e);
 		this.points.unshift(this.start);
@@ -104,10 +131,26 @@ joScroller.extend(joContainer, {
 			this.moved = true;
 	},
 
+/*
+	TODO: This needs some work. Since it's mostly for the browser
+	version, not a high priority.
+	
 	onOut: function(e) {
 		// placeholder
-		this.reset();
+		if (!this.inMotion)
+			return;
+		
+		if (e.clientX >= 0 && e.clientX <= this.container.offsetWidth
+		&& e.clientY >= 0 && e.clientX <= this.container.offsetHeight) {
+			return;
+		}
+		else {
+			joEvent.stop(e);
+			this.onUp(e);
+			this.reset();
+		}
 	},
+*/
 
 	onUp: function (e) {
 		if (!this.inMotion)
@@ -117,23 +160,33 @@ joScroller.extend(joContainer, {
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
+		var top = node.offsetTop;
 		
 		joEvent.stop(e);
 
 		var dy = 0;
+		
 		for (var i = 0; i < this.points.length - 1; i++)
 			dy += (this.points[i].y - this.points[i + 1].y);
+
+		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
 		
 		// if the velocity is "high" then it was a flick
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
-			joDOM.addCSSClass(node, "flick");
-
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
-//			if (!this.eventset) {
-//				this.eventset = true;
+			// we want to move quickly if we're going to land past
+			// the top or bottom
+			if (flick + top < max || flick + top > 0) {
+				console.log('flickfast');
+				joDOM.addCSSClass(node, "flickfast");
+			}
+			else {
+				console.log('flick');
+				joDOM.addCSSClass(node, "flick");
+			}
+
 			this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
-//			}
 
 			this.scrollBy(flick, false);
 		}
@@ -220,6 +273,8 @@ joScroller.extend(joContainer, {
 		node.style.top = y + "px";
 	},
 
+	// called after a flick transition to snap the view
+	// back into our container if necessary.
 	snapBack: function() {
 		var node = this.container.firstChild;
 		var top = parseInt(node.style.top);
@@ -235,11 +290,9 @@ joScroller.extend(joContainer, {
 		joDOM.removeCSSClass(node, 'flick');
 		joDOM.addCSSClass(node, 'flickback');
 		
-//		window.setTimeout(function() {
-			if (dy > 0)
-				node.style.top = "0px";
-			else if (dy < max)
-				node.style.top = max + "px";
-//		}, 1);
+		if (dy > 0)
+			node.style.top = "0px";
+		else if (dy < max)
+			node.style.top = max + "px";
 	}
 });

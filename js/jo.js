@@ -2089,6 +2089,7 @@ joScroller.extend(joContainer, {
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
+		joEvent.on(this.container, "mouseout", this.onOut, this);
 	},
 	
 	onFlick: function(e) {
@@ -2112,6 +2113,7 @@ joScroller.extend(joContainer, {
 		
 		joDOM.removeCSSClass(node, "flick");
 		joDOM.removeCSSClass(node, "flickback");
+		joDOM.removeCSSClass(node, "flickfast");
 
 		this.start = this.getMouse(e);
 		this.points.unshift(this.start);
@@ -2155,7 +2157,18 @@ joScroller.extend(joContainer, {
 
 	onOut: function(e) {
 		// placeholder
-		this.reset();
+		if (!this.inMotion)
+			return;
+		
+		if (e.clientX >= 0 && e.clientX <= this.container.offsetWidth
+		&& e.clientY >= 0 && e.clientX <= this.container.offsetHeight) {
+			return;
+		}
+		else {
+			joEvent.stop(e);
+			this.onUp(e);
+			this.reset();
+		}
 	},
 
 	onUp: function (e) {
@@ -2166,18 +2179,33 @@ joScroller.extend(joContainer, {
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
+		var top = node.offsetTop;
 		
 		joEvent.stop(e);
 
 		var dy = 0;
+		
 		for (var i = 0; i < this.points.length - 1; i++)
 			dy += (this.points[i].y - this.points[i + 1].y);
+
+		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
 		
 		// if the velocity is "high" then it was a flick
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
-			joDOM.addCSSClass(node, "flick");
-
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
+
+//			joLog("flick", flick, "max", max, "bump", this.bump);
+
+			// we want to move quickly if we're going to land past
+			// the top or bottom
+			if (flick + top < max || flick + top > 0) {
+				console.log('flickfast');
+				joDOM.addCSSClass(node, "flickfast");
+			}
+			else {
+				console.log('flick');
+				joDOM.addCSSClass(node, "flick");
+			}
 
 //			if (!this.eventset) {
 //				this.eventset = true;
