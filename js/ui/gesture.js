@@ -3,9 +3,28 @@
 	=========
 	
 	Experimental global gesture handler (keyboard, dpad, back, home, flick?).
-	This needs a lot more fleshing out, so it's not ready for general
-	concumption.
+	This needs a lot more fleshing out, so it's not (quite) ready for general
+	consumption.
+	
+	Events
+	------
+	
+	- `upEvent`
+	- `downEvent`
+	- `leftEvent`
+	- `rightEvent`
+	- `backEvent`
+	- `forwardEvent`
+	- `homeEvent`
+	- `closeEvent`
+	- `activateEvent`
+	- `deactivateEvent`
 
+	> Note that the events setup here are for the browser
+	> or webOS. The `setEvents` method most likely needs to change
+	> based on which OS you're running, although looking more deeply
+	> into PhoneGap event layer.
+	
 */
 joGesture = {
 	load: function() {
@@ -27,17 +46,19 @@ joGesture = {
 	setEvents: function() {
 		joEvent.on(document.body, "keydown", this.onKeyDown, this);
 		joEvent.on(document.body, "keyup", this.onKeyUp, this);
+		
+		joEvent.on(document.body, "unload", this.closeEvent, this);
+		joEvent.on(window, "activate", this.activateEvent, this);
+		joEvent.on(window, "deactivate", this.deactivateEvent, this);
 	},
 
 	onKeyUp: function(e) {
 		if (!e)
 			var e = window.event;
 	
-//		joLog("keyup", e.keyCode, e.charCode);
-
 		if (e.keyCode == 18) {
 			this.altkey = false;
-//			joLog("alt OFF");
+
 			return;
 		}
 
