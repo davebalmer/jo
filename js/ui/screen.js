@@ -17,8 +17,8 @@
 	- `showPopup(joView)`
 	- `hidePopup(joView)`
 	
-	  These methods allow you to do a completely custom modal popup.
-	  Pass in either a joView, or an array of them, or and HTMLElement
+	  These methods allow you to do a completely custom modal joPopup.
+	  Pass in either a joView, an array of them, or and HTMLElement
 	  or a string, the same as you would when you create a joCard or
 	  other child of joContainer.
 	
@@ -83,6 +83,7 @@ joScreen.extend(joContainer, {
 		return document.body;
 	},
 	
+	// show a popup made from your own UI controls
 	showPopup: function(data) {
 		// take a view, a DOM element or some HTML and
 		// make it pop up in the screen.
@@ -108,7 +109,9 @@ joScreen.extend(joContainer, {
 			this.shim.hide();
 	},
 	
-	// shortcut to a simple alert dialog
+	// shortcut to a simple alert dialog, not the most efficient
+	// way to do this, but for now, it serves its purpose and
+	// the API is clean enough.
 	alert: function(title, msg, options) {
 		var buttons = [];
 		

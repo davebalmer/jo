@@ -9,31 +9,36 @@ User Interface
 
 * joView
 	* joContainer
-		* joAlert
 		* joCard
-		* joDialog
-		* joFieldset
-		* joLayout
+		* joFlexcol
+		* joFlexrow
+		* joFooter
+		* joGroup
+		* joPopup
+		* joScreen
+		* joScroller
+		* joStack
+		* joStackScroller
+		* joTitle
+		* joToolbar
 	* joControl
 		* joButton
 		* joCheckBox
+		* joExpando
+		* joHTML
 		* joInput
 			* joDateTime
 			* joPasswordInput
-			* joText
+			* joTextarea
+		* joLabel
 		* joList
 			* joMenu
 			* joTabBar
-			* joToggle
-		* joSelect
-		* joScroller
+			* joTable
 		* joKnob
 		* joSlider
 	* joDivider
-	* joLabel
-	* joStack
-	* joTable
-	* joTitle
+	* joShim
 
 Data
 ----
@@ -47,7 +52,6 @@ Data
 Events
 ------
 
-* joDispatch
 * joEvent
 * joSubject
 * joGesture

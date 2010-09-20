@@ -4,17 +4,24 @@
 	
 	A simple screen dimmer. Used mostly for popups and other
 	modal use cases.
+
+	Methods
+	-------
+	- `show()`
+	- `hide()`
+
+	  These do what you'd expect.
 	
 	Extends
 	-------
 	- joView
 	
-	Methods
-	-------
-	- `show()`
-	- `hide()`
+	Events
+	------
 	
-	  These do what you'd expect.
+	- `showEvent`
+	- `hideEvent`
+
 */
 
 joShim = function() {

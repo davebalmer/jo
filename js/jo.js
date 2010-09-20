@@ -966,7 +966,7 @@ joTime = {
 	joDatabase
 	===========
 
-	Wrapper class for WebKit database.
+	Wrapper class for WebKit SQLite database.
 	
 	Methods
 	-------
@@ -995,9 +995,6 @@ joDatabase = function(datafile, size) {
 };
 joDatabase.prototype = {
 	open: function() {
-//		if (typeof Mojo != "undefined")
-//			this.db = openDatabase(this.datafile, "1.0", this.size);
-//		else
 		this.db = openDatabase(this.datafile, "1.0", this.datafile, this.size);
 
 		if (this.db) {
@@ -1359,11 +1356,13 @@ joPreference.prototype = {
 	
 	> Need a URL with some examples of this.
 	
-	Arguments
-	---------
+	Calling
+	-------
+
+	`joScript(url, callback, context)`
 	
 	- url
-	- callback
+	- callback is a function (supports bind, in which case context is optional)
 	- context (usually `this`, and is optional)
 
 	Returns
@@ -3806,6 +3805,22 @@ joToolbar.extend(joContainer, {
 	DOM element and allows other controls to be nested within (usually
 	a joStack or other high-level containers or controls).
 	
+	Methods
+	-------
+	
+	- `alert(title, message, buttons)`
+	
+	  Simple alert box. The `buttons` parameter is optional; a simple
+	  "OK" button is added if nothing is specified.
+	
+	- `showPopup(joView)`
+	- `hidePopup(joView)`
+	
+	  These methods allow you to do a completely custom modal joPopup.
+	  Pass in either a joView, an array of them, or and HTMLElement
+	  or a string, the same as you would when you create a joCard or
+	  other child of joContainer.
+	
 	Extends
 	-------
 	
@@ -3819,9 +3834,18 @@ joToolbar.extend(joContainer, {
 			new joStack(),
 			new joToolbar()
 		]);
-
-	> Experimental! This class may or may not stick around. Unless it ends
-	  up doing more than be a named container, it might go away.
+		
+		// show a simple alert dialog
+		x.alert("Hello", "This is an alert");
+		
+		// a more complex alert
+		x.alert("Hola", "Do you like this alert?", [
+			{ label: "Yes", action: yesFunction, context: this },
+			{ label: "No", action: noFunction, context: this }
+		]);
+		
+		// a completely custom popup
+		x.showPopup(myView);
 	
 	Events
 	------
@@ -3858,6 +3882,7 @@ joScreen.extend(joContainer, {
 		return document.body;
 	},
 	
+	// show a popup made from your own UI controls
 	showPopup: function(data) {
 		// take a view, a DOM element or some HTML and
 		// make it pop up in the screen.
@@ -3883,7 +3908,9 @@ joScreen.extend(joContainer, {
 			this.shim.hide();
 	},
 	
-	// shortcut to a simple alert dialog
+	// shortcut to a simple alert dialog, not the most efficient
+	// way to do this, but for now, it serves its purpose and
+	// the API is clean enough.
 	alert: function(title, msg, options) {
 		var buttons = [];
 		
@@ -3942,17 +3969,24 @@ joScreen.extend(joContainer, {
 	
 	A simple screen dimmer. Used mostly for popups and other
 	modal use cases.
+
+	Methods
+	-------
+	- `show()`
+	- `hide()`
+
+	  These do what you'd expect.
 	
 	Extends
 	-------
 	- joView
 	
-	Methods
-	-------
-	- `show()`
-	- `hide()`
+	Events
+	------
 	
-	  These do what you'd expect.
+	- `showEvent`
+	- `hideEvent`
+
 */
 
 joShim = function() {
@@ -4003,7 +4037,8 @@ joShim.extend(joContainer, {
 	joPopup
 	=======
 	
-	A simple popup control.
+	A simple popup control. Pass in the UI contents as you would
+	any other subclass of joContainer (e.g. joCard).
 	
 	Methods
 	-------
@@ -4011,12 +4046,19 @@ joShim.extend(joContainer, {
 	- `show()`
 	- `hide()`
 	
-	  These do what you'd expect
-	
+	  These do what you'd expect.
+
 	Extends
 	-------
-	
+
 	- joContainer
+	
+	Events
+	------
+	
+	- `showEvent`
+	- `hideEvent`
+	
 
 */
 

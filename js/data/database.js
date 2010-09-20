@@ -2,7 +2,7 @@
 	joDatabase
 	===========
 
-	Wrapper class for WebKit database.
+	Wrapper class for WebKit SQLite database.
 	
 	Methods
 	-------
@@ -31,9 +31,6 @@ joDatabase = function(datafile, size) {
 };
 joDatabase.prototype = {
 	open: function() {
-//		if (typeof Mojo != "undefined")
-//			this.db = openDatabase(this.datafile, "1.0", this.size);
-//		else
 		this.db = openDatabase(this.datafile, "1.0", this.datafile, this.size);
 
 		if (this.db) {

@@ -8,11 +8,13 @@
 	
 	> Need a URL with some examples of this.
 	
-	Arguments
-	---------
+	Calling
+	-------
+
+	`joScript(url, callback, context)`
 	
 	- url
-	- callback
+	- callback is a function (supports bind, in which case context is optional)
 	- context (usually `this`, and is optional)
 
 	Returns

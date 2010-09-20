@@ -2,7 +2,8 @@
 	joPopup
 	=======
 	
-	A simple popup control.
+	A simple popup control. Pass in the UI contents as you would
+	any other subclass of joContainer (e.g. joCard).
 	
 	Methods
 	-------
@@ -10,12 +11,19 @@
 	- `show()`
 	- `hide()`
 	
-	  These do what you'd expect
-	
+	  These do what you'd expect.
+
 	Extends
 	-------
-	
+
 	- joContainer
+	
+	Events
+	------
+	
+	- `showEvent`
+	- `hideEvent`
+	
 
 */
 
