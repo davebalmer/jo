@@ -14,7 +14,10 @@
 	Methods
 	-------
 	
-	- `setMessage('Status')`
+	- `setMessage(status)`
+	
+	  You can update the status message in this busy box so users
+	  have a better idea why the busy box is showing.
 */
 	
 joBusy = function(data) {

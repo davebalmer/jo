@@ -18,10 +18,12 @@
 	- `setData(data)`
 	- `getData()`
 	- `createContainer(type, classname)`
-	- `setContainer(element)`
+	- `setContainer(HTMLElement)`
 	- `getContainer()`
 	- `clear()`
 	- `refresh()`
+	- `attach(HTMLElement or joView)`
+	- `detach(HTMLElement or joView)`
 	
 */
 joView = function(data) {
@@ -98,11 +100,13 @@ joView.prototype = {
 	},
 	
 	attach: function(parent) {
-		joDOM.get(parent).appendChild(this.container);
+		var node = joDOM.get(parent) || document.body;
+		node.appendChild(this.container);
 	},
 	
 	detach: function(parent) {
-		joDOM.get(parent).removeChild(this.container);
+		var node = joDOM.get(parent) || document.body;
+		node.removeChild(this.container);
 	},
 		
 	setEvents: function() {}

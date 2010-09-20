@@ -6,6 +6,22 @@
 	DOM element and allows other controls to be nested within (usually
 	a joStack or other high-level containers or controls).
 	
+	Methods
+	-------
+	
+	- `alert(title, message, buttons)`
+	
+	  Simple alert box. The `buttons` parameter is optional; a simple
+	  "OK" button is added if nothing is specified.
+	
+	- `showPopup(joView)`
+	- `hidePopup(joView)`
+	
+	  These methods allow you to do a completely custom modal popup.
+	  Pass in either a joView, or an array of them, or and HTMLElement
+	  or a string, the same as you would when you create a joCard or
+	  other child of joContainer.
+	
 	Extends
 	-------
 	
@@ -19,9 +35,18 @@
 			new joStack(),
 			new joToolbar()
 		]);
-
-	> Experimental! This class may or may not stick around. Unless it ends
-	  up doing more than be a named container, it might go away.
+		
+		// show a simple alert dialog
+		x.alert("Hello", "This is an alert");
+		
+		// a more complex alert
+		x.alert("Hola", "Do you like this alert?", [
+			{ label: "Yes", action: yesFunction, context: this },
+			{ label: "No", action: noFunction, context: this }
+		]);
+		
+		// a completely custom popup
+		x.showPopup(myView);
 	
 	Events
 	------
@@ -62,19 +87,77 @@ joScreen.extend(joContainer, {
 		// take a view, a DOM element or some HTML and
 		// make it pop up in the screen.
 		if (!this.popup) {
-			this.popup = new joShim(new joPopup(data));
+			this.shim = new joShim(
+				new joFlexcol([
+					'&nbsp',
+					this.popup = new joPopup(data),
+					'&nbsp'
+				])
+			);
 		}
 		else {
 			this.popup.setData(data);
 		}
-		
-		this.popup.attach(this);
-		this.popup.activate();
+//		this.shim.showEvent.subscribe(this.popup.show, this);
+		this.shim.show();
+		this.popup.show();
 	},
 	
 	hidePopup: function() {
-		if (this.popup)
-			this.popup.detach(this);
+		if (this.shim)
+			this.shim.hide();
+	},
+	
+	// shortcut to a simple alert dialog
+	alert: function(title, msg, options) {
+		var buttons = [];
+		
+		if (typeof options === 'object') {
+			if (options instanceof Array) {
+				// we have several options
+				for (var i = 0; i < options.length; i++)
+					addbutton(options[i]);
+			}
+			else {
+				addbutton(options);
+			}
+		}
+		else if (typeof options === 'string') {
+			addbutton({ label: options });
+		}
+		else {
+			addbutton();
+		}
+	
+		var view = [
+			new joTitle(title),
+			new joCaption(msg),
+			buttons
+		];
+		this.showPopup(view);
+		
+		var self = this;
+		
+		function addbutton(options) {
+			if (!options)
+				var options = { label: 'OK' };
+
+			var button = new joButton(options.label);
+			button.selectEvent.subscribe(
+				function() {
+					if (options.action)
+						options.action.call(options.context);
+						
+					defaultaction();
+				}, options.context || self
+			);
+			
+			buttons.push(button);
+		}
+		
+		function defaultaction() {
+			self.hidePopup();
+		}
 	}
 });
 

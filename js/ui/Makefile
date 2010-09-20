@@ -27,7 +27,9 @@ UI = gesture.js \
 	busy.js \
 	stackscroller.js \
 	toolbar.js \
-	screen.js
+	screen.js \
+	shim.js \
+	popup.js
 
 ui:
 	cat $(UI) >> ../jo.js

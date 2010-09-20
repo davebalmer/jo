@@ -6,14 +6,14 @@ body {
 	overflow: hidden;
 }
 
-joview, jotitle, jolabel, jocard, jotable, jodivider, jocontrol, jocontainer, jocaption, jobutton, jotabbar, jolist, jomenu {
+joview, jotitle, jolabel, jocard, jotable, jodivider, jocontrol, jocontainer, jocaption, jobutton, jotabbar, jolist, jomenu, jobusybox {
 	text-align: left;
 	display: block;
 	padding: 0;
 	margin: 0;
 	
-	font: normal 18px "Apres", "Verdana";
-	color: #000;
+	font: normal 15px "Apres", "Verdana";
+/*	color: #000; */
 	position: relative;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -111,7 +111,7 @@ jostack {
 	margin: 0;
 }
 
-jostack.page {
+jostack {
 	display: block;
 	position: absolute;
 	top: 0;
@@ -361,10 +361,6 @@ joexpando {
 	margin: 0;
 }
 
-joexpando.open {
-	margin-bottom: 10px;
-}
-
 joexpando > *:first-child {
 	-webkit-transform: none;
 	opacity: 1;
@@ -485,7 +481,7 @@ joscroller {
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
-/*	-webkit-transition: top 0s ease; */
+	-webkit-transition: top 0s ease;
 }
 joscroller > * {
 	position: absolute;
@@ -501,10 +497,32 @@ joscroller > * {
 	-webkit-transition: top .2s cubic-bezier(0, 0, 0.4, 1);
 }
 
+.flickfast {
+	-webkit-transition: top .5s ease-out;
+	-webkit-transition: top .5s cubic-bezier(0, .5, 0, 1);
+}
+
 jostack {
 	position: relative;
 	overflow: auto;
 }
+
+jostack {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+/*
+	position: relative;
+	height: 480px;
+	width: 320px;
+*/
+/*	background-color: #828384; */
+}
+
+
 
 jostack.hide {
 	opacity: 0;
@@ -560,10 +578,149 @@ joflexcol>* {
 	box-flex: 1;
 }
 
+joshim {
+	display: none;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, .6);
+	opacity: 1;
+	
+	-webkit-transition: opacity .2s ease, display .2s ease;
+}
+
+joshim.show {
+	display: block;
+	opacity: 1;
+}
+
+
+jobusybox {
+	display: block;
+	position: relative;
+	margin: 30% auto 10% auto;
+	height: 80px;
+	width: 80px;
+	background: rgba(255, 255, 255, .2);
+	-webkit-border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, .6);
+}
+
+jobusybox span {
+	display: block;
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+	font-size: 15px;
+	text-align: center;
+	color: #fff;
+}
+
+jospinner {
+	color: #fff;
+	display: block;
+	position: absolute;
+	top: 10px;
+	left: 20px;
+	height: 40px;
+	width: 40px;
+	line-height: 40px;
+
+	-webkit-animation-name: rotateThis;
+	-webkit-animation-duration:1s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:linear;
+	text-align: center;
+}
+
+jospinner:after {
+	content: "*";
+	font-size: 80px;
+}
+
+@-webkit-keyframes rotateThis {
+  from {-webkit-transform:scale(0.5) rotate(0deg);}
+  to {-webkit-transform:scale(0.5) rotate(360deg);}
+}
+	
+
 jotoolbar {
+	background: rgba(0, 0, 0, .6);
+	padding-top: 5px;
 	display: block;
 	position: absolute;
 	right: 0;
 	left: 0;
 	bottom: 0;
 }
+
+jotoolbar jobutton {
+	margin-bottom: 5px;
+}
+
+jopopup {
+	font-size: 15px;
+	-webkit-box-flex: 0;
+	display: block;
+	overflow: hidden;
+
+	margin: 0 auto;
+
+	border: 2px solid #fff;
+	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+	
+	background-color: #34c;
+	color: #fff;
+
+	background-image: url(shiny.png);
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: 100% 20px;
+
+	-webkit-transition: -webkit-transform .4s ease-in, opacity .4s ease-in;
+	
+	/* ios */
+	-webkit-border-radius: 20px;
+	max-width: 280px;
+	margin: 0 auto;
+	-webkit-transform: scale(.5);
+	opacity: 0;
+}
+jopopup.show {
+	-webkit-transform: scale(1);
+	opacity: 1;
+}
+
+joflexcol > div {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+}
+
+joflexcol {
+	height: 100%;
+}
+
+joshim>joflexcol>*:first-child {
+	-webkit-box-flex: 1;
+}
+joshim>joflexcol>*:last-child {
+/* webos */
+/*	display: none; */
+}
+
+jopopup jotitle {
+	color: #fff;
+	-webkit-border-image: none;
+	-webkit-border-radius: 8px 8px 0 0;
+}
+joscroller {
+	overflow: hidden;
+}
+

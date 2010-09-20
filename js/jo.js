@@ -1392,9 +1392,28 @@ function joScript(url, call, context) {
 	=========
 	
 	Experimental global gesture handler (keyboard, dpad, back, home, flick?).
-	This needs a lot more fleshing out, so it's not ready for general
-	concumption.
+	This needs a lot more fleshing out, so it's not (quite) ready for general
+	consumption.
+	
+	Events
+	------
+	
+	- `upEvent`
+	- `downEvent`
+	- `leftEvent`
+	- `rightEvent`
+	- `backEvent`
+	- `forwardEvent`
+	- `homeEvent`
+	- `closeEvent`
+	- `activateEvent`
+	- `deactivateEvent`
 
+	> Note that the events setup here are for the browser
+	> or webOS. The `setEvents` method most likely needs to change
+	> based on which OS you're running, although looking more deeply
+	> into PhoneGap event layer.
+	
 */
 joGesture = {
 	load: function() {
@@ -1416,17 +1435,19 @@ joGesture = {
 	setEvents: function() {
 		joEvent.on(document.body, "keydown", this.onKeyDown, this);
 		joEvent.on(document.body, "keyup", this.onKeyUp, this);
+		
+		joEvent.on(document.body, "unload", this.closeEvent, this);
+		joEvent.on(window, "activate", this.activateEvent, this);
+		joEvent.on(window, "deactivate", this.deactivateEvent, this);
 	},
 
 	onKeyUp: function(e) {
 		if (!e)
 			var e = window.event;
 	
-//		joLog("keyup", e.keyCode, e.charCode);
-
 		if (e.keyCode == 18) {
 			this.altkey = false;
-//			joLog("alt OFF");
+
 			return;
 		}
 
@@ -1484,7 +1505,8 @@ joGesture = {
 		
 		return;
 	}
-};/**
+};
+/**
 	joView
 	=======
 	
@@ -1504,10 +1526,12 @@ joGesture = {
 	- `setData(data)`
 	- `getData()`
 	- `createContainer(type, classname)`
-	- `setContainer(element)`
+	- `setContainer(HTMLElement)`
 	- `getContainer()`
 	- `clear()`
 	- `refresh()`
+	- `attach(HTMLElement or joView)`
+	- `detach(HTMLElement or joView)`
 	
 */
 joView = function(data) {
@@ -1584,11 +1608,13 @@ joView.prototype = {
 	},
 	
 	attach: function(parent) {
-		joDOM.get(parent).appendChild(this.container);
+		var node = joDOM.get(parent) || document.body;
+		node.appendChild(this.container);
 	},
 	
 	detach: function(parent) {
-		joDOM.get(parent).removeChild(this.container);
+		var node = joDOM.get(parent) || document.body;
+		node.removeChild(this.container);
 	},
 		
 	setEvents: function() {}
@@ -2051,7 +2077,26 @@ joStack.extend(joView, {
 	joScroller
 	==========
 	
-	A scroller container.
+	A scroller container. Ultimately, mobile webkit implementations
+	should properly support scrolling elements that have the CSS
+	`overflow` property set to `scroll` or `auto`. Why don't they,
+	anyway? Until some sanity is adopted, we need to handle this scrolling
+	issue ourselves. joScroller expects a single child to manage
+	scrolling for.
+	
+	Use
+	---
+	
+		// make a scroller and set its child later
+		var x = new joScroller();
+		x.setData(myCard);
+		
+		// define things inline, not always a good idea
+		var y = new joScroller(new joList(mydata));
+		
+		// you can dump a big hunk of HTML in there, too
+		// since jo wraps strings in a container element, this works
+		var z = new joScroller('Some giant HTML as a string');
 
 	Extends
 	-------
@@ -2062,10 +2107,16 @@ joStack.extend(joView, {
 	-------
 	
 	- `scrollBy(position)`
-	- `scrollTo(position)`
-	- `scrollToView(joView)`
+	- `scrollTo(position or joView or HTMLElement)`
 	
-	  Scrolls to make the top of the specified view visible.
+	  Scrolls to the position or the view or element. If you
+	  specify an element or view, make sure that element is a
+	  child node, or you'll get interesting results.
+
+	> Note that joScroller at this time only handles vertical scrolling.
+	> At some point, it will either be expanded to handle both directions,
+	> or more likely extended to make a horizontal scroller and a free
+	> scroller.
 	
 */
 
@@ -2089,7 +2140,7 @@ joScroller.extend(joContainer, {
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
 		joEvent.on(this.container, "mousemove", this.onMove, this);
-		joEvent.on(this.container, "mouseout", this.onOut, this);
+/*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
 	onFlick: function(e) {
@@ -2155,6 +2206,10 @@ joScroller.extend(joContainer, {
 			this.moved = true;
 	},
 
+/*
+	TODO: This needs some work. Since it's mostly for the browser
+	version, not a high priority.
+	
 	onOut: function(e) {
 		// placeholder
 		if (!this.inMotion)
@@ -2170,6 +2225,7 @@ joScroller.extend(joContainer, {
 			this.reset();
 		}
 	},
+*/
 
 	onUp: function (e) {
 		if (!this.inMotion)
@@ -2194,8 +2250,6 @@ joScroller.extend(joContainer, {
 		if (Math.abs(dy) > 5 && !this.quickSnap) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
-//			joLog("flick", flick, "max", max, "bump", this.bump);
-
 			// we want to move quickly if we're going to land past
 			// the top or bottom
 			if (flick + top < max || flick + top > 0) {
@@ -2207,10 +2261,7 @@ joScroller.extend(joContainer, {
 				joDOM.addCSSClass(node, "flick");
 			}
 
-//			if (!this.eventset) {
-//				this.eventset = true;
 			this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
-//			}
 
 			this.scrollBy(flick, false);
 		}
@@ -2297,6 +2348,8 @@ joScroller.extend(joContainer, {
 		node.style.top = y + "px";
 	},
 
+	// called after a flick transition to snap the view
+	// back into our container if necessary.
 	snapBack: function() {
 		var node = this.container.firstChild;
 		var top = parseInt(node.style.top);
@@ -2312,12 +2365,10 @@ joScroller.extend(joContainer, {
 		joDOM.removeCSSClass(node, 'flick');
 		joDOM.addCSSClass(node, 'flickback');
 		
-//		window.setTimeout(function() {
-			if (dy > 0)
-				node.style.top = "0px";
-			else if (dy < max)
-				node.style.top = max + "px";
-//		}, 1);
+		if (dy > 0)
+			node.style.top = "0px";
+		else if (dy < max)
+			node.style.top = max + "px";
 	}
 });
 /**
@@ -3578,6 +3629,28 @@ joFlexcol = function(data) {
 joFlexcol.extend(joContainer, {
 	tagName: "joflexcol"
 });
+/**
+	joBusy
+	======
+	
+	The idea here is to make a generic "spinner" control which you
+	can overlay on other controls. It's still in flux, don't use it
+	just yet.
+	
+	Extends
+	-------
+	
+	- joView
+	
+	Methods
+	-------
+	
+	- `setMessage(status)`
+	
+	  You can update the status message in this busy box so users
+	  have a better idea why the busy box is showing.
+*/
+	
 joBusy = function(data) {
 	joContainer.apply(this, arguments);
 };
@@ -3598,6 +3671,24 @@ joBusy.extend(joContainer, {
 		return this;
 	}
 });
+/**
+	joStackScroller
+	===============
+	
+	What happens when you mix joStack and joScroller? You get this
+	class. Use exactly as you would joStack, only it automatically
+	puts a scroller in the stack as needed. At some point, this
+	might get folded into joStack, but for now it's a special class.
+	
+	It also handles the `scrollTo()` and `scrollBy()` methods from
+	joScroller.
+	
+	Extends
+	-------
+	- joStack
+	- joScroller
+*/
+
 joStackScroller = function(data) {
 	this.scrollers = [
 		new joScroller(),
@@ -3771,19 +3862,185 @@ joScreen.extend(joContainer, {
 		// take a view, a DOM element or some HTML and
 		// make it pop up in the screen.
 		if (!this.popup) {
-			this.popup = new joShim(new joPopup(data));
+			this.shim = new joShim(
+				new joFlexcol([
+					'&nbsp',
+					this.popup = new joPopup(data),
+					'&nbsp'
+				])
+			);
 		}
 		else {
 			this.popup.setData(data);
 		}
-		
-		this.popup.attach(this);
-		this.popup.activate();
+//		this.shim.showEvent.subscribe(this.popup.show, this);
+		this.shim.show();
+		this.popup.show();
 	},
 	
 	hidePopup: function() {
-		if (this.popup)
-			this.popup.detach(this);
+		if (this.shim)
+			this.shim.hide();
+	},
+	
+	// shortcut to a simple alert dialog
+	alert: function(title, msg, options) {
+		var buttons = [];
+		
+		if (typeof options === 'object') {
+			if (options instanceof Array) {
+				// we have several options
+				for (var i = 0; i < options.length; i++)
+					addbutton(options[i]);
+			}
+			else {
+				addbutton(options);
+			}
+		}
+		else if (typeof options === 'string') {
+			addbutton({ label: options });
+		}
+		else {
+			addbutton();
+		}
+	
+		var view = [
+			new joTitle(title),
+			new joCaption(msg),
+			buttons
+		];
+		this.showPopup(view);
+		
+		var self = this;
+		
+		function addbutton(options) {
+			if (!options)
+				var options = { label: 'OK' };
+
+			var button = new joButton(options.label);
+			button.selectEvent.subscribe(
+				function() {
+					if (options.action)
+						options.action.call(options.context);
+						
+					defaultaction();
+				}, options.context || self
+			);
+			
+			buttons.push(button);
+		}
+		
+		function defaultaction() {
+			self.hidePopup();
+		}
 	}
 });
 
+/**
+	joShim
+	======
+	
+	A simple screen dimmer. Used mostly for popups and other
+	modal use cases.
+	
+	Extends
+	-------
+	- joView
+	
+	Methods
+	-------
+	- `show()`
+	- `hide()`
+	
+	  These do what you'd expect.
+*/
+
+joShim = function() {
+	this.showEvent = new joSubject(this);
+	this.hideEvent = new joSubject(this);
+	this.selectEvent = new joSubject(this);
+	
+	joContainer.apply(this, arguments);
+};
+joShim.extend(joContainer, {
+	tagName: "joshim",
+	
+	setEvents: function() {
+		joEvent.on(this.container, "click", this.onClick, this);
+	},
+	
+	onClick: function(e) {
+		joEvent.stop(e);
+		this.selectEvent.fire();
+	},
+	
+	hide: function() {
+		this.container.className = '';
+		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
+	},
+	
+	show: function() {
+		this.attach();
+
+		this.container.className = 'show';
+		joEvent.on(this.container, "webkitTransitionEnd", this.onShow, this);
+
+		// default parent to the document body
+		if (!this.lastParent)
+			this.lastParent = document.body;
+	},
+	
+	onShow: function() {
+		this.showEvent.fire();
+	},
+	
+	onHide: function() {
+		this.detach();
+		this.hideEvent.fire();
+	}
+});
+/**
+	joPopup
+	=======
+	
+	A simple popup control.
+	
+	Methods
+	-------
+	
+	- `show()`
+	- `hide()`
+	
+	  These do what you'd expect
+	
+	Extends
+	-------
+	
+	- joContainer
+
+*/
+
+joPopup = function() {
+	this.showEvent = new joSubject(this);
+	this.hideEvent = new joSubject(this);
+	
+	joContainer.apply(this, arguments);
+};
+joPopup.extend(joContainer, {
+	tagName: "jopopup",
+	
+	hide: function() {
+		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
+		
+		this.container.className = 'hide';
+	},
+	
+	onHide: function() {
+		this.hideEvent.fire();
+	},
+	
+	show: function() {
+		this.container.className = 'show';
+		this.showEvent.fire();
+	}
+});
