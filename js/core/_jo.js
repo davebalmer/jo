@@ -143,6 +143,7 @@ jo = {
 		this.loadEvent = new joSubject(this);
 		this.unloadEvent = new joSubject(this);
 
+		// capture these events, prevent default for applications
 		document.body.onMouseDown = function(e) { e.preventDefault(); };
 		document.body.onDragStart = function(e) { e.preventDefault(); };
 
