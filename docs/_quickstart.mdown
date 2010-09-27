@@ -10,15 +10,20 @@ like this:
 
 	<html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/aluminum/aluminum.css">
+		<link rel="stylesheet" type="text/css" href="css/aluminum.css">
+		<link rel="stylesheet" type="text/css" href="css/webkit.css">
+		<!-- <link rel="stylesheet" type="text/css" href="css/webos.css"> -->
+		<!-- <link rel="stylesheet" type="text/css" href="css/chrome.css"> -->
 	</head>
 	<body>
 
 	<!-- any static page content goes here -->
 
-	<script src="js/jo_min.js"></script>
+	<!-- load jo library -->
+	<script src="jo_min.js"></script>
 
 	<!-- any application JavaScript files go here -->
+	<script src="hello.js"></script>
 
 	</body>
 	</html>
@@ -30,8 +35,12 @@ Since the framework is highly dependent on CSS, your mileage may vary across pla
 particular, Internet Explorer before 9 will have limited eye candy and no animated
 transitions.
 
-Since jo is geared for HTML5 applications, I recommend you test your apps with Safari,
-Chrome, FireFox or Opera (in that order or preference).
+You can also completely skin your app with your own CSS, or augment the basic jo CSS to suit
+your purposes.
+
+Since jo is geared for HTML5 applications, I recommend you develop and test
+your apps with Safari or Chrome before moving to mobile devices. In fact, this
+makes the code/test/debug cycle go very quickly.
 
 hello.js
 --------
@@ -42,33 +51,45 @@ page loads, or your device signals that your app is ready to go.
 
 The simplest UI would be something like:
 
+	// initialize jo
 	jo.load();
-	joAlert("Hello!");
+
+	// define a wrapper for document.body
+	var screen = new joScreen();
+
+	// setup your UI
+	screen.alert("Hello, Jo!", "This is a simple alert.");
 
 Something more interesting would look like:
 
+	// inialize jo
 	jo.load();
 	
 	// setup a stack and a sample card
-	var stack = new joStack();
-	var okbutton = new joButton("OK");
+	var screen = new joScreen();
+	var stack = new joStackScroller();
+	
 	
 	// set a responder to the OK button
 	okbutton.selectEvent.subscribe(function() {
 		stack.hide();
 	});
 	
-	// create our card
+	// create our view card
 	var card = new joCard([
 		new joTitle("Hello"),
 		new joCaption("Hello World!"),
-		new joFiller([
-			okbutton
-		])
+		new joDivider(),
+		new joButton("OK").selectEvent.subscribe(function() {
+			stack.hide();
+		})
 	]);
 	
 	// put the card on our view stack
 	stack.push(card);
+
+Notice above that jo supports "chaining", meaning you can make successive calls
+inline to a given object (see the joButton line above for an example).
 
 Of course, it is recommended you use more robust OOP coding patterns to make a proper
 application. While there's nothing illegal about putting everything in global space
