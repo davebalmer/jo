@@ -57,8 +57,9 @@ joScroller.extend(joContainer, {
 	moved: false,
 	inMotion: false,
 	pacer: 0,
-	velocity: 1.4,
+	velocity: 1.6,
 	bump: 50,
+	top: 0,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
@@ -115,7 +116,7 @@ joScroller.extend(joContainer, {
 		var y = point.y - this.points[0].y;
 		this.points.unshift(point);
 
-		if (this.points.length > 5)
+		if (this.points.length > 7)
 			this.points.pop();
 
 		// cleanup points if the user drags slowly to avoid unwanted flicks
@@ -160,7 +161,7 @@ joScroller.extend(joContainer, {
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
-		var top = node.offsetTop;
+		var top = this.getTop();
 		
 		joEvent.stop(e);
 
@@ -172,21 +173,17 @@ joScroller.extend(joContainer, {
 		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
 		
 		// if the velocity is "high" then it was a flick
-		if (Math.abs(dy) > 5 && !this.quickSnap) {
+		if (Math.abs(dy) > 4 && !this.quickSnap) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
 			// we want to move quickly if we're going to land past
 			// the top or bottom
 			if (flick + top < max || flick + top > 0) {
-				console.log('flickfast');
 				joDOM.addCSSClass(node, "flickfast");
 			}
 			else {
-				console.log('flick');
 				joDOM.addCSSClass(node, "flick");
 			}
-
-			this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
 
 			this.scrollBy(flick, false);
 		}
@@ -201,7 +198,7 @@ joScroller.extend(joContainer, {
 	
 	scrollBy: function(y, test) {
 		var node = this.container.firstChild;
-		var top = node.offsetTop;
+		var top = this.getTop();
 
 		if (isNaN(top))
 			top = 0;
@@ -219,15 +216,13 @@ joScroller.extend(joContainer, {
 		else if (dy < max - this.bump)
 			dy = max - this.bump;
 
-		if (test) {
-			if (ody != dy)
-				this.quickSnap = true;
-			else
-				this.quickSnap = false;
-		}
+		if (test)
+			this.quickSnap = (ody != dy);
 
-		if (node.offsetTop != dy)
-			node.style.top = dy + "px";
+		this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
+
+		if (this.getTop() != dy)
+			this.setTop(dy);
 	},
 
 	scrollTo: function(y, instant) {
@@ -247,7 +242,7 @@ joScroller.extend(joContainer, {
 
 			var y = top;
 
-			var top = node.offsetTop;
+			var top = this.getTop();
 			var bottom = top - this.container.offsetHeight;
 
 			if (t - h < bottom)
@@ -270,16 +265,14 @@ joScroller.extend(joContainer, {
 			joDOM.removeCSSClass(node, 'flickback');
 		}
 
-		node.style.top = y + "px";
+		this.setTop(y);
 	},
 
 	// called after a flick transition to snap the view
 	// back into our container if necessary.
 	snapBack: function() {
 		var node = this.container.firstChild;
-		var top = parseInt(node.style.top);
-		if (isNaN(top))
-			top = 0;
+		var top = this.getTop();
 
 		var dy = top;
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
@@ -291,8 +284,31 @@ joScroller.extend(joContainer, {
 		joDOM.addCSSClass(node, 'flickback');
 		
 		if (dy > 0)
-			node.style.top = "0px";
+			this.setTop(0);
 		else if (dy < max)
-			node.style.top = max + "px";
+			this.setTop(max);
+	},
+	
+	setTop: function(y) {
+		var node = this.container.firstChild;
+
+		// compatible
+//		node.style.top = y + "px";
+		
+		// faster
+		if (y == 0)
+			node.style.webkitTransform = "";
+		else
+			node.style.webkitTransform = "translate3d(0, " + y + "px, 0)";
+
+		node.jotop = y;
+	},
+	
+	getTop: function() {
+		return this.container.firstChild.jotop || 0;
+	},
+	
+	setData: function(data) {
+		joContainer.prototype.setData.apply(this, arguments);
 	}
 });
