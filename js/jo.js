@@ -180,6 +180,7 @@ jo = {
 		this.loadEvent = new joSubject(this);
 		this.unloadEvent = new joSubject(this);
 
+		// capture these events, prevent default for applications
 		document.body.onMouseDown = function(e) { e.preventDefault(); };
 		document.body.onDragStart = function(e) { e.preventDefault(); };
 
@@ -721,6 +722,17 @@ joSubject.prototype = {
 		return this.unsubscribe(call, observer);
 	}
 };
+var SEC = 1000;
+var MIN = 60 * SEC;
+var HOUR = 60 * MIN;
+var DAY = 24 * HOUR;
+
+joTime = {
+	timestamp: function() {
+		var now = new Date();
+		return now / 1;
+	}
+};
 /**
 	joYield
 	========
@@ -749,6 +761,77 @@ function joYield(call, context, delay, data) {
 	
 	return timer;
 };
+/**
+	joCache
+	=======
+	
+	A singleton which makes it easy to setup deferred object creation and cached
+	results. This is a performance menchanism initially designed for UI views, but
+	could be extended to handle data requests and other object types.
+	
+	Methods
+	-------
+	
+	- `set(key, call, context)`
+	
+	  Defines a factory (`call`) for building an object keyed from the `key` string.
+	  The `context` argument is optional, but provides a reference for `this`.
+	
+	- `get(key)`
+	
+	  Returns an object based on the `key` string. If an object has not been created
+	  which corresponds to the `key`, joCache will call the constructor defined to
+	  create it and store the reference for future calls to `get()`.
+	
+	Use
+	---
+	
+	Defining a view for on-demand use:
+	
+		joCache.set("home", function() {
+			return new joCard([
+				new joTitle("Home"),
+				new joMenu([
+					"Top Stories",
+					"Latest News",
+					"Old News",
+					"No News"
+				])
+			]);
+		});
+	
+	Displaying a view later:
+	
+		mystack.push(joCache.get("home"));
+		
+		// the first call to get() will instantiate
+		// the view, subsequent calls will return the
+		// view that was created the first time
+
+*/
+
+joCache = {
+	cache: {},
+	
+	set: function(key, call, context) {
+		if (call)
+			this.cache[key] = { "call": call, "context": context || this };
+	},
+	
+	get: function(key) {
+		var cache = this.cache[key] || null;
+		if (cache) {
+			if (!cache.view)
+				cache.view = cache.call(cache.context, cache.call);
+				
+			return cache.view;
+		}
+		else {
+			return new joView("View not found: " + key);
+		}
+	}
+};
+
 /**
 	joChain
 	========
@@ -880,146 +963,10 @@ joClipboard = {
 		joPreference.set("joClipboardData");
 	}
 };
-/**
-	joCache
-	=======
-	
-	A singleton which makes it easy to setup deferred object creation and cached
-	results. This is a performance menchanism initially designed for UI views, but
-	could be extended to handle data requests and other object types.
-	
-	Methods
-	-------
-	
-	- `set(key, call, context)`
-	
-	  Defines a factory (`call`) for building an object keyed from the `key` string.
-	  The `context` argument is optional, but provides a reference for `this`.
-	
-	- `get(key)`
-	
-	  Returns an object based on the `key` string. If an object has not been created
-	  which corresponds to the `key`, joCache will call the constructor defined to
-	  create it and store the reference for future calls to `get()`.
-	
-	Use
-	---
-	
-	Defining a view for on-demand use:
-	
-		joCache.set("home", function() {
-			return new joCard([
-				new joTitle("Home"),
-				new joMenu([
-					"Top Stories",
-					"Latest News",
-					"Old News",
-					"No News"
-				])
-			]);
-		});
-	
-	Displaying a view later:
-	
-		mystack.push(joCache.get("home"));
-		
-		// the first call to get() will instantiate
-		// the view, subsequent calls will return the
-		// view that was created the first time
-
+/*
+	not used at this time
 */
 
-joCache = {
-	cache: {},
-	
-	set: function(key, call, context) {
-		if (call)
-			this.cache[key] = { "call": call, "context": context || this };
-	},
-	
-	get: function(key) {
-		var cache = this.cache[key] || null;
-		if (cache) {
-			if (!cache.view)
-				cache.view = cache.call(cache.context, cache.call);
-				
-			return cache.view;
-		}
-		else {
-			return new joView("View not found: " + key);
-		}
-	}
-};
-
-var SEC = 1000;
-var MIN = 60 * SEC;
-var HOUR = 60 * MIN;
-var DAY = 24 * HOUR;
-
-joTime = {
-	timestamp: function() {
-		var now = new Date();
-		return now / 1;
-	}
-};
-/**
-	joDatabase
-	===========
-
-	Wrapper class for WebKit SQLite database.
-	
-	Methods
-	-------
-	
-	- `open(datafile, size)`
-	
-	  `datafile` is a filename, `size` is an optional parameter for initial
-	  allocation size for the database.
-	
-	- `close()`
-	
-	- `now()`
-	
-	  *Deprecated* convenience method which returns a SQLite-formatted date
-	  string for use in queries. Should be replaced with a utility function
-	  in joTime.
-*/
-joDatabase = function(datafile, size) {
-	this.openEvent = new joEvent.Subject(this);
-	this.closeEvent = new joEvent.Subject(this);
-	this.errorEvent = new joEvent.Subject(this);
-
-	this.datafile = datafile;
-	this.size = size || 256000;
-	this.db = null;
-};
-joDatabase.prototype = {
-	open: function() {
-		this.db = openDatabase(this.datafile, "1.0", this.datafile, this.size);
-
-		if (this.db) {
-			this.openEvent.fire();
-		}
-		else {
-			joLog("DataBase Error", this.db);
-			this.errorEvent.fire();
-		}
-	},
-	
-	close: function() {
-		this.db.close();
-		this.closeEvent.fire();
-	},
-	
-	now: function(offset) {
-		var date = new Date();
-		
-		if (offset)
-			date.setDate(date.valueOf() + (offset * 1000 * 60 * 60 * 24));
-		
-		return date.format("yyyy-mm-dd");
-	}
-};
 /**
 	joDataSource
 	=============
@@ -1035,12 +982,19 @@ joDatabase.prototype = {
 	- `set()`
 	- `get()`
 	- `clear()`
+	- `setQuery(...)`
+	- `getQuery()`
+	- `load()`
+	- `refresh()`
 
 	Events
 	------
 
 	- `changeEvent`
 	- `errorEvent`
+	
+	> Under construction, use with care.
+	
 */
 joDataSource = function(data) {
 	this.changeEvent = new joSubject(this);	
@@ -1106,6 +1060,64 @@ joDataSource.prototype = {
 	},
 	
 	load: function(){
+	}
+};
+/**
+	joDatabase
+	===========
+
+	Wrapper class for WebKit SQLite database.
+	
+	Methods
+	-------
+	
+	- `open(datafile, size)`
+	
+	  `datafile` is a filename, `size` is an optional parameter for initial
+	  allocation size for the database.
+	
+	- `close()`
+	
+	- `now()`
+	
+	  *Deprecated* convenience method which returns a SQLite-formatted date
+	  string for use in queries. Should be replaced with a utility function
+	  in joTime.
+*/
+joDatabase = function(datafile, size) {
+	this.openEvent = new joEvent.Subject(this);
+	this.closeEvent = new joEvent.Subject(this);
+	this.errorEvent = new joEvent.Subject(this);
+
+	this.datafile = datafile;
+	this.size = size || 256000;
+	this.db = null;
+};
+joDatabase.prototype = {
+	open: function() {
+		this.db = openDatabase(this.datafile, "1.0", this.datafile, this.size);
+
+		if (this.db) {
+			this.openEvent.fire();
+		}
+		else {
+			joLog("DataBase Error", this.db);
+			this.errorEvent.fire();
+		}
+	},
+	
+	close: function() {
+		this.db.close();
+		this.closeEvent.fire();
+	},
+	
+	now: function(offset) {
+		var date = new Date();
+		
+		if (offset)
+			date.setDate(date.valueOf() + (offset * 1000 * 60 * 60 * 24));
+		
+		return date.format("yyyy-mm-dd");
 	}
 };
 /**
@@ -1219,6 +1231,68 @@ joSQLDataSource.prototype = {
 		});
 	}
 };
+/**
+	joScript
+	========
+	
+	Script tag loader function which can be used to dynamically load script
+	files or make RESTful calls to many JSON services (provided they have some
+	sort of callback ability). This is a low-level utility function.
+	
+	> Need a URL with some examples of this.
+	
+	Calling
+	-------
+
+	`joScript(url, callback, context, errorcallback, errorcontext)`
+	
+	- url
+	- callback is a function (supports bind, in which case context is optional)
+	- context (usually `this`, and is optional)
+
+	Returns
+	-------
+	
+	Calls your handler method and passes a truthy value if there was an error.
+	
+	Use
+	---
+	
+		joScript("myscript.js", function(error, url) {
+			if (error)
+				console.log("script " + url + " didn't load.");
+		}, this);
+
+*/
+function joScript(url, call, context) {
+	var node = joDOM.create('script');
+
+	node.onload = onload;
+	node.onerror = onerror;
+	node.src = url;
+	document.body.appendChild(node);
+
+	function onerror() {
+		handler(true);
+	}
+	
+	function onload() {
+		handler(false);
+	}
+	
+	function handler(error) {
+		if (call) {
+			if (context)
+				call.call(context, error, url);
+			else
+				call(error, url);
+		}
+
+		document.body.removeChild(node);
+		node = null;
+	}
+}	
+
 /**
 	joPreference
 	============
@@ -1347,165 +1421,6 @@ joPreference.prototype = {
 
 		
 		/**
-	joScript
-	========
-	
-	Script tag loader function which can be used to dynamically load script
-	files or make RESTful calls to many JSON services (provided they have some
-	sort of callback ability).
-	
-	> Need a URL with some examples of this.
-	
-	Calling
-	-------
-
-	`joScript(url, callback, context)`
-	
-	- url
-	- callback is a function (supports bind, in which case context is optional)
-	- context (usually `this`, and is optional)
-
-	Returns
-	-------
-	
-	Returns a reference to the `script` tag which was created in the DOM to make
-	this request.
-*/
-
-function joScript(url, call, context) {
-	var node = joDOM.create('script');
-	node.onload = handler;
-	node.src = url;
-	document.body.appendChild(node);
-	
-	function handler() {
-		call.call(context || this, node);
-		
-		// cleanup
-		document.body.removeChild(node);
-	}
-}	
-
-/**
-	joGesture
-	=========
-	
-	Experimental global gesture handler (keyboard, dpad, back, home, flick?).
-	This needs a lot more fleshing out, so it's not (quite) ready for general
-	consumption.
-	
-	Events
-	------
-	
-	- `upEvent`
-	- `downEvent`
-	- `leftEvent`
-	- `rightEvent`
-	- `backEvent`
-	- `forwardEvent`
-	- `homeEvent`
-	- `closeEvent`
-	- `activateEvent`
-	- `deactivateEvent`
-
-	> Note that the events setup here are for the browser
-	> or webOS. The `setEvents` method most likely needs to change
-	> based on which OS you're running, although looking more deeply
-	> into PhoneGap event layer.
-	
-*/
-joGesture = {
-	load: function() {
-		this.upEvent = new joSubject(this);
-		this.downEvent = new joSubject(this);
-		this.leftEvent = new joSubject(this);
-		this.rightEvent = new joSubject(this);
-		this.forwardEvent = new joSubject(this);
-		this.backEvent = new joSubject(this);
-		this.homeEvent = new joSubject(this);
-		this.closeEvent = new joSubject(this);
-		this.activateEvent = new joSubject(this);
-		this.deactivateEvent = new joSubject(this);
-		
-		this.setEvents();
-	},
-	
-	// by default, set for browser
-	setEvents: function() {
-		joEvent.on(document.body, "keydown", this.onKeyDown, this);
-		joEvent.on(document.body, "keyup", this.onKeyUp, this);
-		
-		joEvent.on(document.body, "unload", this.closeEvent, this);
-		joEvent.on(window, "activate", this.activateEvent, this);
-		joEvent.on(window, "deactivate", this.deactivateEvent, this);
-	},
-
-	onKeyUp: function(e) {
-		if (!e)
-			var e = window.event;
-	
-		if (e.keyCode == 18) {
-			this.altkey = false;
-
-			return;
-		}
-
-		if (e.keyCode == 27) {
-			if (jo.flag.stopback) {
-				joEvent.stop(e);
-				joEvent.preventDefault(e);
-			}
-
-			this.backEvent.fire("back");
-			return;
-		}
-
-		if (!this.altkey)
-			return;
-		
-		joEvent.stop(e);
-		
-		switch (e.keyCode) {
-			case 37:
-				this.leftEvent.fire("left");
-				break;
-			case 38:
-				this.upEvent.fire("up");
-				break;
-			case 39:
-				this.rightEvent.fire("right");
-				break;
-			case 40:
-				this.downEvent.fire("down");
-				break;
-			case 27:
-				this.backEvent.fire("back");
-				break;
-			case 13:
-				this.forwardEvent.fire("forward");
-				break;
-		}
-	},
-	
-	onKeyDown: function(e) {
-		if (!e)
-			var e = window.event;
-			
-		if (e.keyCode == 27) {
-			joEvent.stop(e);
-			joEvent.preventDefault(e);
-		}
-		else if (e.keyCode == 13 && joFocus.get() instanceof joInput) {
-			joEvent.stop(e);
-		}
-		else if (e.keyCode == 18) {
-			this.altkey = true;
-		}
-		
-		return;
-	}
-};
-/**
 	joView
 	=======
 	
@@ -1731,6 +1646,536 @@ joContainer.extend(joView, {
 	}
 });
 /**
+	joControl
+	=========
+	
+	Interactive, data-driven control class which may be bound to a joDataSource,
+	can receive focus events, and can fire off important events which other objects
+	can listen for and react to.
+	
+	Extends
+	-------
+	
+	- joView
+	
+	Events
+	------
+	
+	- `changeEvent`
+	- `selectEvent`
+	
+	Methods
+	-------
+	
+	- `enable()`
+	- `disable()`
+	- `focus()`
+	- `blur()`
+	- `setDataSource(joDataSource)`
+	- `setEvents()`
+	
+	CSS
+	---
+	
+	`div.control`
+
+*/
+joControl = function(data) {
+	this.selectEvent = new joSubject(this);
+	this.enabled = true;
+
+	if (data instanceof joDataSource) {
+		// we want to bind directly to some data
+		joView.call(this);
+		this.setDataSource(data);
+	}
+	else {
+		joView.apply(this, arguments);
+	}
+};
+joControl.extend(joView, {
+	tagName: "jocontrol",
+	
+	setEvents: function() {
+		// not sure what we want to do here, want to use
+		// gesture system, but that's not defined
+		joEvent.on(this.container, "click", this.onMouseDown, this);
+		joEvent.on(this.container, "blur", this.onBlur, this);
+		joEvent.on(this.container, "focus", this.onFocus, this);
+	},
+	
+	onMouseDown: function(e) {
+		this.select(e);
+	},
+	
+	select: function(e) {
+		if (e)
+			joEvent.stop(e);
+
+		this.selectEvent.fire(this.data);
+	},
+	
+	enable: function() {
+		joDOM.removeCSSClass(this.container, 'disabled');
+		this.container.contentEditable = true;
+		this.enabled = true;
+	},
+	
+	disable: function() {
+		joDOM.addCSSClass(this.container, 'disabled');
+		this.container.contentEditable = false;
+		this.enabled = false;
+	},
+
+	onFocus: function(e) {
+		joLog("onFocus", this.data);
+		joEvent.stop(e);
+		joFocus.set(this);
+	},
+	
+	onBlur: function(e) {
+		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
+		joLog("onBlur", this.data);
+		joEvent.stop(e);
+		this.blur();
+		this.changeEvent.fire(this.data);
+	},
+	
+	focus: function(e) {
+		joDOM.addCSSClass(this.container, 'focus');
+		if (!e)
+			this.container.focus();
+	},
+	
+	blur: function() {
+		joDOM.removeCSSClass(this.container, 'focus');
+	},
+	
+	setDataSource: function(source) {
+		this.dataSource = source;
+//		this.refresh();
+		source.changeEvent.subscribe(this.setData, this);
+	}
+});
+/**
+	joButton
+	========
+	
+	Button control.
+	
+		// simple invocation
+		var x = new joButton("Done");
+		
+		// optionally pass in a CSS classname to style the button
+		var y = new joButton("Cancel", "cancelbutton");
+		
+		// like other controls, you can pass in a joDataSource
+		// which could be useful, so why not
+		var z = new joButton(joPreference.bind("processname"));
+	
+	Extends
+	-------
+	
+	- joControl
+	
+	Methods
+	-------
+	
+	- enable()
+	- disable()
+	
+*/
+
+joButton = function(data, classname) {
+	// call super
+	joControl.apply(this, arguments);
+	
+	if (classname)
+		this.container.className = classname;
+};
+joButton.extend(joControl, {
+	tagName: "jobutton",
+	
+	createContainer: function() {
+		var o = joDOM.create(this);
+		o.setAttribute("tabindex", "1");
+		
+		return o;
+	},
+
+	enable: function() {
+		this.container.setAttribute("tabindex", "1");
+		joControl.prototype.enable.call(this);
+	},
+	
+	disable: function() {
+		// this doesn't seem to work in safari doh
+		this.container.removeAttribute("tabindex");
+		joControl.prototype.disable.call(this);
+	}
+});
+/**
+	joBusy
+	======
+	
+	The idea here is to make a generic "spinner" control which you
+	can overlay on other controls. It's still in flux, don't use it
+	just yet.
+	
+	Extends
+	-------
+	
+	- joView
+	
+	Methods
+	-------
+	
+	- `setMessage(status)`
+	
+	  You can update the status message in this busy box so users
+	  have a better idea why the busy box is showing.
+*/
+	
+joBusy = function(data) {
+	joContainer.apply(this, arguments);
+};
+joBusy.extend(joContainer, {
+	tagName: "jobusy",
+	
+	draw: function() {
+		this.container.innerHTML = "";
+		for (var i = 0; i < 9; i++)
+			this.container.appendChild(joDom.create("jobusyblock"));
+	},
+	
+	setMessage: function(msg) {
+		this.message = msg || "";
+	},
+	
+	setEvents: function() {
+		return this;
+	}
+});
+/**
+	joList
+	=======
+	
+	A widget class which expects an array of any data type and renders the
+	array as a list. The list control handles DOM interactions with only a
+	single touch event to determine which item was selected.
+	
+	Extends
+	-------
+	
+	- joControl
+	
+	Events
+	------
+	
+	- `selectEvent`
+	
+	  Fired when an item is selected from the list. The data in the call is the
+	  index of the item selected.
+	
+	- `changeEvent`
+	
+	  Fired when the data is changed for the list.
+	
+	Methods
+	-------
+
+	- `formatItem(data, index)`
+	
+	  When subclassing or augmenting, this is the method responsible for
+	  rendering a list item's data.
+	
+	- `compareItems(a, b)`
+	
+	  For sorting purposes, this method is called and should be overriden
+	  to support custom data types.
+	
+			// general logic and approriate return values
+			if (a > b)
+				return 1;
+			else if (a == b)
+				return 0;
+			else
+				return -1
+
+	- `setIndex(index)`
+
+	- `getIndex(index)`
+	
+	- `refresh()`
+	
+	- `setDefault(message)`
+	
+	  Will present this message (HTML string) when the list is empty.
+	  Normally the list is empty; this is a convenience for "zero state"
+	  UI requirements.
+
+	- `getNodeData(index)`
+	
+	- `getLength()`
+	
+	- `next()`
+
+	- `prev()`
+	
+	- `setAutoSort(boolean)`
+
+*/
+joList = function(container, data) {
+	this.autoSort = false;
+	this.lastNode = null;
+	this.index = 0;
+	
+	joControl.apply(this, arguments);
+};
+joList.extend(joControl, {
+	tagName: "jolist",
+	data: null,
+	defaultMessage: "",
+	
+	setDefault: function(msg) {
+		this.defaultMessage = msg;
+		
+		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
+			if (typeof msg === 'object') {
+				this.innerHTML = "";
+				if (msg instanceof joView)
+					this.container.appendChild(msg.container);
+				else if (msg instanceof HTMLElement)
+					this.container.appendChild(msg);
+			}
+			else {
+				this.innerHTML = msg;
+			}
+		}
+		
+		return this;
+	},
+	
+	draw: function() {
+		var html = "";
+		var length = 0;
+
+		if ((typeof this.data === 'undefined' || !this.data.length) && this.defaultMessage) {
+			this.container.innerHTML = this.defaultMessage;
+			return;
+		}
+
+		for (var i = 0, l = this.data.length; i < l; i++) {
+			var element = this.formatItem(this.data[i], i, length);
+
+			if (element == null)
+				continue;
+			
+			if (typeof element == "string")
+				html += element;
+			else
+				this.container.appendChild((element instanceof joView) ? element.container : element);
+
+			++length;
+		}
+
+		// support setting the contents with innerHTML in one go,
+		// or getting back HTMLElements ready to append to the contents
+		if (html.length)
+			this.container.innerHTML = html;
+		
+		return;
+	},
+
+	deselect: function() {
+		if (typeof this.container == 'undefined'
+		|| !this.container['childNodes'])
+			return;
+
+		var node = this.getNode(this.index);
+		if (node) {
+			if (this.lastNode) {
+				joDOM.removeCSSClass(this.lastNode, "selected");
+				this.index = null;
+			}
+		}
+	},
+	
+	setIndex: function(index, silent) {
+		joLog("setIndex", index);
+		this.index = index;
+
+		if (typeof this.container == 'undefined'
+		|| !this.container['childNodes'])
+			return;
+
+		var node = this.getNode(this.index);
+		if (node) {
+			if (this.lastNode)
+				joDOM.removeCSSClass(this.lastNode, "selected");
+
+			joDOM.addCSSClass(node, "selected");
+			this.lastNode = node;
+		}
+		
+		if (index >= 0 && !silent)
+			this.fireSelect(index);
+	},
+	
+	getNode: function(index) {
+		return this.container.childNodes[index];
+	},
+
+	fireSelect: function(index) {
+		this.selectEvent.fire(index);
+	},
+	
+	getIndex: function() {
+		return this.index;
+	},
+	
+	onMouseDown: function(e) {
+		var node = joEvent.getTarget(e);
+		var index = -1;
+		
+		while (index == -1 && node !== this.container) {
+			index = node.getAttribute("index") || -1;
+			node = node.parentNode;
+		}
+
+		if (index >= 0) {
+			joEvent.stop(e);
+
+			this.setIndex(index);
+		}
+	},
+	
+	refresh: function() {
+		this.index = 0;
+		this.lastNode = null;
+
+		if (this.autoSort)
+			this.sort();
+
+		joControl.prototype.refresh.apply(this);
+	},
+
+	getNodeData: function(index) {
+		if (this.data && this.data.length && index >= 0 && index < this.data.length)
+			return this.data[index];
+		else
+			return null;
+	},
+	
+	getLength: function() {
+		return this.length || this.data.length || 0;
+	},
+	
+	sort: function() {
+		this.data.sort(this.compareItems);
+	},
+	
+	getNodeIndex: function(element) {
+		var index = element.getAttribute('index');
+		if (typeof index !== "undefined" && index != null)
+		 	return parseInt(index)
+		else
+			return -1;
+	},
+	
+	formatItem: function(itemData, index) {
+		var element = document.createElement('jolistitem');
+		element.innerHTML = itemData;
+		element.setAttribute("index", index);
+
+		return element;
+	},
+
+	compareItems: function(a, b) {
+		if (a > b)
+			return 1;
+		else if (a == b)
+			return 0;
+		else
+			return -1;
+	},
+
+	setAutoSort: function(state) {
+		this.autoSort = state;
+	},
+	
+	next: function() {
+		if (this.getIndex() < this.getLength() - 1)
+			this.setIndex(this.index + 1);
+	},
+	
+	prev: function() {
+		if (this.getIndex() > 0)
+			this.setIndex(this.index - 1);
+	}
+});
+/**
+	joBusy
+	======
+	
+	The idea here is to make a generic "spinner" control which you
+	can overlay on other controls. It's still in flux, don't use it
+	just yet.
+	
+	Extends
+	-------
+	
+	- joView
+	
+	Methods
+	-------
+	
+	- `setMessage(status)`
+	
+	  You can update the status message in this busy box so users
+	  have a better idea why the busy box is showing.
+*/
+	
+joBusy = function(data) {
+	joContainer.apply(this, arguments);
+};
+joBusy.extend(joContainer, {
+	tagName: "jobusy",
+	
+	draw: function() {
+		this.container.innerHTML = "";
+		for (var i = 0; i < 9; i++)
+			this.container.appendChild(joDom.create("jobusyblock"));
+	},
+	
+	setMessage: function(msg) {
+		this.message = msg || "";
+	},
+	
+	setEvents: function() {
+		return this;
+	}
+});
+/**
+	joCaption
+	=========
+	
+	Basically, a paragraph of text.
+	
+	Extends
+	-------
+	
+	- joControl
+	
+*/
+joCaption = function(data) {
+	joControl.apply(this, arguments);
+};
+joCaption.extend(joControl, {
+	tagName: "jocaption"
+});
+
+/**
 	joCard
 	======
 	
@@ -1759,49 +2204,6 @@ joCard.extend(joContainer, {
 	tagName: "jocard"
 });
 
-/**
-	joGroup
-	=======
-	
-	Group of controls, purely visual.
-	
-	Extends
-	-------
-
-	- joContainer
-	
-*/
-joGroup = function(data) {
-	joContainer.apply(this, arguments);
-};
-joGroup.extend(joContainer, {
-	tagName: "jogroup"
-});
-
-
-/**
-	joFooter
-	======
-	
-	Attempt to make a filler object which pushed subsequent joView objects
-	further down in the container if possible (to attach its contents to
-	the bottom of a card, for eaxmple).
-	
-	> This behavior requires a working box model to attach properly to the bottom
-	> of your container view.
-	
-	Extends
-	-------
-	
-	- joContainer
-
-*/
-joFooter = function(data) {
-	joContainer.apply(this, arguments);
-};
-joFooter.extend(joContainer, {
-	tagName: "jofooter"
-});
 /**
 	joStack
 	========
@@ -2131,8 +2533,9 @@ joScroller.extend(joContainer, {
 	moved: false,
 	inMotion: false,
 	pacer: 0,
-	velocity: 1.4,
+	velocity: 1.6,
 	bump: 50,
+	top: 0,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
@@ -2189,7 +2592,7 @@ joScroller.extend(joContainer, {
 		var y = point.y - this.points[0].y;
 		this.points.unshift(point);
 
-		if (this.points.length > 5)
+		if (this.points.length > 7)
 			this.points.pop();
 
 		// cleanup points if the user drags slowly to avoid unwanted flicks
@@ -2234,7 +2637,7 @@ joScroller.extend(joContainer, {
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
-		var top = node.offsetTop;
+		var top = this.getTop();
 		
 		joEvent.stop(e);
 
@@ -2246,21 +2649,17 @@ joScroller.extend(joContainer, {
 		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
 		
 		// if the velocity is "high" then it was a flick
-		if (Math.abs(dy) > 5 && !this.quickSnap) {
+		if (Math.abs(dy) > 4 && !this.quickSnap) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 
 			// we want to move quickly if we're going to land past
 			// the top or bottom
 			if (flick + top < max || flick + top > 0) {
-				console.log('flickfast');
 				joDOM.addCSSClass(node, "flickfast");
 			}
 			else {
-				console.log('flick');
 				joDOM.addCSSClass(node, "flick");
 			}
-
-			this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
 
 			this.scrollBy(flick, false);
 		}
@@ -2275,7 +2674,7 @@ joScroller.extend(joContainer, {
 	
 	scrollBy: function(y, test) {
 		var node = this.container.firstChild;
-		var top = node.offsetTop;
+		var top = this.getTop();
 
 		if (isNaN(top))
 			top = 0;
@@ -2293,15 +2692,13 @@ joScroller.extend(joContainer, {
 		else if (dy < max - this.bump)
 			dy = max - this.bump;
 
-		if (test) {
-			if (ody != dy)
-				this.quickSnap = true;
-			else
-				this.quickSnap = false;
-		}
+		if (test)
+			this.quickSnap = (ody != dy);
 
-		if (node.offsetTop != dy)
-			node.style.top = dy + "px";
+		this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
+
+		if (this.getTop() != dy)
+			this.setTop(dy);
 	},
 
 	scrollTo: function(y, instant) {
@@ -2321,7 +2718,7 @@ joScroller.extend(joContainer, {
 
 			var y = top;
 
-			var top = node.offsetTop;
+			var top = this.getTop();
 			var bottom = top - this.container.offsetHeight;
 
 			if (t - h < bottom)
@@ -2344,16 +2741,14 @@ joScroller.extend(joContainer, {
 			joDOM.removeCSSClass(node, 'flickback');
 		}
 
-		node.style.top = y + "px";
+		this.setTop(y);
 	},
 
 	// called after a flick transition to snap the view
 	// back into our container if necessary.
 	snapBack: function() {
 		var node = this.container.firstChild;
-		var top = parseInt(node.style.top);
-		if (isNaN(top))
-			top = 0;
+		var top = this.getTop();
 
 		var dy = top;
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
@@ -2365,11 +2760,53 @@ joScroller.extend(joContainer, {
 		joDOM.addCSSClass(node, 'flickback');
 		
 		if (dy > 0)
-			node.style.top = "0px";
+			this.setTop(0);
 		else if (dy < max)
-			node.style.top = max + "px";
+			this.setTop(max);
+	},
+	
+	setTop: function(y) {
+		var node = this.container.firstChild;
+
+		// compatible
+//		node.style.top = y + "px";
+		
+		// faster
+		if (y == 0)
+			node.style.webkitTransform = "";
+		else
+			node.style.webkitTransform = "translate3d(0, " + y + "px, 0)";
+
+		node.jotop = y;
+	},
+	
+	getTop: function() {
+		return this.container.firstChild.jotop || 0;
+	},
+	
+	setData: function(data) {
+		joContainer.prototype.setData.apply(this, arguments);
 	}
 });
+/**
+	joDivider
+	=========
+	
+	Simple visual divider.
+	
+	Extends
+	-------
+	
+	- joView
+
+*/
+joDivider = function(data) {
+	joView.apply(this, arguments);
+};
+joDivider.extend(joView, {
+	tagName: "jodivider"
+});
+
 /**
 	joExpando
 	=========
@@ -2453,174 +2890,333 @@ joExpandoTitle.extend(joView, {
 	}
 });
 /**
-	joControl
+	joFlexrow
 	=========
 	
-	Interactive, data-driven control class which may be bound to a joDataSource,
-	can receive focus events, and can fire off important events which other objects
-	can listen for and react to.
+	Uses the box model to stretch elements evenly across a row.
 	
 	Extends
 	-------
 	
-	- joView
+	- joContainer
+
+*/
+joFlexrow = function(data) {
+	joContainer.apply(this, arguments);
+};
+joFlexrow.extend(joContainer, {
+	tagName: "joflexrow"
+});
+
+/**
+	joFlexcol
+	=========
 	
-	Events
-	------
+	Uses the box model to stretch elements evenly across a column.
 	
-	- `changeEvent`
-	- `selectEvent`
+	Extends
+	-------
+	
+	- joContainer
+
+*/
+joFlexcol = function(data) {
+	joContainer.apply(this, arguments);
+};
+joFlexcol.extend(joContainer, {
+	tagName: "joflexcol"
+});
+/**
+	joFocus
+	=======
+	
+	Singleton which manages global input and event focus among joControl objects.
 	
 	Methods
 	-------
 	
-	- `enable()`
-	- `disable()`
-	- `focus()`
-	- `blur()`
-	- `setDataSource(joDataSource)`
-	- `setEvents()`
+	- `set(joControl)`
 	
-	CSS
-	---
+	  Unsets focus on the last control, and sets focus on the control passed in.
 	
-	`div.control`
+	- `clear()`
+	
+	  Unsets focus on the last control.
+	
+	- `refresh()`
+	
+	  Sets focus back to the last control that was focused.
 
 */
-joControl = function(data) {
-	this.selectEvent = new joSubject(this);
-	this.enabled = true;
 
-	if (data instanceof joDataSource) {
-		// we want to bind directly to some data
-		joView.call(this);
-		this.setDataSource(data);
-	}
-	else {
-		joView.apply(this, arguments);
+joFocus = {
+	last: null,
+
+	set: function(control) {
+		if (this.last && this.last !== control)
+			this.last.blur();
+	
+		if (control && control instanceof joControl) {
+			control.focus();
+			this.last = control;
+		}
+	},
+	
+	get: function(control) {
+		return this.last;
+	},
+	
+	refresh: function() {
+//		joLog("joFocus.refresh()");
+		if (this.last)
+			this.last.focus();
+	},
+	
+	clear: function() {
+		this.set();
 	}
 };
-joControl.extend(joView, {
-	tagName: "jocontrol",
-	
-	setEvents: function() {
-		// not sure what we want to do here, want to use
-		// gesture system, but that's not defined
-		joEvent.on(this.container, "click", this.onMouseDown, this);
-		joEvent.on(this.container, "blur", this.onBlur, this);
-		joEvent.on(this.container, "focus", this.onFocus, this);
-	},
-	
-	onMouseDown: function(e) {
-		this.select(e);
-	},
-	
-	select: function(e) {
-		if (e)
-			joEvent.stop(e);
 
-		this.selectEvent.fire(this.data);
-	},
+/**
+	joFooter
+	======
 	
-	enable: function() {
-		joDOM.removeCSSClass(this.container, 'disabled');
-		this.container.contentEditable = true;
-		this.enabled = true;
-	},
+	Attempt to make a filler object which pushed subsequent joView objects
+	further down in the container if possible (to attach its contents to
+	the bottom of a card, for eaxmple).
 	
-	disable: function() {
-		joDOM.addCSSClass(this.container, 'disabled');
-		this.container.contentEditable = false;
-		this.enabled = false;
-	},
+	> This behavior requires a working box model to attach properly to the bottom
+	> of your container view.
+	
+	Extends
+	-------
+	
+	- joContainer
 
-	onFocus: function(e) {
-		joLog("onFocus", this.data);
-		joEvent.stop(e);
-		joFocus.set(this);
-	},
-	
-	onBlur: function(e) {
-		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
-		joLog("onBlur", this.data);
-		joEvent.stop(e);
-		this.blur();
-		this.changeEvent.fire(this.data);
-	},
-	
-	focus: function(e) {
-		joDOM.addCSSClass(this.container, 'focus');
-		if (!e)
-			this.container.focus();
-	},
-	
-	blur: function() {
-		joDOM.removeCSSClass(this.container, 'focus');
-	},
-	
-	setDataSource: function(source) {
-		this.dataSource = source;
-//		this.refresh();
-		source.changeEvent.subscribe(this.setData, this);
-	}
+*/
+joFooter = function(data) {
+	joContainer.apply(this, arguments);
+};
+joFooter.extend(joContainer, {
+	tagName: "jofooter"
 });
 /**
-	joButton
-	========
+	joGesture
+	=========
 	
-	Button control.
+	Experimental global gesture handler (keyboard, dpad, back, home, flick?).
+	This needs a lot more fleshing out, so it's not (quite) ready for general
+	consumption.
 	
-		// simple invocation
-		var x = new joButton("Done");
+	Events
+	------
+	
+	- `upEvent`
+	- `downEvent`
+	- `leftEvent`
+	- `rightEvent`
+	- `backEvent`
+	- `forwardEvent`
+	- `homeEvent`
+	- `closeEvent`
+	- `activateEvent`
+	- `deactivateEvent`
+
+	> Note that the events setup here are for the browser
+	> or webOS. The `setEvents` method most likely needs to change
+	> based on which OS you're running, although looking more deeply
+	> into PhoneGap event layer.
+	
+*/
+joGesture = {
+	load: function() {
+		this.upEvent = new joSubject(this);
+		this.downEvent = new joSubject(this);
+		this.leftEvent = new joSubject(this);
+		this.rightEvent = new joSubject(this);
+		this.forwardEvent = new joSubject(this);
+		this.backEvent = new joSubject(this);
+		this.homeEvent = new joSubject(this);
+		this.closeEvent = new joSubject(this);
+		this.activateEvent = new joSubject(this);
+		this.deactivateEvent = new joSubject(this);
 		
-		// optionally pass in a CSS classname to style the button
-		var y = new joButton("Cancel", "cancelbutton");
+		this.setEvents();
+	},
+	
+	// by default, set for browser
+	setEvents: function() {
+		joEvent.on(document.body, "keydown", this.onKeyDown, this);
+		joEvent.on(document.body, "keyup", this.onKeyUp, this);
 		
-		// like other controls, you can pass in a joDataSource
-		// which could be useful, so why not
-		var z = new joButton(joPreference.bind("processname"));
+		joEvent.on(document.body, "unload", this.closeEvent, this);
+		joEvent.on(window, "activate", this.activateEvent, this);
+		joEvent.on(window, "deactivate", this.deactivateEvent, this);
+	},
+
+	onKeyUp: function(e) {
+		if (!e)
+			var e = window.event;
+	
+		if (e.keyCode == 18) {
+			this.altkey = false;
+
+			return;
+		}
+
+		if (e.keyCode == 27) {
+			if (jo.flag.stopback) {
+				joEvent.stop(e);
+				joEvent.preventDefault(e);
+			}
+
+			this.backEvent.fire("back");
+			return;
+		}
+
+		if (!this.altkey)
+			return;
+		
+		joEvent.stop(e);
+		
+		switch (e.keyCode) {
+			case 37:
+				this.leftEvent.fire("left");
+				break;
+			case 38:
+				this.upEvent.fire("up");
+				break;
+			case 39:
+				this.rightEvent.fire("right");
+				break;
+			case 40:
+				this.downEvent.fire("down");
+				break;
+			case 27:
+				this.backEvent.fire("back");
+				break;
+			case 13:
+				this.forwardEvent.fire("forward");
+				break;
+		}
+	},
+	
+	onKeyDown: function(e) {
+		if (!e)
+			var e = window.event;
+			
+		if (e.keyCode == 27) {
+			joEvent.stop(e);
+			joEvent.preventDefault(e);
+		}
+		else if (e.keyCode == 13 && joFocus.get() instanceof joInput) {
+			joEvent.stop(e);
+		}
+		else if (e.keyCode == 18) {
+			this.altkey = true;
+		}
+		
+		return;
+	}
+};
+/**
+	joGroup
+	=======
+	
+	Group of controls, purely visual.
+	
+	Extends
+	-------
+
+	- joContainer
+	
+*/
+joGroup = function(data) {
+	joContainer.apply(this, arguments);
+};
+joGroup.extend(joContainer, {
+	tagName: "jogroup"
+});
+
+
+/**
+	joHTML
+	======
+	
+	A simple HTML content control. One interesting feature is it intercepts all
+	`<a>` tag interactions and fires off a `selectEvent` with the contents of
+	the tag's `href` property.
+	
+	This is a relatively lightweight approach to displaying arbitrary HTML
+	data inside your app, but it is _not_ recommended you allow external
+	JavaScript inside the HTML chunk in question.
+	
+	Also keep in mind that your app document already _has_ `<html>`, `<head>` and
+	`<body>` tags. When you use the `setData()` method on this view, _make sure
+	you don't use any of these tags_ to avoid weird issues.
+	
+	> In a future version, it is feasible to load in stylesheets references in
+	> the HTML document's `<head>` section. For now, that entire can of worms
+	> will be avoided, and it's left up to you, the developer, to load in any
+	> required CSS files using `joDOM.loadCSS()`.
 	
 	Extends
 	-------
 	
 	- joControl
 	
-	Methods
-	-------
+	Use
+	---
 	
-	- enable()
-	- disable()
+		// simple html string
+		var x = new joHTML("<h1>Hello World!</h1><p>Sup?</p>");
+		
+		// use a joDataSource like a file loader
+		var y = new joHTML(new joFileSource("sample.html"));
 	
 */
-
-joButton = function(data, classname) {
-	// call super
+joHTML = function(data) {
 	joControl.apply(this, arguments);
-	
-	if (classname)
-		this.container.className = classname;
 };
-joButton.extend(joControl, {
-	tagName: "jobutton",
+joHTML.extend(joControl, {
+	tagName: "johtml",
 	
-	createContainer: function() {
-		var o = joDOM.create(this);
-		o.setAttribute("tabindex", "1");
+	setEvents: function() {
+		// limited events, no focus for example
+		joEvent.on(this.container, "click", this.onClick, this);
+	},
+	
+	// special sauce -- we want to trap any a href click events
+	// and return them in our select event -- don't need to be
+	// refreshing our entire page, after all
+	onClick: function(e) {
+		joEvent.stop(e);
+		joEvent.preventDefault(e);
 		
-		return o;
-	},
+		// figure out what was clicked, look for an href
+		var container = this.container;
+		var hrefnode = findhref(joEvent.getTarget(e));
+		
+		if (hrefnode) {
+			// whoa we have an <a> tag clicked
+			this.selectEvent.fire(hrefnode.href);
+		}
+		
+		function findhref(node) {
+			if (!node)
+				return null;
 
-	enable: function() {
-		this.container.setAttribute("tabindex", "1");
-		joControl.prototype.enable.call(this);
-	},
-	
-	disable: function() {
-		// this doesn't seem to work in safari doh
-		this.container.removeAttribute("tabindex");
-		joControl.prototype.disable.call(this);
+			if (node.href)
+				return node;
+				
+			if (typeof node.parentNode !== "undefined" && node.parentNode !== container)
+				return findhref(node.parentNode);
+			else
+				return null;
+		}
 	}
 });
+
 /**
 	joInput
 	=======
@@ -2738,519 +3334,23 @@ joInput.extend(joControl, {
 });
 
 /**
-	joTextarea
-	==========
-	
-	Multi-line text input control. When you instantiate or use `setData()`, you can
-	either pass in an initial value or a reference to a joDataSource object which it,
-	like other joControl instances, will bind to.
-	
-	Basically, this is just a multi-line version of joInput.
-	
-	Use
-	---
-	
-		// simple multi-line field
-		var sample = "This is some sample text to edit.";
-		var x = new joTextarea(sample);
-		
-		// setting the style inline using chaining
-		var f = new joTextarea(sample).setStyle({
-			minHeight: "100px",
-			maxHeight: "300px"
-		});
-		
-		// adding a simple change event handler using chaining
-		var h = new joTextarea(sample).changeEvent.subscribe(function(data) {
-			joLog("text area changed:", data);
-		});
-
-		// attach the value to a preference
-		var y = new joTextarea(joPreference.bind("username"));
-		
-		// attach input control to a custom joDataSource
-		var username = new joDataSource("bob");
-		var z = new joTextarea(username);
-	
-	Extends
-	-------
-	
-	- joInput
-	
-*/
-joTextarea = function(data) {
-	joInput.apply(this, arguments);
-};
-joTextarea.extend(joInput, {
-	tagName: "jotextarea",
-	
-	onKeyDown: function(e) {
-		// here we want the enter key to work, overriding joInput's behavior
-		return false;
-	}
-});
-
-/**
-	joFocus
+	joLabel
 	=======
 	
-	Singleton which manages global input and event focus among joControl objects.
-	
-	Methods
-	-------
-	
-	- `set(joControl)`
-	
-	  Unsets focus on the last control, and sets focus on the control passed in.
-	
-	- `clear()`
-	
-	  Unsets focus on the last control.
-	
-	- `refresh()`
-	
-	  Sets focus back to the last control that was focused.
-
-*/
-
-joFocus = {
-	last: null,
-
-	set: function(control) {
-		if (this.last && this.last !== control)
-			this.last.blur();
-	
-		if (control && control instanceof joControl) {
-			control.focus();
-			this.last = control;
-		}
-	},
-	
-	get: function(control) {
-		return this.last;
-	},
-	
-	refresh: function() {
-//		joLog("joFocus.refresh()");
-		if (this.last)
-			this.last.focus();
-	},
-	
-	clear: function() {
-		this.set();
-	}
-};
-
-/**
-	joList
-	=======
-	
-	A widget class which expects an array of any data type and renders the
-	array as a list. The list control handles DOM interactions with only a
-	single touch event to determine which item was selected.
+	Label view, purely a visual presentation. Usually placed in front
+	of input fields and other controls.
 	
 	Extends
 	-------
 	
-	- joControl
+	- joView
 	
-	Events
-	------
-	
-	- `selectEvent`
-	
-	  Fired when an item is selected from the list. The data in the call is the
-	  index of the item selected.
-	
-	- `changeEvent`
-	
-	  Fired when the data is changed for the list.
-	
-	Methods
-	-------
-
-	- `formatItem(data, index)`
-	
-	  When subclassing or augmenting, this is the method responsible for
-	  rendering a list item's data.
-	
-	- `compareItems(a, b)`
-	
-	  For sorting purposes, this method is called and should be overriden
-	  to support custom data types.
-	
-			// general logic and approriate return values
-			if (a > b)
-				return 1;
-			else if (a == b)
-				return 0;
-			else
-				return -1
-
-	- `setIndex(index)`
-
-	- `getIndex(index)`
-	
-	- `refresh()`
-	
-	- `setDefault(message)`
-	
-	  Will present this message (HTML string) when the list is empty.
-	  Normally the list is empty; this is a convenience for "zero state"
-	  UI requirements.
-
-	- `getNodeData(index)`
-	
-	- `getLength()`
-	
-	- `next()`
-
-	- `prev()`
-	
-	- `setAutoSort(boolean)`
-
 */
-joList = function(container, data) {
-	this.autoSort = false;
-	this.lastNode = null;
-	this.index = 0;
-	
+joLabel = function(data) {
 	joControl.apply(this, arguments);
 };
-joList.extend(joControl, {
-	tagName: "jolist",
-	data: null,
-	defaultMessage: "",
-	
-	setDefault: function(msg) {
-		this.defaultMessage = msg;
-		
-		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
-			if (typeof msg === 'object') {
-				this.innerHTML = "";
-				if (msg instanceof joView)
-					this.container.appendChild(msg.container);
-				else if (msg instanceof HTMLElement)
-					this.container.appendChild(msg);
-			}
-			else {
-				this.innerHTML = msg;
-			}
-		}
-		
-		return this;
-	},
-	
-	draw: function() {
-		var html = "";
-		var length = 0;
-
-		if ((typeof this.data === 'undefined' || !this.data.length) && this.defaultMessage) {
-			this.container.innerHTML = this.defaultMessage;
-			return;
-		}
-
-		for (var i = 0, l = this.data.length; i < l; i++) {
-			var element = this.formatItem(this.data[i], i, length);
-
-			if (element == null)
-				continue;
-			
-			if (typeof element == "string")
-				html += element;
-			else
-				this.container.appendChild((element instanceof joView) ? element.container : element);
-
-			++length;
-		}
-
-		// support setting the contents with innerHTML in one go,
-		// or getting back HTMLElements ready to append to the contents
-		if (html.length)
-			this.container.innerHTML = html;
-		
-		return;
-	},
-
-	deselect: function() {
-		if (typeof this.container == 'undefined'
-		|| !this.container['childNodes'])
-			return;
-
-		var node = this.getNode(this.index);
-		if (node) {
-			if (this.lastNode) {
-				joDOM.removeCSSClass(this.lastNode, "selected");
-				this.index = null;
-			}
-		}
-	},
-	
-	setIndex: function(index, silent) {
-		joLog("setIndex", index);
-		this.index = index;
-
-		if (typeof this.container == 'undefined'
-		|| !this.container['childNodes'])
-			return;
-
-		var node = this.getNode(this.index);
-		if (node) {
-			if (this.lastNode)
-				joDOM.removeCSSClass(this.lastNode, "selected");
-
-			joDOM.addCSSClass(node, "selected");
-			this.lastNode = node;
-		}
-		
-		if (index >= 0 && !silent)
-			this.fireSelect(index);
-	},
-	
-	getNode: function(index) {
-		return this.container.childNodes[index];
-	},
-
-	fireSelect: function(index) {
-		this.selectEvent.fire(index);
-	},
-	
-	getIndex: function() {
-		return this.index;
-	},
-	
-	onMouseDown: function(e) {
-		var node = joEvent.getTarget(e);
-		var index = -1;
-		
-		while (index == -1 && node !== this.container) {
-			index = node.getAttribute("index") || -1;
-			node = node.parentNode;
-		}
-
-		if (index >= 0) {
-			joEvent.stop(e);
-
-			this.setIndex(index);
-		}
-	},
-	
-	refresh: function() {
-		this.index = 0;
-		this.lastNode = null;
-
-		if (this.autoSort)
-			this.sort();
-
-		joControl.prototype.refresh.apply(this);
-	},
-
-	getNodeData: function(index) {
-		if (this.data && this.data.length && index >= 0 && index < this.data.length)
-			return this.data[index];
-		else
-			return null;
-	},
-	
-	getLength: function() {
-		return this.length || this.data.length || 0;
-	},
-	
-	sort: function() {
-		this.data.sort(this.compareItems);
-	},
-	
-	getNodeIndex: function(element) {
-		var index = element.getAttribute('index');
-		if (typeof index !== "undefined" && index != null)
-		 	return parseInt(index)
-		else
-			return -1;
-	},
-	
-	formatItem: function(itemData, index) {
-		var element = document.createElement('jolistitem');
-		element.innerHTML = itemData;
-		element.setAttribute("index", index);
-
-		return element;
-	},
-
-	compareItems: function(a, b) {
-		if (a > b)
-			return 1;
-		else if (a == b)
-			return 0;
-		else
-			return -1;
-	},
-
-	setAutoSort: function(state) {
-		this.autoSort = state;
-	},
-	
-	next: function() {
-		if (this.getIndex() < this.getLength() - 1)
-			this.setIndex(this.index + 1);
-	},
-	
-	prev: function() {
-		if (this.getIndex() > 0)
-			this.setIndex(this.index - 1);
-	}
-});
-/**
-	joTabBar
-	=========
-	
-	Tab bar widget.
-	
-	Extends
-	-------
-	
-	- joList
-
-	Model
-	-----
-	
-	Data is expected to be an array of `{ type: "", label: ""}` objects,
-	in the display order for the bar.
-
-*/
-joTabBar = function() {
-	joList.apply(this, arguments);
-};
-joTabBar.extend(joList, {
-	tagName: "jotabbar",
-	
-	formatItem: function(data, index) {
-		var o = document.createElement("jotab");
-
-		if (data.label)
-			o.innerHTML = data.label;
-		
-		if (data.type)
-			o.className = data.type;
-
-		o.setAttribute("index", index);
-		
-		return o;
-	}
-});
-/**
-	joTitle
-	=======
-	
-	Title view, purely a visual presentation.
-	
-	Extends
-	-------
-	
-	- joContainer
-
-*/
-joTitle = function(data) {
-	joContainer.apply(this, arguments);
-};
-joTitle.extend(joContainer, {
-	tagName: "jotitle"
-});
-
-/**
-	joCaption
-	=========
-	
-	Basically, a paragraph of text.
-	
-	Extends
-	-------
-	
-	- joControl
-	
-*/
-joCaption = function(data) {
-	joControl.apply(this, arguments);
-};
-joCaption.extend(joControl, {
-	tagName: "jocaption"
-});
-
-/**
-	joHTML
-	======
-	
-	A simple HTML content control. One interesting feature is it intercepts all
-	`<a>` tag interactions and fires off a `selectEvent` with the contents of
-	the tag's `href` property.
-	
-	This is a relatively lightweight approach to displaying arbitrary HTML
-	data inside your app, but it is _not_ recommended you allow external
-	JavaScript inside the HTML chunk in question.
-	
-	Also keep in mind that your app document already _has_ `<html>`, `<head>` and
-	`<body>` tags. When you use the `setData()` method on this view, _make sure
-	you don't use any of these tags_ to avoid weird issues.
-	
-	> In a future version, it is feasible to load in stylesheets references in
-	> the HTML document's `<head>` section. For now, that entire can of worms
-	> will be avoided, and it's left up to you, the developer, to load in any
-	> required CSS files using `joDOM.loadCSS()`.
-	
-	Extends
-	-------
-	
-	- joControl
-	
-	Use
-	---
-	
-		// simple html string
-		var x = new joHTML("<h1>Hello World!</h1><p>Sup?</p>");
-		
-		// use a joDataSource like a file loader
-		var y = new joHTML(new joFileSource("sample.html"));
-	
-*/
-joHTML = function(data) {
-	joControl.apply(this, arguments);
-};
-joHTML.extend(joControl, {
-	tagName: "johtml",
-	
-	setEvents: function() {
-		// limited events, no focus for example
-		joEvent.on(this.container, "click", this.onClick, this);
-	},
-	
-	// special sauce -- we want to trap any a href click events
-	// and return them in our select event -- don't need to be
-	// refreshing our entire page, after all
-	onClick: function(e) {
-		joEvent.stop(e);
-		joEvent.preventDefault(e);
-		
-		// figure out what was clicked, look for an href
-		var container = this.container;
-		var hrefnode = findhref(joEvent.getTarget(e));
-		
-		if (hrefnode) {
-			// whoa we have an <a> tag clicked
-			this.selectEvent.fire(hrefnode.href);
-		}
-		
-		function findhref(node) {
-			if (!node)
-				return null;
-
-			if (node.href)
-				return node;
-				
-			if (typeof node.parentNode !== "undefined" && node.parentNode !== container)
-				return findhref(node.parentNode);
-			else
-				return null;
-		}
-	}
+joLabel.extend(joControl, {
+	tagName: "jolabel"
 });
 
 /**
@@ -3340,114 +3440,6 @@ joMenu.extend(joList, {
 	}
 });
 /**
-	joSound
-	========
-	
-	Play preloaded sound effects using the HTML5 `Audio` object. This module could
-	be wildly different for various platforms. Be warned.
-
-	Methods
-	-------
-	
-	- `play()`
-	- `pause()`
-	- `rewind()`
-	- `load()`
-	- `setLoop(n)`
-	
-	  Tell the joSound to automatically loop `n` times. Set to `-1` to loop
-	  continuously until `pause()`.
-	
-	Events
-	------
-	
-	- `endedEvent`
-	- `errorEvent`
-
-*/
-joSound = function(filename, repeat) {
-	this.endedEvent = new joSubject(this);
-	this.errorEvent = new joSubject(this);
-	
-	if (typeof Audio == 'undefined')
-		return;
-
-	this.filename = filename;
-	this.audio = new Audio();
-	this.audio.autoplay = false;
-	
-	if (!this.audio)
-		return;
-		
-	joYield(function() {
-		this.audio.src = filename;
-		this.audio.load();
-	}, this, 5);
-	
-	this.setRepeatCount(repeat);
-
-	joEvent.on(this.audio, "ended", this.onEnded, this);
-
-//	this.pause();
-};
-joSound.prototype = {
-	play: function() {
-		if (!this.audio)
-			return;
-
-		this.audio.play();
-	},
-
-	onEnded: function(e) {
-		this.endedEvent.fire(this.repeat);
-
-		if (++this.repeat < this.repeatCount)
-			this.play();
-		else
-			this.repeat = 0;
-	},
-	
-	setRepeatCount: function(repeat) {
-		this.repeatCount = repeat;
-		this.repeat = 0;
-	},
-	
-	pause: function() {
-		if (!this.audio)
-			return;
-
-		this.audio.pause();
-	},
-
-	rewind: function() {
-		if (!this.audio)
-			return;
-
-		try {
-			this.audio.currentTime = 0.0;			
-		}
-		catch (e) {
-			joLog("joSound: can't rewind...");
-		}
-		
-		this.repeat = 0;
-	},
-
-	stop: function() {
-		this.pause();
-		this.rewind();
-		
-		this.repeat = 0;
-	},
-	
-	setVolume: function(vol) {
-		if (!this.audio || vol < 0 || vol > 1)
-			return;
-
-		this.audio.volume = vol;
-	}
-};
-/**
 	joPasswordInput
 	===============
 	
@@ -3469,333 +3461,57 @@ joPasswordInput.extend(joInput, {
 	className: "password"
 });
 /**
-	joDivider
-	=========
-	
-	Simple visual divider.
-	
-	Extends
-	-------
-	
-	- joView
-
-*/
-joDivider = function(data) {
-	joView.apply(this, arguments);
-};
-joDivider.extend(joView, {
-	tagName: "jodivider"
-});
-
-/**
-	joLabel
+	joPopup
 	=======
 	
-	Label view, purely a visual presentation. Usually placed in front
-	of input fields and other controls.
-	
-	Extends
-	-------
-	
-	- joView
-	
-*/
-joLabel = function(data) {
-	joControl.apply(this, arguments);
-};
-joLabel.extend(joControl, {
-	tagName: "jolabel"
-});
-
-/**
-	joTable
-	=======
-	
-	Table control.
-	
-	Extends
-	-------
-	
-	- joList
+	A simple popup control. Pass in the UI contents as you would
+	any other subclass of joContainer (e.g. joCard).
 	
 	Methods
 	-------
 	
-	- setCell(row, column)
+	- `show()`
+	- `hide()`
 	
-	  Sets the active cell for the table, also makes it editiable and sets focus.
-	
-	- getRow(), getCol()
-	
-	  Return the current row or column
-	
-	Use
-	---
-	
-		var x = new joTable([
-			["Nickname", "Phone", "Email"],
-			["Bob", "555-1234", "bob@bobco.not"],
-			["Jo", "555-3456", "jo@joco.not"],
-			["Jane", "555-6789", "jane@janeco.not"]
-		]);
-		
-		s.selectEvent.subscribe(function(cell) {
-			joLog("Table cell clicked:", cell.row, cell.col);
-		});
-*/
+	  These do what you'd expect.
 
-joTable = function(data) {
-	joList.apply(this, arguments);
-};
-joTable.extend(joList, {
-	tagName: "jotable",
-	
-	// default row formatter
-	formatItem: function(row, index) {
-		var tr = document.createElement("tr");
-		
-		for (var i = 0, l = row.length; i < l; i++) {
-			var o = document.createElement(index ? "td" : "th");
-			o.innerHTML = row[i];
-			
-			// this is a little brittle, but plays nicely with joList's select event
-			o.setAttribute("index", index * l + i);
-			tr.appendChild(o);
-		}
-		
-		return tr;
-	},
-
-	// override joList's getNode
-	getNode: function(index) {
-		var row = this.getRow(index);
-		var col = this.getCol(index);
-		
-		return this.container.childNodes[row].childNodes[col];
-	},
-	
-	getRow: function(index) {
-		if (typeof index == "undefined")
-			var index = this.getIndex();
-			
-		var rowsize = this.data[0].length;
-		return Math.floor(index / rowsize);
-	},
-
-	getCol: function(index) {
-		if (typeof index == "undefined")
-			var index = this.getIndex();
-			
-		var rowsize = this.data[0].length;
-		return index % rowsize;
-	}	
-});
-
-/**
-	joFlexrow
-	=========
-	
-	Uses the box model to stretch elements evenly across a row.
-	
 	Extends
 	-------
-	
+
 	- joContainer
+	
+	Events
+	------
+	
+	- `showEvent`
+	- `hideEvent`
+	
 
 */
-joFlexrow = function(data) {
-	joContainer.apply(this, arguments);
-};
-joFlexrow.extend(joContainer, {
-	tagName: "joflexrow"
-});
 
-/**
-	joFlexcol
-	=========
+joPopup = function() {
+	this.showEvent = new joSubject(this);
+	this.hideEvent = new joSubject(this);
 	
-	Uses the box model to stretch elements evenly across a column.
-	
-	Extends
-	-------
-	
-	- joContainer
-
-*/
-joFlexcol = function(data) {
 	joContainer.apply(this, arguments);
 };
-joFlexcol.extend(joContainer, {
-	tagName: "joflexcol"
-});
-/**
-	joBusy
-	======
+joPopup.extend(joContainer, {
+	tagName: "jopopup",
 	
-	The idea here is to make a generic "spinner" control which you
-	can overlay on other controls. It's still in flux, don't use it
-	just yet.
-	
-	Extends
-	-------
-	
-	- joView
-	
-	Methods
-	-------
-	
-	- `setMessage(status)`
-	
-	  You can update the status message in this busy box so users
-	  have a better idea why the busy box is showing.
-*/
-	
-joBusy = function(data) {
-	joContainer.apply(this, arguments);
-};
-joBusy.extend(joContainer, {
-	tagName: "jobusy",
-	
-	draw: function() {
-		this.container.innerHTML = "";
-		for (var i = 0; i < 9; i++)
-			this.container.appendChild(joDom.create("jobusyblock"));
+	hide: function() {
+		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
+		
+		this.container.className = 'hide';
 	},
 	
-	setMessage: function(msg) {
-		this.message = msg || "";
+	onHide: function() {
+		this.hideEvent.fire();
 	},
 	
-	setEvents: function() {
-		return this;
+	show: function() {
+		this.container.className = 'show';
+		this.showEvent.fire();
 	}
-});
-/**
-	joStackScroller
-	===============
-	
-	What happens when you mix joStack and joScroller? You get this
-	class. Use exactly as you would joStack, only it automatically
-	puts a scroller in the stack as needed. At some point, this
-	might get folded into joStack, but for now it's a special class.
-	
-	It also handles the `scrollTo()` and `scrollBy()` methods from
-	joScroller.
-	
-	Extends
-	-------
-	- joStack
-	- joScroller
-*/
-
-joStackScroller = function(data) {
-	this.scrollers = [
-		new joScroller(),
-		new joScroller()
-	];
-	this.scroller = this.scrollers[0];
-
-	joStack.apply(this, arguments);
-//	console.log(this.scroller);
-	this.container.appendChild(this.scroller.container);
-//	console.log(this.container);
-};
-joStackScroller.extend(joStack, {
-	scrollerindex: 1,
-	scroller: null,
-	scrollers: [],
-	
-	switchScroller: function() {
-		this.scrollerindex = this.scrollerindex ? 0 : 1;
-		this.scroller = this.scrollers[this.scrollerindex];
-	},
-	
-	getLastScroller: function() {
-		return this.scrollers[this.scrollerindex ? 0 : 1];
-	},
-	
-	scrollTo: function(something) {
-		this.scroller.scrollTo(something);
-	},
-	
-	scrollBy: function(y) {
-		this.scroller.scrollBy(y);
-	},
-
-	getChildStyleContainer: function() {
-		return this.scroller.container;
-	},
-	
-	getContentContainer: function() {
-		return this.scroller.container;
-	},
-
-	appendChild: function(child) {
-		var scroller = this.scroller;
-		scroller.setData(child);
-		this.container.appendChild(scroller.container);
-	},
-	
-	getChild: function() {
-		return this.scroller.container || null;
-	},
-
-	forward: function() {
-		if (this.index < this.data.length - 1)
-			this.switchScroller();
-			
-		joStack.prototype.forward.call(this);
-	},
-	
-	back: function() {
-		if (this.index > 0)
-			this.switchScroller();
-
-		joStack.prototype.forward.call(this);
-	},
-
-	home: function() {
-		this.switchScroller();
-		joStack.prototype.push.call(this);
-	},
-		
-	push: function(o) {
-		this.switchScroller();
-
-		joDOM.removeCSSClass(o, 'flick');
-		joDOM.removeCSSClass(o, 'flickback');
-
-		this.scroller.setData(o);
-		this.scroller.scrollTo(0, true);
-
-		joStack.prototype.push.call(this, o);
-	},
-	
-	pop: function() {
-		if (this.data.length > this.locked)
-			this.switchScroller();
-
-		joStack.prototype.pop.call(this);
-	}
-});
-
-/**
-	joToolbar
-	=========
-
-	Locks UI controls to the bottom of whatever you put this container into.
-	
-	Extends
-	-------
-	
-	- joContainer
-
-*/
-joToolbar = function(data) {
-	joContainer.apply(this, arguments);
-};
-joToolbar.extend(joContainer, {
-	tagName: "jotoolbar"
 });
 /**
 	joScreen
@@ -4034,55 +3750,431 @@ joShim.extend(joContainer, {
 	}
 });
 /**
-	joPopup
-	=======
+	joSound
+	========
 	
-	A simple popup control. Pass in the UI contents as you would
-	any other subclass of joContainer (e.g. joCard).
-	
+	Play preloaded sound effects using the HTML5 `Audio` object. This module could
+	be wildly different for various platforms. Be warned.
+
 	Methods
 	-------
 	
-	- `show()`
-	- `hide()`
+	- `play()`
+	- `pause()`
+	- `rewind()`
+	- `load()`
+	- `setLoop(n)`
 	
-	  These do what you'd expect.
-
-	Extends
-	-------
-
-	- joContainer
+	  Tell the joSound to automatically loop `n` times. Set to `-1` to loop
+	  continuously until `pause()`.
 	
 	Events
 	------
 	
-	- `showEvent`
-	- `hideEvent`
-	
+	- `endedEvent`
+	- `errorEvent`
 
 */
-
-joPopup = function() {
-	this.showEvent = new joSubject(this);
-	this.hideEvent = new joSubject(this);
+joSound = function(filename, repeat) {
+	this.endedEvent = new joSubject(this);
+	this.errorEvent = new joSubject(this);
 	
+	if (typeof Audio == 'undefined')
+		return;
+
+	this.filename = filename;
+	this.audio = new Audio();
+	this.audio.autoplay = false;
+	
+	if (!this.audio)
+		return;
+		
+	joYield(function() {
+		this.audio.src = filename;
+		this.audio.load();
+	}, this, 5);
+	
+	this.setRepeatCount(repeat);
+
+	joEvent.on(this.audio, "ended", this.onEnded, this);
+
+//	this.pause();
+};
+joSound.prototype = {
+	play: function() {
+		if (!this.audio)
+			return;
+
+		this.audio.play();
+	},
+
+	onEnded: function(e) {
+		this.endedEvent.fire(this.repeat);
+
+		if (++this.repeat < this.repeatCount)
+			this.play();
+		else
+			this.repeat = 0;
+	},
+	
+	setRepeatCount: function(repeat) {
+		this.repeatCount = repeat;
+		this.repeat = 0;
+	},
+	
+	pause: function() {
+		if (!this.audio)
+			return;
+
+		this.audio.pause();
+	},
+
+	rewind: function() {
+		if (!this.audio)
+			return;
+
+		try {
+			this.audio.currentTime = 0.0;			
+		}
+		catch (e) {
+			joLog("joSound: can't rewind...");
+		}
+		
+		this.repeat = 0;
+	},
+
+	stop: function() {
+		this.pause();
+		this.rewind();
+		
+		this.repeat = 0;
+	},
+	
+	setVolume: function(vol) {
+		if (!this.audio || vol < 0 || vol > 1)
+			return;
+
+		this.audio.volume = vol;
+	}
+};
+/**
+	joStackScroller
+	===============
+	
+	What happens when you mix joStack and joScroller? You get this
+	class. Use exactly as you would joStack, only it automatically
+	puts a scroller in the stack as needed. At some point, this
+	might get folded into joStack, but for now it's a special class.
+	
+	It also handles the `scrollTo()` and `scrollBy()` methods from
+	joScroller.
+	
+	Extends
+	-------
+	- joStack
+	- joScroller
+*/
+
+joStackScroller = function(data) {
+	this.scrollers = [
+		new joScroller(),
+		new joScroller()
+	];
+	this.scroller = this.scrollers[0];
+
+	joStack.apply(this, arguments);
+//	console.log(this.scroller);
+	this.container.appendChild(this.scroller.container);
+//	console.log(this.container);
+};
+joStackScroller.extend(joStack, {
+	scrollerindex: 1,
+	scroller: null,
+	scrollers: [],
+	
+	switchScroller: function() {
+		this.scrollerindex = this.scrollerindex ? 0 : 1;
+		this.scroller = this.scrollers[this.scrollerindex];
+	},
+	
+	getLastScroller: function() {
+		return this.scrollers[this.scrollerindex ? 0 : 1];
+	},
+	
+	scrollTo: function(something) {
+		this.scroller.scrollTo(something);
+	},
+	
+	scrollBy: function(y) {
+		this.scroller.scrollBy(y);
+	},
+
+	getChildStyleContainer: function() {
+		return this.scroller.container;
+	},
+	
+	getContentContainer: function() {
+		return this.scroller.container;
+	},
+
+	appendChild: function(child) {
+		var scroller = this.scroller;
+		scroller.setData(child);
+		this.container.appendChild(scroller.container);
+	},
+	
+	getChild: function() {
+		return this.scroller.container || null;
+	},
+
+	forward: function() {
+		if (this.index < this.data.length - 1)
+			this.switchScroller();
+			
+		joStack.prototype.forward.call(this);
+	},
+	
+	back: function() {
+		if (this.index > 0)
+			this.switchScroller();
+
+		joStack.prototype.forward.call(this);
+	},
+
+	home: function() {
+		this.switchScroller();
+		joStack.prototype.push.call(this);
+	},
+		
+	push: function(o) {
+		this.switchScroller();
+
+		joDOM.removeCSSClass(o, 'flick');
+		joDOM.removeCSSClass(o, 'flickback');
+
+		this.scroller.setData(o);
+		this.scroller.scrollTo(0, true);
+
+		joStack.prototype.push.call(this, o);
+	},
+	
+	pop: function() {
+		if (this.data.length > this.locked)
+			this.switchScroller();
+
+		joStack.prototype.pop.call(this);
+	}
+});
+
+/**
+	joTabBar
+	=========
+	
+	Tab bar widget.
+	
+	Extends
+	-------
+	
+	- joList
+
+	Model
+	-----
+	
+	Data is expected to be an array of `{ type: "", label: ""}` objects,
+	in the display order for the bar.
+
+*/
+joTabBar = function() {
+	joList.apply(this, arguments);
+};
+joTabBar.extend(joList, {
+	tagName: "jotabbar",
+	
+	formatItem: function(data, index) {
+		var o = document.createElement("jotab");
+
+		if (data.label)
+			o.innerHTML = data.label;
+		
+		if (data.type)
+			o.className = data.type;
+
+		o.setAttribute("index", index);
+		
+		return o;
+	}
+});
+/**
+	joTable
+	=======
+	
+	Table control.
+	
+	Extends
+	-------
+	
+	- joList
+	
+	Methods
+	-------
+	
+	- setCell(row, column)
+	
+	  Sets the active cell for the table, also makes it editiable and sets focus.
+	
+	- getRow(), getCol()
+	
+	  Return the current row or column
+	
+	Use
+	---
+	
+		var x = new joTable([
+			["Nickname", "Phone", "Email"],
+			["Bob", "555-1234", "bob@bobco.not"],
+			["Jo", "555-3456", "jo@joco.not"],
+			["Jane", "555-6789", "jane@janeco.not"]
+		]);
+		
+		s.selectEvent.subscribe(function(cell) {
+			joLog("Table cell clicked:", cell.row, cell.col);
+		});
+*/
+
+joTable = function(data) {
+	joList.apply(this, arguments);
+};
+joTable.extend(joList, {
+	tagName: "jotable",
+	
+	// default row formatter
+	formatItem: function(row, index) {
+		var tr = document.createElement("tr");
+		
+		for (var i = 0, l = row.length; i < l; i++) {
+			var o = document.createElement(index ? "td" : "th");
+			o.innerHTML = row[i];
+			
+			// this is a little brittle, but plays nicely with joList's select event
+			o.setAttribute("index", index * l + i);
+			tr.appendChild(o);
+		}
+		
+		return tr;
+	},
+
+	// override joList's getNode
+	getNode: function(index) {
+		var row = this.getRow(index);
+		var col = this.getCol(index);
+		
+		return this.container.childNodes[row].childNodes[col];
+	},
+	
+	getRow: function(index) {
+		if (typeof index == "undefined")
+			var index = this.getIndex();
+			
+		var rowsize = this.data[0].length;
+		return Math.floor(index / rowsize);
+	},
+
+	getCol: function(index) {
+		if (typeof index == "undefined")
+			var index = this.getIndex();
+			
+		var rowsize = this.data[0].length;
+		return index % rowsize;
+	}	
+});
+
+/**
+	joTextarea
+	==========
+	
+	Multi-line text input control. When you instantiate or use `setData()`, you can
+	either pass in an initial value or a reference to a joDataSource object which it,
+	like other joControl instances, will bind to.
+	
+	Basically, this is just a multi-line version of joInput.
+	
+	Use
+	---
+	
+		// simple multi-line field
+		var sample = "This is some sample text to edit.";
+		var x = new joTextarea(sample);
+		
+		// setting the style inline using chaining
+		var f = new joTextarea(sample).setStyle({
+			minHeight: "100px",
+			maxHeight: "300px"
+		});
+		
+		// adding a simple change event handler using chaining
+		var h = new joTextarea(sample).changeEvent.subscribe(function(data) {
+			joLog("text area changed:", data);
+		});
+
+		// attach the value to a preference
+		var y = new joTextarea(joPreference.bind("username"));
+		
+		// attach input control to a custom joDataSource
+		var username = new joDataSource("bob");
+		var z = new joTextarea(username);
+	
+	Extends
+	-------
+	
+	- joInput
+	
+*/
+joTextarea = function(data) {
+	joInput.apply(this, arguments);
+};
+joTextarea.extend(joInput, {
+	tagName: "jotextarea",
+	
+	onKeyDown: function(e) {
+		// here we want the enter key to work, overriding joInput's behavior
+		return false;
+	}
+});
+
+/**
+	joTitle
+	=======
+	
+	Title view, purely a visual presentation.
+	
+	Extends
+	-------
+	
+	- joContainer
+
+*/
+joTitle = function(data) {
 	joContainer.apply(this, arguments);
 };
-joPopup.extend(joContainer, {
-	tagName: "jopopup",
+joTitle.extend(joContainer, {
+	tagName: "jotitle"
+});
+
+/**
+	joToolbar
+	=========
+
+	Locks UI controls to the bottom of whatever you put this container into.
 	
-	hide: function() {
-		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
-		
-		this.container.className = 'hide';
-	},
+	Extends
+	-------
 	
-	onHide: function() {
-		this.hideEvent.fire();
-	},
-	
-	show: function() {
-		this.container.className = 'show';
-		this.showEvent.fire();
-	}
+	- joContainer
+
+*/
+joToolbar = function(data) {
+	joContainer.apply(this, arguments);
+};
+joToolbar.extend(joContainer, {
+	tagName: "jotoolbar"
 });
