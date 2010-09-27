@@ -1,0 +1,17 @@
+echo "Building jo.js"
+
+cd js/core
+cat log.js _jo.js dom.js event.js subject.js time.js yield.js cache.js chain.js clipboard.js local.js > ../jo.js
+
+cd ../data
+cat datasource.js database.js sqldatasource.js script.js preference.js >> ../jo.js
+
+cd ../ui
+cat view.js container.js control.js button.js busy.js list.js busy.js caption.js card.js stack.js scroller.js divider.js expando.js flexrow.js focus.js footer.js gesture.js group.js html.js input.js label.js menu.js passwordinput.js popup.js screen.js shim.js sound.js stackscroller.js tabbar.js table.js textarea.js title.js toolbar.js >> ../jo.js
+
+cd ..
+echo "Done."
+
+echo "Minifying jo.js -> jo_min.js"
+jsmin < jo.js > jo_min.js
+echo "Done."
