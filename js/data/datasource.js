@@ -13,12 +13,19 @@
 	- `set()`
 	- `get()`
 	- `clear()`
+	- `setQuery(...)`
+	- `getQuery()`
+	- `load()`
+	- `refresh()`
 
 	Events
 	------
 
 	- `changeEvent`
 	- `errorEvent`
+	
+	> Under construction, use with care.
+	
 */
 joDataSource = function(data) {
 	this.changeEvent = new joSubject(this);	
