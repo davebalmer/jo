@@ -29,7 +29,7 @@ jsmin < jo.js > jo_min.js
 goto end
 
 :wrongdir
-echo "OOPS: Run this batch file from the jo source directory, e.g. cd jo first."
+echo "OOPS: Run this batch file from the jo source directory, i.e. cd jo first."
 goto end
 
 :end
