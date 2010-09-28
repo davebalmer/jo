@@ -1,5 +1,5 @@
 @echo off
-if exists js\core\_jo.js goto start
+if exist build.bat goto start
 goto wrongdir
 
 :start
@@ -21,7 +21,7 @@ del jo_core.js
 del jo_data.js
 del jo_ui.js
 
-if exists jsmin.exe goto minify
+if exist jsmin.exe goto minify
 echo "jsmin not found, skipping minification."
 cd ..
 goto end
