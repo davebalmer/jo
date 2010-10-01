@@ -69,6 +69,4 @@ All documentation for the framework is based on
 and provides a simple, natural and flexible way to document the code. This simple set
 of `perl` scripts has become its own tool called joDoc.
 
-> Currently joDoc is included with jo, but in the future it will have its own codebase.
-
 - - -

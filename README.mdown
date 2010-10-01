@@ -49,8 +49,3 @@ Important files in the directory tree are:
   These are supplimental doc files which are used by joDoc to build out the
   developer guide portions of the documentation.
 
-Documentation
-=============
-
-Available for now at [http://joapp.com/jo](http://joapp.com/jo).
-

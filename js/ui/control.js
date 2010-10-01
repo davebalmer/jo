@@ -81,14 +81,12 @@ joControl.extend(joView, {
 	},
 
 	onFocus: function(e) {
-		joLog("onFocus", this.data);
 		joEvent.stop(e);
 		joFocus.set(this);
 	},
 	
 	onBlur: function(e) {
 		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
-		joLog("onBlur", this.data);
 		joEvent.stop(e);
 		this.blur();
 		this.changeEvent.fire(this.data);
