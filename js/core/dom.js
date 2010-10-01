@@ -92,6 +92,7 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
+		var node = joDOM.get(node);
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
@@ -108,6 +109,7 @@ joDOM = {
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
+		var node = joDOM.get(node);
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
