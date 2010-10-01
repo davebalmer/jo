@@ -36,6 +36,8 @@ joLog = function() {
 	console.log(strings.join(" "));
 }
 /**
+	- - -
+
 	jo
 	===
 
@@ -314,6 +316,7 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
+		var node = joDOM.get(node);
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
@@ -330,6 +333,7 @@ joDOM = {
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
+		var node = joDOM.get(node);
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
@@ -674,8 +678,10 @@ joSubject.prototype = {
 
 		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
 			var sub = this.subscriptions[i];
-			if (sub.call === call && (typeof sub.observer == "undefined" || sub.observer === observer))
-				sub.slice(i, 1);
+			if (sub.call === call && (typeof sub.observer === 'undefined' || sub.observer === observer)) {
+				this.subscriptions.splice(i, 1);
+				break;
+			}
 		}
 		
 		return this.subject;
@@ -722,6 +728,37 @@ joSubject.prototype = {
 		return this.unsubscribe(call, observer);
 	}
 };
+/**
+	joTime
+	======
+	
+	Time utility functions. More will be added, but only as needed by the
+	framework. There are entire libraries dedicated to extensive datetime
+	manipulation, and Jo doesn't pretend to be one of them.
+	
+	Methods
+	-------
+	
+	- `timestamp()`
+	
+	  Returns a current timestamp in milliseconds from 01/01/1970 from
+	  the system clock.
+
+	Constants
+	---------
+
+	- `SEC`, `MIN`, `HOUR`, `DAY`
+
+	  Convenience global constants which make it easier to manipulate
+	  timestamps.
+	
+	Use
+	---
+	
+		var twoHoursLater = joTime.timestamp() + (HOUR * 2);
+	
+*/
+
 var SEC = 1000;
 var MIN = 60 * SEC;
 var HOUR = 60 * MIN;
@@ -1063,6 +1100,8 @@ joDataSource.prototype = {
 	}
 };
 /**
+	- - -
+
 	joDatabase
 	===========
 
@@ -1728,14 +1767,12 @@ joControl.extend(joView, {
 	},
 
 	onFocus: function(e) {
-		joLog("onFocus", this.data);
 		joEvent.stop(e);
 		joFocus.set(this);
 	},
 	
 	onBlur: function(e) {
 		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
-		joLog("onBlur", this.data);
 		joEvent.stop(e);
 		this.blur();
 		this.changeEvent.fire(this.data);
@@ -1815,6 +1852,8 @@ joButton.extend(joControl, {
 	}
 });
 /**
+	- - -
+
 	joBusy
 	======
 	
@@ -2115,6 +2154,8 @@ joList.extend(joControl, {
 	}
 });
 /**
+	- - -
+
 	joBusy
 	======
 	
@@ -2813,14 +2854,14 @@ joDivider.extend(joView, {
 	
 	A compound UI element which allows the user to hide/show its contents.
 	The first object passed in becomes the trigger control for the container,
-	and the second becoms the container which expands and contracts. This
+	and the second becomes the container which expands and contracts. This
 	action is controlled in the CSS by the presence of the "open" class.
 	
 	Use
 	---
 	
 		var x = new joExpando([
-			new joSection("Options"),
+			new joExpandoTitle("Options"),
 			new joContainer([
 				new joLabel("Label"),
 				new joInput("sample field")
@@ -2879,6 +2920,25 @@ joExpando.extend(joContainer, {
 	}
 });
 
+/**
+
+	joExpandoTitle
+	==============
+	
+	Common UI element to trigger a joExpando. Contains a stylable
+	arrow image which indicates open/closed state.
+	
+	Extends
+	-------
+	
+	- joView
+	
+	Use
+	---
+	
+	See joExpando use.
+	
+*/
 joExpandoTitle = function(data) {
 	joView.apply(this, arguments);
 };
