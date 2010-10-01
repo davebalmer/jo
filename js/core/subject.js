@@ -96,8 +96,10 @@ joSubject.prototype = {
 
 		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
 			var sub = this.subscriptions[i];
-			if (sub.call === call && (typeof sub.observer == "undefined" || sub.observer === observer))
-				sub.slice(i, 1);
+			if (sub.call === call && (typeof sub.observer === 'undefined' || sub.observer === observer)) {
+				this.subscriptions.splice(i, 1);
+				break;
+			}
 		}
 		
 		return this.subject;
