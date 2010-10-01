@@ -4,14 +4,14 @@
 	
 	A compound UI element which allows the user to hide/show its contents.
 	The first object passed in becomes the trigger control for the container,
-	and the second becoms the container which expands and contracts. This
+	and the second becomes the container which expands and contracts. This
 	action is controlled in the CSS by the presence of the "open" class.
 	
 	Use
 	---
 	
 		var x = new joExpando([
-			new joSection("Options"),
+			new joExpandoTitle("Options"),
 			new joContainer([
 				new joLabel("Label"),
 				new joInput("sample field")
@@ -70,13 +70,3 @@ joExpando.extend(joContainer, {
 	}
 });
 
-joExpandoTitle = function(data) {
-	joView.apply(this, arguments);
-};
-joExpandoTitle.extend(joView, {
-	tagName: "joexpandotitle",
-	
-	draw: function() {
-		this.container.innerHTML = this.data + "<joicon></joicon>";
-	}
-});
