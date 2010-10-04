@@ -1,9 +1,18 @@
+Summary
+=======
+
+Jo is a JavaScript framework for HTML5 capable browsers and devices. It was
+originally designed to work on mobile platforms as a GUI and light data layer
+on top of PhoneGap. Since its creation, Jo has also been tested successfully
+as a lightweight framework for mobile browsers, newer desktop browsers, and
+even Dashboard widgets.
+
 Building
 ========
 
-jo is a JavaScript framework for HTML5 capable browsers and devices. It's pretty
-easy to build on your own, but to get the most out of it you'll want to get a
-minifier like `jsmin` or the YUI Compressor.
+It's pretty easy to build on your own, but to get the most out of it you'll
+want to get a minifier like `jsmin` or the YUI Compressor. Minified and
+gzipped, Jo weighs in around 9K with no other JavaScript library dependancies.
 
 Mac OSX, Linux & BSD
 --------------------
