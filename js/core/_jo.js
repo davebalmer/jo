@@ -159,6 +159,18 @@ jo = {
 				}
 			}
 		}
+
+		if (joEvent) {
+			// detect if we're on a touch or mouse based browser
+			var o = document.createElement('div');
+			var test = ("ontouchstart" in o);
+			if (!test) {
+				o.setAttribute("ontouchstart", 'return;');
+				test = (typeof o.ontouchstart === 'function');
+			}
+			joEvent.touchy = test;
+			o = null;
+		}
 		
 		if (joGesture)
 			joGesture.load();
