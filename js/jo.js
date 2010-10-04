@@ -196,6 +196,18 @@ jo = {
 				}
 			}
 		}
+
+		if (joEvent) {
+			// detect if we're on a touch or mouse based browser
+			var o = document.createElement('div');
+			var test = ("ontouchstart" in o);
+			if (!test) {
+				o.setAttribute("ontouchstart", 'return;');
+				test = (typeof o.ontouchstart === 'function');
+			}
+			joEvent.touchy = test;
+			o = null;
+		}
 		
 		if (joGesture)
 			joGesture.load();
@@ -3323,13 +3335,13 @@ joInput = function(data) {
 	joControl.apply(this, arguments);
 };
 joInput.extend(joControl, {
-	tagName: "joinput",
+	tagName: "input",
 	
 	setData: function(data) {
 		if (data !== this.data) {
 			this.data = data;
 			
-			if (typeof this.container.value != "undefined")
+			if (typeof this.container.value !== "undefined")
 				this.container.value = data;
 			else
 				this.container.innerHTML = data;
@@ -3339,7 +3351,7 @@ joInput.extend(joControl, {
 	},
 	
 	getData: function() {
-		if (typeof this.container.value != "undefined")
+		if (typeof this.container.value !== "undefined")
 			return this.container.value;
 		else
 			return this.container.innerHTML;
@@ -4237,4 +4249,10 @@ joToolbar = function(data) {
 };
 joToolbar.extend(joContainer, {
 	tagName: "jotoolbar"
+});
+joForm = function() {
+	joContainer.apply(this, arguments);
+};
+joForm.extend(joContainer, {
+	tagName: "form"
 });
