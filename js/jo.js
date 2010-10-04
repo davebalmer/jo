@@ -2153,6 +2153,7 @@ joList.extend(joControl, {
 
 	setAutoSort: function(state) {
 		this.autoSort = state;
+		return this;
 	},
 	
 	next: function() {
