@@ -46,3 +46,7 @@ jostack > .prev {
 
 /*	outline: 1px solid #000; */
 }
+
+* {
+   -webkit-tap-highlight-color: rgba(0,0,0,0);
+}

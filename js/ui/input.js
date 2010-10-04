@@ -44,13 +44,13 @@ joInput = function(data) {
 	joControl.apply(this, arguments);
 };
 joInput.extend(joControl, {
-	tagName: "joinput",
+	tagName: "input",
 	
 	setData: function(data) {
 		if (data !== this.data) {
 			this.data = data;
 			
-			if (typeof this.container.value != "undefined")
+			if (typeof this.container.value !== "undefined")
 				this.container.value = data;
 			else
 				this.container.innerHTML = data;
@@ -60,7 +60,7 @@ joInput.extend(joControl, {
 	},
 	
 	getData: function() {
-		if (typeof this.container.value != "undefined")
+		if (typeof this.container.value !== "undefined")
 			return this.container.value;
 		else
 			return this.container.innerHTML;

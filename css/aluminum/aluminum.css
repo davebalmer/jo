@@ -21,7 +21,7 @@ joview, jotitle, jolabel, jocard, jotable, jodivider, jocontrol, jocontainer, jo
 	background: transparent;
 }
 
-jodivider, jolabel, joinput, jotextarea, jocontrol {
+jodivider, jolabel, joinput, input, textarea, jotextarea, jocontrol {
 	margin: 0 10px 0 10px;
 }
 
@@ -69,9 +69,10 @@ jotitle {
 jocontainer {
 }
 
-joinput, jotextarea {
+joinput, jotextarea, input, textarea {
 	cursor: text;
 	display: block;
+	width: 100%;
 	border: 1px solid #000;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -82,6 +83,8 @@ joinput, jotextarea {
 	white-space: nowrap;
 	overflow: hidden;
 	outline: none;
+	font-family: "Apres", "Verdana";
+	font-size: 18px;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	user-select: text;
@@ -89,19 +92,21 @@ joinput, jotextarea {
 	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
 }
-joinput.disabled, jotextarea.disabled {
+joinput.disabled, jotextarea.disabled,
+input.disabled, textarea.disabled {
 	color: #666;
 	cursor: text;
 }
 
-joinput.focus, jotextarea.focus {
+joinput.focus, jotextarea.focus,
+input.focus, textarea.focus {
 	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	background: rgba(255, 255, 255, .8);
 }
 
-jotextarea {
+jotextarea, textarea {
 	white-space: normal;
 }
 
@@ -220,8 +225,8 @@ jomenu, jolist, jotable {
 }
 
 jolistitem, jomenuitem {
-	border-bottom: 1px solid rgba(0, 0, 0, .4);
-	border-top: 1px solid rgba(255, 255, 255, .8);
+	border-bottom: 1px solid rgba(0, 0, 0, .2);
+	border-top: 1px solid rgba(255, 255, 255, .4);
 	display: block;
 	color: #000;
 	padding: 10px;
@@ -237,7 +242,7 @@ jomenuitem img {
 }
 
 jolistitem.selected, jomenuitem.selected {
-	border-top: 1px solid rgba(0, 0, 0, .8);
+	border-top: 1px solid rgba(0, 0, 0, .4);
 	border-bottom: 1px solid rgba(255, 255, 255, .4);
 	background: rgba(0, 64, 255, .4);
 	color: #fff;
@@ -278,7 +283,7 @@ jobutton {
 	border: 1px solid rgba(0, 0, 0, .8);
 	background-image: url(shiny.png);
 
-	background-repeat: no-repeat;
+	background-repeat: repeat-x;
 
 /*	
 	-webkit-background-origin: content-box;
@@ -321,7 +326,7 @@ jobutton, jotitle {
 	text-shadow: 0 0 5px #000;
 }
 
-joinput.password {
+joinput.password, input.password  {
 	-webkit-text-security: disc;
 	-moz-text-security: disc;
 	-o-text-security: disc;
@@ -481,25 +486,39 @@ joscroller {
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
+	-webkit-transform: translate3d(0, 0, 0);
+/*
 	-webkit-transition: top 0s ease;
+*/
 }
 joscroller > * {
 	position: absolute;
+	-webkit-animation-fill-mode: forwards;
+	-webkit-transition: -webkit-transform 0s ease;
 }
 
 .flick {
+/*
 	-webkit-transition: top 1.8s ease-in;
 	-webkit-transition: top 1.8s cubic-bezier(0, .5, 0, 1);
+*/
+	-webkit-transition: -webkit-transform 1.8s cubic-bezier(0, .2, 0, 1);
 }
 
 .flickback {
+/*
 	-webkit-transition: top .2s ease-out;
 	-webkit-transition: top .2s cubic-bezier(0, 0, 0.4, 1);
+*/
+	-webkit-transition: -webkit-transform .2s cubic-bezier(0, 0, 0.4, 1);
 }
 
 .flickfast {
+/*
 	-webkit-transition: top .5s ease-out;
 	-webkit-transition: top .5s cubic-bezier(0, .5, 0, 1);
+*/
+	-webkit-transition: -webkit-transform .5s cubic-bezier(0, .2, 0, 1);
 }
 
 jostack {
@@ -532,6 +551,7 @@ joflexrow {
 	display: block;
 	display: -webkit-box;
 	display: -moz-box;
+	display: -o-box;
 	display: box;
 /*
 	-webkit-box-flex: 1;
@@ -550,6 +570,7 @@ joflexrow {
 joflexrow>* {
 	-webkit-box-flex: 1;
 	-moz-box-flex: 1;
+	-o-box-flex: 1;
 	box-flex: 1;
 }
 
@@ -557,6 +578,7 @@ joflexcol {
 	display: block;
 	display: -webkit-box;
 	display: -moz-box;
+	display: -o-box;
 	display: box;
 
 	-webkit-box-flex: 1;
@@ -575,6 +597,7 @@ joflexcol {
 joflexcol>* {
 	-webkit-box-flex: 1;
 	-moz-box-flex: 1;
+	-o-box-flex: 1;
 	box-flex: 1;
 }
 
@@ -697,7 +720,7 @@ jopopup.show {
 	opacity: 1;
 }
 
-joflexcol > div {
+joflexcol > * {
 	-webkit-box-flex: 1;
 	-moz-box-flex: 1;
 	box-flex: 1;
@@ -724,3 +747,6 @@ joscroller {
 	overflow: hidden;
 }
 
+html {
+    -webkit-text-size-adjust: none;
+}
