@@ -522,7 +522,9 @@ joscroller > * {
 }
 
 jostack {
+/*
 	position: relative;
+*/
 	overflow: auto;
 }
 
