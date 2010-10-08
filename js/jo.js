@@ -217,6 +217,39 @@ jo = {
 		this.loadEvent.fire();
 	},
 	
+	// first call to joCollect will call this method
+	// to make a map of node.tagName -> joView class constructor
+	attachViewClasses: function() {
+		joCollect.view = {};
+		
+		// we always at least have the superclass
+		joCollect.view.joview = joView;
+
+		// run through all our children of joView
+		// and add to our joCollect.view object
+		for (var p in window) {
+			var o = window[p];
+			if (typeof o === 'function'
+			&& o.prototype
+			&& typeof o.prototype.tagName !== 'undefined'
+			&& o.prototype instanceof joView) {
+				var tag = o.prototype.tagName.toUpperCase();
+				var key = joCollect.view;
+				
+				if (o.prototype.type) {
+					// handle tags with multiple types
+					if (!key[tag])
+						key[tag] = {};
+						
+					key[tag][o.prototype.type] = o;
+				}
+				else {
+					key[tag] = o;
+				}
+			}
+		}
+	},
+	
 	getPlatform: function() {
 		return this.platform;
 	},
@@ -1472,6 +1505,168 @@ joPreference.prototype = {
 
 		
 		/**
+	joCollect
+	=========
+	
+	Utility method parses the DOM tree for a given element and attempts to
+	attach appropriate joView subclasses to all the nodes. Returns an
+	object with references to elements with the `id` attribute set.
+	
+	Calling
+	-------
+	
+	`var x = joCollect("someid");` or `var x = joCollect(someHTMLElement);`
+	
+	Returns
+	-------
+	
+	A new object with a property for each element ID found. For example:
+	
+		<!-- this DOM structure -->
+		<jocard id="login">
+			<jotitle>Login</jotitle>
+			<jogroup>
+				<jolabel>Username</jolabel>
+				<input id="username" type="text">
+				<jolabel>Password</jolabel>
+				<input id="password" type="password">
+			</jogroup>
+			<jobutton id="loginbutton">Login</jobutton>
+		</jocard>
+	
+	Parsed with this JavaScript:
+	
+		// walk the DOM, find nodes, create controls for each
+		var x = joCollect();
+
+	Produces these properties:
+	
+	- `x.login` is a reference to a `new joCard`
+	- `x.username` is a reference to a `new joInput`
+	- `x.password` is a reference to a `new joPassword`
+	- `x.loginbutton` is a reference to a `new joButton`
+	
+	This in essence flattens your UI to a single set of properties you can
+	use to access the controls that were created from your DOM structure.
+	
+	In addition, any unrecognized tags which have an `id` attribute set will
+	also be loaded into the properties.
+	
+	While you could put your entire UI in your document body and call joCollect
+	to build all your controls at once, this might not be the best thing to do,
+	especially if you have a lot of controls.
+	
+	Also, keep in mind that unless you contain your controls in some sort
+	of wrapper tag with `display:none` set in its CSS, your entire UI might flash
+	briefly on the screen while the parser does its thing.
+	
+	> This utility method is experimental! Be very careful with it.
+*/
+joCollect = {
+	loaded: 0,
+	view: {},
+	
+	get: function(parent) {
+		// we only want to spin through the DOM if the dev
+		// uses this utility; this builds a list of all the
+		// instances of joView in global space, used to match
+		// up by tagName.
+		if (!this.loaded++)
+			jo.attachViewClasses();
+			
+		var parent = joDOM.get(parent);
+
+//		console.log(parent);
+
+		var ui = {};
+
+		// pure evil -- seriously
+		var setContainer = joView.setContainer;
+		var draw = joView.draw;
+		
+		parse(parent);
+
+		// evil purged
+		joView.setContainer = setContainer;
+		joView.draw = draw;
+		
+		function parse(node) {
+			if (!node)
+				return;
+			
+			var args = "";
+
+			// handle all the leaves first
+			if (node.childNodes && node.firstChild) {
+				// spin through child nodes, build our list
+				var kids = node.childNodes;
+				args = [];
+				
+				for (var i = 0, l = kids.length; i < l; i++) {
+					var p = parse(kids[i]);
+
+					if (p)
+						args.push(p);
+				}
+			}
+
+			// make this control
+			return newview(node, args);
+		}
+		
+		// create appropriate joView widget from the tag type,
+		// otherwise return the node itself
+		function newview(node, args) {
+			var tag = node.tagName;
+			var view = node;
+
+//			console.log(tag, node.nodeType);
+			
+			if (joCollect.view[tag]) {
+				if (args instanceof Array && args.length) {
+					if (args.length == 1)
+						args = args[0];
+				}
+
+				if (args instanceof Text)
+					args = node.nodeData;
+				
+				if (!args)
+					args = node.value || node.checked || node.innerText || node.innerHTML;
+
+//				console.log(args);
+				
+				joView.setContainer = function() {
+					this.container = node;
+
+					return this;
+				};
+				
+				var o = (node.type) ? joCollect.view[tag][node.type] : joCollect.view[tag];
+				var view = new o(args);
+
+//				view.setData(args);
+				
+//				if (view instanceof joContainer)
+//					view.draw(view);
+					
+//				if (view instanceof joExpando)
+//					view.setToggleEvent();
+					
+			}
+			
+			// keep track of named controls
+			if (node.id)
+				ui[node.id] = view;
+				
+			return view;
+		}
+		
+		// send back our object with named controls as properties
+		return ui;
+	}
+};
+/**
 	joView
 	=======
 	
@@ -2590,12 +2785,12 @@ joScroller.extend(joContainer, {
 	velocity: 1.6,
 	bump: 50,
 	top: 0,
+	mousemove: null,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
-		joEvent.on(this.container, "mousemove", this.onMove, this);
 /*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
@@ -2625,6 +2820,9 @@ joScroller.extend(joContainer, {
 		this.start = this.getMouse(e);
 		this.points.unshift(this.start);
 		this.inMotion = true;
+
+		if (!this.mousemove)
+			this.mousemove = joEvent.on(this.container, "mousemove", this.onMove, this);
 	},
 	
 	reset: function() {
@@ -2644,6 +2842,10 @@ joScroller.extend(joContainer, {
 		var point = this.getMouse(e);
 		
 		var y = point.y - this.points[0].y;
+
+		if (y == 0)
+			return;
+		
 		this.points.unshift(point);
 
 		if (this.points.length > 7)
@@ -2686,6 +2888,9 @@ joScroller.extend(joContainer, {
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
+
+		joEvent.remove(this.container, "mousemove", this.mousemove);
+		this.mousemove = null;
 
 		this.inMotion = false;
 
@@ -2907,6 +3112,9 @@ joExpando.extend(joContainer, {
 	tagName: "joexpando",
 	
 	draw: function() {
+		if (!this.data)
+			return;
+		
 		joContainer.prototype.draw.apply(this, arguments);
 		this.setToggleEvent();
 	},
@@ -3337,6 +3545,7 @@ joInput = function(data) {
 };
 joInput.extend(joControl, {
 	tagName: "input",
+	type: "text",
 	
 	setData: function(data) {
 		if (data !== this.data) {
@@ -3392,6 +3601,13 @@ joInput.extend(joControl, {
 			joEvent.stop(e);
 		}
 		return false;
+	},
+	
+	draw: function() {
+		if (this.container.value)
+			this.value = this.data;
+		else
+			this.innerHTML = this.value;
 	},
 	
 	onMouseDown: function(e) {
@@ -3531,7 +3747,8 @@ joPasswordInput = function(data) {
 	joInput.apply(this, arguments);
 };
 joPasswordInput.extend(joInput, {
-	className: "password"
+	className: "password",
+	type: "password"
 });
 /**
 	joPopup
@@ -4227,9 +4444,9 @@ joTextarea.extend(joInput, {
 
 */
 joTitle = function(data) {
-	joContainer.apply(this, arguments);
+	joView.apply(this, arguments);
 };
-joTitle.extend(joContainer, {
+joTitle.extend(joView, {
 	tagName: "jotitle"
 });
 
