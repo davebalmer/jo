@@ -44,6 +44,9 @@ joExpando.extend(joContainer, {
 	tagName: "joexpando",
 	
 	draw: function() {
+		if (!this.data)
+			return;
+		
 		joContainer.prototype.draw.apply(this, arguments);
 		this.setToggleEvent();
 	},
