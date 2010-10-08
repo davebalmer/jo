@@ -180,6 +180,39 @@ jo = {
 		this.loadEvent.fire();
 	},
 	
+	// first call to joCollect will call this method
+	// to make a map of node.tagName -> joView class constructor
+	attachViewClasses: function() {
+		joCollect.view = {};
+		
+		// we always at least have the superclass
+		joCollect.view.joview = joView;
+
+		// run through all our children of joView
+		// and add to our joCollect.view object
+		for (var p in window) {
+			var o = window[p];
+			if (typeof o === 'function'
+			&& o.prototype
+			&& typeof o.prototype.tagName !== 'undefined'
+			&& o.prototype instanceof joView) {
+				var tag = o.prototype.tagName.toUpperCase();
+				var key = joCollect.view;
+				
+				if (o.prototype.type) {
+					// handle tags with multiple types
+					if (!key[tag])
+						key[tag] = {};
+						
+					key[tag][o.prototype.type] = o;
+				}
+				else {
+					key[tag] = o;
+				}
+			}
+		}
+	},
+	
 	getPlatform: function() {
 		return this.platform;
 	},
