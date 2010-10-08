@@ -4,12 +4,17 @@
 	
 	Utility method parses the DOM tree for a given element and attempts to
 	attach appropriate joView subclasses to all the nodes. Returns an
-	object with references to elements with the `id` attribute set.
+	object with references to all elements with the `id` attribute set. This
+	method helps turn HTML into HTML + JavaScript.
 	
 	Calling
 	-------
 	
-	`var x = joCollect("someid");` or `var x = joCollect(someHTMLElement);`
+		// an HTML element by its ID
+		var x = joCollect.get("someid");
+		
+		// a known HTML element
+		var x = joCollect.get(someHTMLElement);`
 	
 	Returns
 	-------
