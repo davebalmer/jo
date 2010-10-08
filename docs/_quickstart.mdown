@@ -55,26 +55,20 @@ The simplest UI would be something like:
 	jo.load();
 
 	// define a wrapper for document.body
-	var screen = new joScreen();
+	var scn = new joScreen();
 
 	// setup your UI
-	screen.alert("Hello, Jo!", "This is a simple alert.");
+	scn.alert("Hello, Jo!", "This is a simple alert.");
 
 Something more interesting would look like:
 
 	// inialize jo
 	jo.load();
 	
-	// setup a stack and a sample card
-	var screen = new joScreen();
+	// setup a stack and screen
 	var stack = new joStackScroller();
-	
-	
-	// set a responder to the OK button
-	okbutton.selectEvent.subscribe(function() {
-		stack.hide();
-	});
-	
+	var scn = new joScreen(stack);
+		
 	// create our view card
 	var card = new joCard([
 		new joTitle("Hello"),
