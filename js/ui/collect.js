@@ -36,7 +36,7 @@
 	Parsed with this JavaScript:
 	
 		// walk the DOM, find nodes, create controls for each
-		var x = joCollect();
+		var x = joCollect.get("login");
 
 	Produces these properties:
 	
@@ -59,7 +59,11 @@
 	of wrapper tag with `display:none` set in its CSS, your entire UI might flash
 	briefly on the screen while the parser does its thing.
 	
-	> This utility method is experimental! Be very careful with it.
+	> This utility method is experimental! Be very careful with it. *NOTE* that
+	> for now, this method requires you to remove whitespace in your HTML. If you
+	> don't know a good approach offhand to do that, this thing probably isn't
+	> ready for you yet. :)
+
 */
 joCollect = {
 	loaded: 0,
