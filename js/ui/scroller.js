@@ -60,12 +60,12 @@ joScroller.extend(joContainer, {
 	velocity: 1.6,
 	bump: 50,
 	top: 0,
+	mousemove: null,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 		joEvent.on(this.container, "mouseup", this.onUp, this);
-		joEvent.on(this.container, "mousemove", this.onMove, this);
 /*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
@@ -95,6 +95,9 @@ joScroller.extend(joContainer, {
 		this.start = this.getMouse(e);
 		this.points.unshift(this.start);
 		this.inMotion = true;
+
+		if (!this.mousemove)
+			this.mousemove = joEvent.on(this.container, "mousemove", this.onMove, this);
 	},
 	
 	reset: function() {
@@ -114,6 +117,10 @@ joScroller.extend(joContainer, {
 		var point = this.getMouse(e);
 		
 		var y = point.y - this.points[0].y;
+
+		if (y == 0)
+			return;
+		
 		this.points.unshift(point);
 
 		if (this.points.length > 7)
@@ -156,6 +163,9 @@ joScroller.extend(joContainer, {
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
+
+		joEvent.remove(this.container, "mousemove", this.mousemove);
+		this.mousemove = null;
 
 		this.inMotion = false;
 
