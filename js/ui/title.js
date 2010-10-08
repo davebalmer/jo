@@ -11,9 +11,9 @@
 
 */
 joTitle = function(data) {
-	joContainer.apply(this, arguments);
+	joView.apply(this, arguments);
 };
-joTitle.extend(joContainer, {
+joTitle.extend(joView, {
 	tagName: "jotitle"
 });
 
