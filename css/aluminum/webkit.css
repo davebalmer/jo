@@ -1,5 +1,4 @@
 jostack {
-	position: relative;
 	-webkit-transition: opacity .3s ease-out;
 	-moz-transition: opacity .3s ease-out;
 	-o-transition: opacity .3s ease-out;
@@ -49,4 +48,8 @@ jostack > .prev {
 
 * {
    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+jobutton {
+	background-repeat: repeat-x;
 }

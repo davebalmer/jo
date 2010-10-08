@@ -72,7 +72,6 @@ jocontainer {
 joinput, jotextarea, input, textarea {
 	cursor: text;
 	display: block;
-	width: 100%;
 	border: 1px solid #000;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -280,6 +279,7 @@ jobutton {
 */
 	padding: 10px 0;
 	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
 	border: 1px solid rgba(0, 0, 0, .8);
 	background-image: url(shiny.png);
 
@@ -305,12 +305,12 @@ jobutton:hover, joButton:focus {
 	border-image: url(blueButton.png) 13 stretch stretch;
 */
 }
-joButton.disabled {
+jobutton.disabled {
 	opacity: .4;
 	color: rgba(255, 255, 255, .4);
 	cursor: default;
 }
-joButton.disabled:hover, joButton.disabled:hover {
+jobutton.disabled:hover, joButton.disabled:hover {
 	opacity: .4;
 	color: rgba(255, 255, 255, .4);
 	background-color: inherit;
@@ -522,9 +522,7 @@ joscroller > * {
 }
 
 jostack {
-/*
 	position: relative;
-*/
 	overflow: auto;
 }
 
@@ -751,4 +749,24 @@ joscroller {
 
 html {
     -webkit-text-size-adjust: none;
+}
+
+jostack {
+	position: absolute;
+}
+
+joexpando.open {
+	margin-bottom: 10px;
+}
+
+joexpando.open > joexpandotitle {
+	margin-bottom: 10px;
+}
+
+joexpando {
+	padding-bottom: 0;
+}
+
+joexpando > joexpandotitle {
+	margin-bottom: 0;
 }
