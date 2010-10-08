@@ -45,6 +45,7 @@ joInput = function(data) {
 };
 joInput.extend(joControl, {
 	tagName: "input",
+	type: "text",
 	
 	setData: function(data) {
 		if (data !== this.data) {
@@ -100,6 +101,13 @@ joInput.extend(joControl, {
 			joEvent.stop(e);
 		}
 		return false;
+	},
+	
+	draw: function() {
+		if (this.container.value)
+			this.value = this.data;
+		else
+			this.innerHTML = this.value;
 	},
 	
 	onMouseDown: function(e) {

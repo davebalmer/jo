@@ -17,5 +17,6 @@ joPasswordInput = function(data) {
 	joInput.apply(this, arguments);
 };
 joPasswordInput.extend(joInput, {
-	className: "password"
+	className: "password",
+	type: "password"
 });
