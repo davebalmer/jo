@@ -24,11 +24,11 @@ joStackScroller = function(data) {
 	this.scroller = this.scrollers[0];
 
 	joStack.apply(this, arguments);
-//	console.log(this.scroller);
-	this.container.appendChild(this.scroller.container);
-//	console.log(this.container);
+	
+	this.scroller.attach(this.container);
 };
 joStackScroller.extend(joStack, {
+	type: "scroll",
 	scrollerindex: 1,
 	scroller: null,
 	scrollers: [],

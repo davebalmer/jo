@@ -49,8 +49,18 @@
 */
 joStack = function(data) {
 	this.visible = false;
-	
-	joView.apply(this, arguments);
+
+	joContainer.apply(this, arguments);
+
+	// yes, nice to have one control, but we need an array
+	if (this.data && !(this.data instanceof Array))
+		this.data = [ this.data ];
+	else if (this.data.length > 1)
+		this.data = [ this.data[0] ];
+		
+	// we need to clear inlined stuff out for this to work
+	if (this.container && this.container.firstChild)
+		this.container.innerHTML = "";
 
 	// default to keep first card on the stack; won't pop() off
 	this.setLocked(true);
@@ -61,14 +71,15 @@ joStack = function(data) {
 	this.showEvent = new joSubject(this);
 	this.hideEvent = new joSubject(this);
 	
-	this.data = [];
 	this.index = 0;
 	this.lastIndex = 0;
 	this.lastNode = null;
 };
-joStack.extend(joView, {
+joStack.extend(joContainer, {
 	tagName: "jostack",
+	type: "fixed",
 	eventset: false,
+	data: [],
 	
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -95,6 +106,9 @@ joStack.extend(joView, {
 	draw: function() {
 		if (!this.container)
 			this.createContainer();
+			
+		if (!this.data || !this.data.length)
+			return;
 
 		// short term hack for webos
 		// not happy with it but works for now
@@ -106,7 +120,7 @@ joStack.extend(joView, {
 		var newchild = this.getChildStyleContainer(newnode);
 
 		function getnode(o) {
-			return (typeof o.container !== "undefined") ? o.container : o;
+			return (o instanceof joView) ? o.container : o;
 		}
 		
 		if (!newchild)
@@ -189,7 +203,8 @@ joStack.extend(joView, {
 	},
 	
 	removeChild: function(child) {
-		this.container.removeChild(child);
+		if (child && child.parentNode === this.container)
+			this.container.removeChild(child);
 	},
 	
 	isVisible: function() {
