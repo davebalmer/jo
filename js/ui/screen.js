@@ -71,6 +71,8 @@ joScreen = function(data) {
 	joContainer.apply(this, arguments);
 };
 joScreen.extend(joContainer, {
+	tagName: "screen",
+	
 	setupEvents: function() {
 		joEvent.on(window, "resize", this.resizeEvent.fire, this);
 		joEvent.on(window, "appmenushow", this.menuEvent.fire, this);

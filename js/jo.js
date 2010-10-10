@@ -217,13 +217,20 @@ jo = {
 		this.loadEvent.fire();
 	},
 	
-	// first call to joCollect will call this method
-	// to make a map of node.tagName -> joView class constructor
-	attachViewClasses: function() {
-		joCollect.view = {};
+	tagMap: {},
+	tagMapLoaded: false,
+	
+	// make a map of node.tagName -> joView class constructor
+	initTagMap: function() {
+		// we only do this once per session
+		if (this.tagMapLoaded)
+			return;
+
+		var key = this.tagMap;
 		
-		// we always at least have the superclass
-		joCollect.view.joview = joView;
+		// defaults
+		key.JOVIEW = joView;
+		key.BODY = joScreen;
 
 		// run through all our children of joView
 		// and add to our joCollect.view object
@@ -234,7 +241,6 @@ jo = {
 			&& typeof o.prototype.tagName !== 'undefined'
 			&& o.prototype instanceof joView) {
 				var tag = o.prototype.tagName.toUpperCase();
-				var key = joCollect.view;
 				
 				if (o.prototype.type) {
 					// handle tags with multiple types
@@ -1505,17 +1511,32 @@ joPreference.prototype = {
 
 		
 		/**
-	joCollect
-	=========
+	joInterface
+	===========
 	
-	Utility method parses the DOM tree for a given element and attempts to
-	attach appropriate joView subclasses to all the nodes. Returns an
-	object with references to elements with the `id` attribute set.
+	*EXPERIMENTAL*
+
+	> This utility method is experimental! Be very careful with it. *NOTE* that
+	> for now, this class requires you to remove whitespace in your HTML. If you
+	> don't know a good approach offhand to do that, then this thing probably isn't
+	> ready for you yet.
 	
-	Calling
-	-------
+	This class parses the DOM tree for a given element and attempts to
+	attach appropriate joView subclasses to all the relevant HTML nodes.
+	Returns an object with references to all elements with the `id`
+	attribute set. This method helps turn HTML into HTML + JavaScript.
 	
-	`var x = joCollect("someid");` or `var x = joCollect(someHTMLElement);`
+	Use
+	---
+	
+		// an HTML element by its ID
+		var x = new joInterface("someid");
+		
+		// a known HTML element
+		var y = new joInterface(someHTMLElement);
+		
+		// the entire document body (careful, see below)
+		var z = new joInterface();
 	
 	Returns
 	-------
@@ -1537,7 +1558,7 @@ joPreference.prototype = {
 	Parsed with this JavaScript:
 	
 		// walk the DOM, find nodes, create controls for each
-		var x = joCollect();
+		var x = new joInterface("login");
 
 	Produces these properties:
 	
@@ -1552,31 +1573,75 @@ joPreference.prototype = {
 	In addition, any unrecognized tags which have an `id` attribute set will
 	also be loaded into the properties.
 	
-	While you could put your entire UI in your document body and call joCollect
-	to build all your controls at once, this might not be the best thing to do,
-	especially if you have a lot of controls.
+	Parsing complex trees
+	---------------------
 	
-	Also, keep in mind that unless you contain your controls in some sort
-	of wrapper tag with `display:none` set in its CSS, your entire UI might flash
-	briefly on the screen while the parser does its thing.
+	Yes, you can make a joInterface that encapsulates your entire UI with HTML.
+	This is not recommended for larger or more complex applications, some
+	reasons being:
 	
-	> This utility method is experimental! Be very careful with it.
+	- Rendering speed: if you're defining multiple views within a `<jostack>`
+	  (or another subclass of joContainer), your users will see a flicker and
+	  longer load time while the window renders your static tags and the extra
+	  views for the stack are removed from view.
+	
+	- Double rendering: again with `<jostack>` tags, you're going to see a separate
+	  render when the first view is redrawn (has to).
+	
+	- Load time: especially if you're doing a mobile app, this could be a biggie.
+	  You are almost always going to be better off building the app controls with
+	  JavaScript (especially in conjunction with joCache, which only creates DOM
+	  nodes for a given view structure on demand).
+	
+	If you really want to use HTML as your primary means of defining your UI, you're
+	better off putting your major UI components inside of a `<div>` (or other tag)
+	with `display: none` set in its CSS property. Like this:
+	
+		<!-- in your CSS: .hideui { display: none } -->
+		<div class="hideui" id="cards">
+			<jocard id="about">
+				<jotitle>About this app</jotitle>
+				<johtml>
+					This is my app, it is cool.
+				</johtml>
+				<jobutton>Done</jobutton>
+			</jocard>
+			<jocard id="login">
+				... etc ...
+			</jocard>
+		</div>
+		
+	Then in your JavaScript:
+	
+		// pull in all our card views from HTML
+		var cards = new joInterface("cards");
+		
+	Definitely use this class judiciously or you'll end up doing a lot of recatoring
+	as your application grows.
+	
+	Flattening UI widget references
+	-------------------------------
+	
+	This is both good and bad, depending on your coding style and complexity of
+	your app. Because all the tags with an ID attribute (regardless of where they
+	are in your tag tree) get a single corresponding property reference, things
+	could get very messy in larger apps. Again, be smart.
+	
 */
-joCollect = {
-	loaded: 0,
-	view: {},
+joInterface = function(parent) {
+	// initialize our tag lookup object
+	jo.initTagMap();
 	
+	// surprise! we're only using our prototype once and
+	// just returning references to the nodes with ID attributes
+	return this.get(parent);
+};
+joInterface.prototype = {
 	get: function(parent) {
-		// we only want to spin through the DOM if the dev
-		// uses this utility; this builds a list of all the
-		// instances of joView in global space, used to match
-		// up by tagName.
-		if (!this.loaded++)
-			jo.attachViewClasses();
-			
 		var parent = joDOM.get(parent);
 
-//		console.log(parent);
+		if (!parent)
+			parent = document.body;
 
 		var ui = {};
 
@@ -1622,7 +1687,7 @@ joCollect = {
 
 //			console.log(tag, node.nodeType);
 			
-			if (joCollect.view[tag]) {
+			if (jo.tagMap[tag]) {
 				if (args instanceof Array && args.length) {
 					if (args.length == 1)
 						args = args[0];
@@ -1642,17 +1707,19 @@ joCollect = {
 					return this;
 				};
 				
-				var o = (node.type) ? joCollect.view[tag][node.type] : joCollect.view[tag];
-				var view = new o(args);
-
-//				view.setData(args);
+				if (typeof jo.tagMap[tag] === "function") {
+					var o = jo.tagMap[tag];
+				}
+				else {
+					var t = node.type || node.getAttribute("type");
+					var o = jo.tagMap[tag][t];
+				}
 				
-//				if (view instanceof joContainer)
-//					view.draw(view);
-					
-//				if (view instanceof joExpando)
-//					view.setToggleEvent();
-					
+				if (typeof o === "function")
+					var view = new o(args);
+				else
+					joLog("joInterface can't process ", tag, "'type' attribute?");
+				}
 			}
 			
 			// keep track of named controls
@@ -1663,7 +1730,23 @@ joCollect = {
 		}
 		
 		// send back our object with named controls as properties
+//		console.log(ui);
 		return ui;
+	}
+};
+/**
+	joCollect
+	=========
+	
+	*DEPRECATED* use joInterface instead. This function is planned
+	to die when jo goes beta.
+
+*/
+joCollect = {
+	get: function(parent) {
+		// this is what happens when you announced something not
+		// quite fully baked
+		return new joInterface(parent);
 	}
 };
 /**
@@ -2504,8 +2587,18 @@ joCard.extend(joContainer, {
 */
 joStack = function(data) {
 	this.visible = false;
-	
-	joView.apply(this, arguments);
+
+	joContainer.apply(this, arguments);
+
+	// yes, nice to have one control, but we need an array
+	if (this.data && !(this.data instanceof Array))
+		this.data = [ this.data ];
+	else if (this.data.length > 1)
+		this.data = [ this.data[0] ];
+		
+	// we need to clear inlined stuff out for this to work
+	if (this.container && this.container.firstChild)
+		this.container.innerHTML = "";
 
 	// default to keep first card on the stack; won't pop() off
 	this.setLocked(true);
@@ -2516,14 +2609,15 @@ joStack = function(data) {
 	this.showEvent = new joSubject(this);
 	this.hideEvent = new joSubject(this);
 	
-	this.data = [];
 	this.index = 0;
 	this.lastIndex = 0;
 	this.lastNode = null;
 };
-joStack.extend(joView, {
+joStack.extend(joContainer, {
 	tagName: "jostack",
+	type: "fixed",
 	eventset: false,
+	data: [],
 	
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -2550,6 +2644,9 @@ joStack.extend(joView, {
 	draw: function() {
 		if (!this.container)
 			this.createContainer();
+			
+		if (!this.data || !this.data.length)
+			return;
 
 		// short term hack for webos
 		// not happy with it but works for now
@@ -2561,7 +2658,7 @@ joStack.extend(joView, {
 		var newchild = this.getChildStyleContainer(newnode);
 
 		function getnode(o) {
-			return (typeof o.container !== "undefined") ? o.container : o;
+			return (o instanceof joView) ? o.container : o;
 		}
 		
 		if (!newchild)
@@ -2644,7 +2741,8 @@ joStack.extend(joView, {
 	},
 	
 	removeChild: function(child) {
-		this.container.removeChild(child);
+		if (child && child.parentNode === this.container)
+			this.container.removeChild(child);
 	},
 	
 	isVisible: function() {
@@ -3876,6 +3974,8 @@ joScreen = function(data) {
 	joContainer.apply(this, arguments);
 };
 joScreen.extend(joContainer, {
+	tagName: "screen",
+	
 	setupEvents: function() {
 		joEvent.on(window, "resize", this.resizeEvent.fire, this);
 		joEvent.on(window, "appmenushow", this.menuEvent.fire, this);
@@ -4173,11 +4273,11 @@ joStackScroller = function(data) {
 	this.scroller = this.scrollers[0];
 
 	joStack.apply(this, arguments);
-//	console.log(this.scroller);
-	this.container.appendChild(this.scroller.container);
-//	console.log(this.container);
+	
+	this.scroller.attach(this.container);
 };
 joStackScroller.extend(joStack, {
+	type: "scroll",
 	scrollerindex: 1,
 	scroller: null,
 	scrollers: [],

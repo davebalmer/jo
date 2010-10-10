@@ -180,13 +180,20 @@ jo = {
 		this.loadEvent.fire();
 	},
 	
-	// first call to joCollect will call this method
-	// to make a map of node.tagName -> joView class constructor
-	attachViewClasses: function() {
-		joCollect.view = {};
+	tagMap: {},
+	tagMapLoaded: false,
+	
+	// make a map of node.tagName -> joView class constructor
+	initTagMap: function() {
+		// we only do this once per session
+		if (this.tagMapLoaded)
+			return;
+
+		var key = this.tagMap;
 		
-		// we always at least have the superclass
-		joCollect.view.joview = joView;
+		// defaults
+		key.JOVIEW = joView;
+		key.BODY = joScreen;
 
 		// run through all our children of joView
 		// and add to our joCollect.view object
@@ -197,7 +204,6 @@ jo = {
 			&& typeof o.prototype.tagName !== 'undefined'
 			&& o.prototype instanceof joView) {
 				var tag = o.prototype.tagName.toUpperCase();
-				var key = joCollect.view;
 				
 				if (o.prototype.type) {
 					// handle tags with multiple types
