@@ -116,7 +116,7 @@ args=node.value||node.checked||node.innerText||node.innerHTML;joView.setContaine
 else{var t=node.type||node.getAttribute("type");var o=jo.tagMap[tag][t];}
 if(typeof o==="function")
 var view=new o(args);else
-joLog("joInterface can't process ",tag,"'type' attribute?");}}
+joLog("joInterface can't process ",tag,"'type' attribute?");}
 if(node.id)
 ui[node.id]=view;return view;}
 return ui;}};joCollect={get:function(parent){return new joInterface(parent);}};joView=function(data){this.changeEvent=new joSubject(this);this.setContainer();if(data)

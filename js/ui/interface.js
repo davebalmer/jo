@@ -207,7 +207,6 @@ joInterface.prototype = {
 					var view = new o(args);
 				else
 					joLog("joInterface can't process ", tag, "'type' attribute?");
-				}
 			}
 			
 			// keep track of named controls
