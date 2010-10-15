@@ -87,7 +87,7 @@ joinput, jotextarea, input, textarea {
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	user-select: text;
-	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+	-webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0);
 	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
 }
@@ -99,7 +99,7 @@ input.disabled, textarea.disabled {
 
 joinput.focus, jotextarea.focus,
 input.focus, textarea.focus {
-	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
+	-webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, .8);
 	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	box-shadow: 0 1px 4px rgba(0, 0, 0, .8);
 	background: rgba(255, 255, 255, .8);
@@ -216,6 +216,7 @@ jolistitem {
 
 jolistitem.selected, jotable .selected {
 	background: #bbb;
+	-webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .8);
 }
 
 jomenu, jolist, jotable {
@@ -322,7 +323,7 @@ jobutton.disabled:hover, joButton.disabled:hover {
 	*/
 }
 	
-jobutton, jotitle {
+jobutton, jotitle, jooptionitem, joexpandotitle {
 	text-shadow: 0 0 5px #000;
 }
 
