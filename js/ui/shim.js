@@ -35,12 +35,13 @@ joShim.extend(joContainer, {
 	tagName: "joshim",
 	
 	setEvents: function() {
-		joEvent.on(this.container, "click", this.onClick, this);
+		joEvent.on(this.container, "mousedown", this.onMouseDown, this);
 	},
 	
-	onClick: function(e) {
+	onMouseDown: function(e) {
 		joEvent.stop(e);
-		this.selectEvent.fire();
+		this.hide();
+//		this.selectEvent.fire();
 	},
 	
 	hide: function() {
