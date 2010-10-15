@@ -60,7 +60,7 @@
 	
 */
 
-joScreen = function(data) {
+joScreen = function() {
 	this.resizeEvent = new joSubject(this);
 	this.menuEvent = new joSubject(this);
 	this.activateEvent = new joSubject(this);
@@ -114,8 +114,11 @@ joScreen.extend(joContainer, {
 	// shortcut to a simple alert dialog, not the most efficient
 	// way to do this, but for now, it serves its purpose and
 	// the API is clean enough.
-	alert: function(title, msg, options) {
+	alert: function(title, msg, options, context) {
 		var buttons = [];
+		var callback;
+		
+		var context = (typeof context === 'object') ? context : null;
 		
 		if (typeof options === 'object') {
 			if (options instanceof Array) {
@@ -131,6 +134,9 @@ joScreen.extend(joContainer, {
 			addbutton({ label: options });
 		}
 		else {
+			if (typeof options === 'function')
+				callback = options;
+
 			addbutton();
 		}
 	
@@ -162,6 +168,12 @@ joScreen.extend(joContainer, {
 		
 		function defaultaction() {
 			self.hidePopup();
+			if (callback) {
+				if (context)
+					callback.call(context);
+				else
+					callback();
+			}
 		}
 	}
 });
