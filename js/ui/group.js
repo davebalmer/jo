@@ -16,5 +16,3 @@ joGroup = function(data) {
 joGroup.extend(joContainer, {
 	tagName: "jogroup"
 });
-
-
