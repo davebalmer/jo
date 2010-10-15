@@ -265,6 +265,14 @@ joStack.extend(joContainer, {
 		}
 	},
 	
+	getTitle: function() {
+		var c = this.data[this.index];
+		if (typeof c.getTitle === 'function')
+			return c.getTitle();
+		else
+			return false;
+	},
+	
 	show: function() {
 		if (!this.visible) {
 			this.visible = true;

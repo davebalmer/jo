@@ -62,14 +62,21 @@ joContainer = function(data) {
 };
 joContainer.extend(joView, {
 	tagName: "jocontainer",
+	title: null,
 	
 	getContent: function() {
 		return this.container.childNodes;
 	},
 	
+	setTitle: function(title) {
+		this.title = title;
+		return this;
+	},
+	
 	setData: function(data) {
 		this.data = data;
 		this.refresh();
+		return this;
 	},
 	
 	activate: function() {},
@@ -87,7 +94,7 @@ joContainer.extend(joView, {
 				// ok, we have a single widget here
 				this.container.appendChild(data.container);
 			}
-			else if (data instanceof Object) {
+			else if (data instanceof HTMLElement) {
 				// DOM element attached directly
 				this.container.appendChild(data);
 			}
@@ -98,6 +105,10 @@ joContainer.extend(joView, {
 			o.innerHTML = data;
 			this.container.appendChild(o);
 		}
+	},
+	
+	getTitle: function() {
+		return this.title;
 	},
 	
 	refresh: function() {
