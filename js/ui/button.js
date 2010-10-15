@@ -38,8 +38,10 @@ joButton.extend(joControl, {
 	tagName: "jobutton",
 	
 	createContainer: function() {
-		var o = joDOM.create(this);
-		o.setAttribute("tabindex", "1");
+		var o = joDOM.create(this.tagName);
+
+		if (o)
+			o.setAttribute("tabindex", "1");
 		
 		return o;
 	},
