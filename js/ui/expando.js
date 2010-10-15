@@ -38,6 +38,9 @@
 
 */
 joExpando = function(data) {
+	this.openEvent = new joSubject(this);
+	this.closeEvent = new joSubject(this);
+	
 	joContainer.apply(this, arguments);
 };
 joExpando.extend(joContainer, {
@@ -59,7 +62,10 @@ joExpando.extend(joContainer, {
 	},
 	
 	toggle: function() {
-		joDOM.toggleCSSClass(this.container, "open");
+		if (this.container.className.indexOf("open") >= 0)
+			this.close();
+		else
+			this.open();
 	},
 	
 	open: function() {
@@ -72,4 +78,13 @@ joExpando.extend(joContainer, {
 		this.closeEvent.fire();
 	}
 });
+
+
+joExpandoContent = function() {
+	joContainer.apply(this, arguments);
+};
+joExpandoContent.extend(joContainer, {
+	tagName: "joexpandocontent"
+});
+
 
