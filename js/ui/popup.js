@@ -35,10 +35,17 @@ joPopup = function() {
 };
 joPopup.extend(joContainer, {
 	tagName: "jopopup",
+
+	setEvents: function() {
+		joEvent.on(this.container, "mousedown", this.onClick, this);
+	},
+	
+	onClick: function(e) {
+		joEvent.stop(e);
+	},
 	
 	hide: function() {
 		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
-		
 		this.container.className = 'hide';
 	},
 	
