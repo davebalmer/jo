@@ -21,10 +21,6 @@
 */
 
 joLog = function() {
-	// whoops, nothing to log; later we might downshift to something else
-	if (typeof console === "undefined" || typeof console.log === "undefined" || !console.log)
-		return;
-		
 	var strings = [];
 	
 	for (var i = 0; i < arguments.length; i++) {

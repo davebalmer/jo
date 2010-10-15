@@ -61,6 +61,7 @@ joScroller.extend(joContainer, {
 	bump: 50,
 	top: 0,
 	mousemove: null,
+	transitionEnd: "webkitTransitionEnd",
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
@@ -229,7 +230,7 @@ joScroller.extend(joContainer, {
 		if (test)
 			this.quickSnap = (ody != dy);
 
-		this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
+		this.eventset = joEvent.on(node, this.transitionEnd, this.snapBack, this);
 
 		if (this.getTop() != dy)
 			this.setTop(dy);
@@ -248,7 +249,7 @@ joScroller.extend(joContainer, {
 				var e = y.container;
 				
 			var t = 0 - e.offsetTop;
-			var h = e.offsetHeight;
+			var h = e.offsetHeight + 80;
 
 			var y = top;
 

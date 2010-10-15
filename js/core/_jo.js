@@ -112,6 +112,14 @@ if (typeof Function.prototype.bind === 'undefined') {
 	};
 }
 
+// hacky kludge for hacky browsers
+if (typeof HTMLElement === 'undefined')
+	HTMLElement = Object;
+
+// no console.log? sad...
+if (typeof console === 'undefined' || typeof console.log !== 'function')
+	console = {log: function(msg) {}};
+
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
@@ -174,6 +182,21 @@ jo = {
 		
 		if (joGesture)
 			joGesture.load();
+
+		if (this.matchPlatform("mozilla")) {
+			joScroller.prototype.transitionEnd = "transitionend";
+			joScroller.prototype.setTop = function(y) {
+					var node = this.container.firstChild;
+
+					if (y == 0)
+						node.style.MozTransform = "";
+					else
+						node.style.MozTransform = "translateY(" + y + "px)";
+
+					node.jotop = y;
+			};
+		}
+			
 
 		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
 
