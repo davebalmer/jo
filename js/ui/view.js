@@ -100,13 +100,25 @@ joView.prototype = {
 	},
 	
 	attach: function(parent) {
+		if (!this.container)
+			return this;
+		
 		var node = joDOM.get(parent) || document.body;
 		node.appendChild(this.container);
+		
+		return this;
 	},
 	
 	detach: function(parent) {
+		if (!this.container)
+			return this;
+
 		var node = joDOM.get(parent) || document.body;
-		node.removeChild(this.container);
+		
+		if (this.container && this.container.parentNode === node)
+			node.removeChild(this.container);
+		
+		return this;
 	},
 		
 	setEvents: function() {}
