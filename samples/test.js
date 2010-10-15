@@ -9,26 +9,28 @@
 // required
 jo.load();
 
-
 // not required
 jo.setDebug(true);
 
 // placed in a module pattern, not a terrible idea for application level code
 var App = (function() {
 	var stack;
+	var scn;
 	var button;
 	var backbutton;
 	var page;
 	var login;
 	var test;
 	var more;
+	var option;
+	var select;
 	var moreback;
 	var urldata;
 	var list;
 	var menu;
 	var cssnode;
-	var blipsound = new joSound("blip2.wav");
-	var bloopsound = new joSound("blip0.wav");
+//	var blipsound = new joSound("blip2.wav");
+//	var bloopsound = new joSound("blip0.wav");
 	var cancelbutton;
 
 	/*
@@ -49,75 +51,103 @@ var App = (function() {
 		cssnode = joDOM.applyCSS(".htmlgroup { background: #fff; }");
 		
 		// more css, but deferred loading until after the app initializes
+/*
 		joYield(function() {
-			bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
+//			bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
 			
 			// dynamic CSS loading based on platform, in this case FireFox
 			// doesn't do stack transitions well, so we're downshifting
 
-			if (jo.matchPlatform("iphone ipad safari"))
-				joDOM.loadCSS("../css/aluminum/webkit.css");
-			else if (jo.matchPlatform("chrome webkit webos"))
-				joDOM.loadCSS("../css/aluminum/webkit.css");
+//			if (jo.matchPlatform("iphone ipad safari"))
+//				joDOM.loadCSS("../css/aluminum/webkit.css");
+//			else if (jo.matchPlatform("chrome webkit webos"))
+//				joDOM.loadCSS("../css/aluminum/webkit.css");
 //				joDOM.loadCSS("../css/aluminum/chrome.css");
-			else
-				joDOM.loadCSS("../css/aluminum/gecko.css");
+//			else
+//				joDOM.loadCSS("../css/aluminum/gecko.css");
 			
 			// as an optimization, I recommend in a downloadable app that
 			// you create a custom CSS file for each platform using some
 			// sort of make-like process.
 		}, this);
+*/
 		
-		// chaining is supported on constructors and any setters
-		stack = new joStack().setStyle("page");
+		var toolbar;
+		var nav;
 		
-		login = new joScroller(
-			new joCard(
-				new joContainer([
-					new joTitle("Login"),
-					new joGroup([
-						new joLabel("Username"),
-						nameinput = new joInput("Dave"),
-						new joLabel("Password"),
-						new joPasswordInput("heyjo"),
-					]),
-					new joDivider(),
-					new joExpando([
-						new joExpandoTitle("Advanced Settings"),
-						new joGroup([
-							new joLabel("Domain"),
-							new joInput("localhost"),
-							new joLabel("Port"),
-							new joInput("80")
-						])
-					]),
-					new joFooter([
-						new joDivider(),
-						button = new joButton("Login"),
-						cancelbutton = new joButton("Back")
-					])
-				])
-			)
+		// chaining is supported on constructors and any setters		
+		scn = new joScreen(
+			new joContainer([
+				new joFlexcol([
+					nav = new joNavbar(),
+					new joContainer(
+						stack = new joStackScroller()
+					)
+				]),
+				toolbar = new joToolbar("This is a footer, neat huh?")
+			]).setStyle({position: "absolute", top: "0", left: "0", bottom: "0", right: "0"})
 		);
+		
+		nav.setStack(stack);
+		
+		// this is a bit of a hack for now; adds a CSS rule which puts enough
+		// space at the bottom of scrolling views to allow for our floating
+		// toolbar. Going to find a slick way to automagically do this in the
+		// framework at some point.
+		joYield(function() {
+			var style = new joCSSRule('jostack > joscroller > *:after { content: ""; display: block; height: ' + (toolbar.container.offsetHeight) + 'px; }');
+		});
+		
+		var ex;
+		
+		// our bogus login view
+		login = new joCard([
+			new joGroup([
+				new joLabel("Username"),
+				new joFlexrow(nameinput = new joInput("Dave")),
+				new joLabel("Password"),
+				new joFlexrow(new joPasswordInput("heyjo")),
+				new joLabel("Options"),
+				new joFlexrow(option = new joOption([
+					"One", "Two", "Three", "Four", "Five"
+				], 3).selectEvent.subscribe(function(value) {
+					console.log("option selected: " + value);
+				})),
+				new joLabel("Selection"),
+				select = new joSelect([
+					"Apple", "Orange", "Banana", "Grape", "Cherry", "Mango"
+				], 2)
+			]),
+			new joDivider(),
+			ex = new joExpando([
+				new joExpandoTitle("Advanced Settings"),
+				new joExpandoContent([
+					new joLabel("Domain"),
+					new joFlexrow(new joInput("localhost")),
+					new joLabel("Port"),
+					new joFlexrow(new joInput("80"))
+				])
+			]).openEvent.subscribe(function() {
+				stack.scrollTo(ex);
+				console.log("scrollto");
+			}),
+			new joFooter([
+				new joDivider(),
+				button = new joButton("Login"),
+				cancelbutton = new joButton("Back")
+			])
+		]).setTitle("Form Widget Demo");
+		
 //	was demoing how to disable a control, but decided having a "back"
 // button was more important right now
 //		cancelbutton.disable();
 		cancelbutton.selectEvent.subscribe(back, this);
 		
-		login.activate = function() {
-			joFocus.set(nameinput);
-			
-			// not too happy about this; may turn this into two separate
-			// calls to ensure the low-level one always gets called
-			joCard.prototype.activate.call(this);
-		};
-
 		// some arbitrary HTML shoved into a joHTML control
 		var html = new joHTML('<h1>Disclaimer</h1><p>This is a disclaimer. For more information, you can check <a href="moreinfo.html">this <b>file</b></a> for more info, or try your luck with <a href="someotherfile.html">this file</a>.');
 		var htmlgroup;
 		
 		page = new joCard([
-			new joTitle("Success"),
 			new joLabel("HTML Control"),
 			htmlgroup = new joGroup(html),
 			new joCaption("Note that the HTML control above is using another stylesheet without impacting our controls."),
@@ -125,12 +155,11 @@ var App = (function() {
 				new joDivider(),
 				backbutton = new joButton("Back")
 			])
-		]);
+		]).setTitle("Success");
 		
 		htmlgroup.setStyle("htmlgroup");
 		
 		more = new joCard([
-			new joTitle("More Info"),
 			new joGroup([
 				new joCaption("Good job! This is more info. Not very informative, is it?"),
 				new joCaption(urldata = new joDataSource(""))
@@ -139,18 +168,18 @@ var App = (function() {
 				new joDivider(),
 				moreback = new joButton("Back Again")
 			])
-		]);
+		]).setTitle("URL Demo");
 		
 		menu = new joCard([
-			new joTitle("Menu"),
 			list = new joMenu([
-				{ title: "Login", id: "login" },
+				{ title: "Form Widgets", id: "login" },
 				{ title: "Textarea", id: "textarea" },
 				{ title: "Table", id: "table" },
 				{ title: "Remote", id: "remote" },
-				{ title: "On Demand View", id: "test" }
+				{ title: "On Demand View", id: "test" },
+				{ title: "Popup", id: "popup" }
 			])
-		]);
+		]).setTitle("Kitchen Sink Demo");
 		menu.activate = function() {
 			// maybe this should be built into joMenu...
 			list.deselect();
@@ -159,6 +188,8 @@ var App = (function() {
 		list.selectEvent.subscribe(function(id) {
 			if (id == "login")
 				stack.push(login);
+			else if (id == "popup")
+				scn.alert("Hello!", "Is this the popup you were looking for? This is a very simple one; you can put much more in a popup if you were inclined.", function() { list.deselect(); });
 			else if (id != "help")
 				stack.push(joCache.get(id));
 		}, this);
@@ -171,14 +202,13 @@ var App = (function() {
 			joLog("creating test view on demand");
 
 			var card = new joCard([
-				new joTitle("On-Demand View"),
 				new joGroup([
 					new joCaption("This view was created on-demand using joCache.get('test'). From now on,"
 					+ "this view will not be recreated, but pulled from the cache.")
 				]),
 				new joDivider(),
 				back = new joButton("Back")
-			]);
+			]).setTitle("On-Demand View");
 
 			back.selectEvent.subscribe(function() {
 				stack.pop();
@@ -191,7 +221,6 @@ var App = (function() {
 			var back;
 
 			var card = new joCard([
-				new joTitle("Auto-sized Textarea"),
 				new joLabel(),
 				new joTextarea("Here is some sample text in a multiline joTextarea control."
 				+ " As you type, it will grow, but stop at its max height.").setStyle({
@@ -200,7 +229,7 @@ var App = (function() {
 				}),
 				new joDivider(),
 				back = new joButton("Back")
-			]);
+			]).setTitle("Auto-sized Text Area");
 
 			back.selectEvent.subscribe(function() {
 				stack.pop();
@@ -213,7 +242,6 @@ var App = (function() {
 			var back;
 			
 			var card = new joCard([
-				new joTitle("Table Example"),
 				new joGroup(
 					new joTable([
 						["Name", "Phone", "Email"],
@@ -228,7 +256,7 @@ var App = (function() {
 				),
 				new joDivider(),
 				back = new joButton("Back")
-			]);
+			]).setTitle("Table Demo");
 
 			back.selectEvent.subscribe(function() {
 				stack.pop();
@@ -238,12 +266,12 @@ var App = (function() {
 		});
 
 		joCache.set("remote", function() {
+			var container, firstbutton;
+			
 			var card = new joCard([
-				new joTitle("Remote Example"),
-				new joCaption(),
-				new joFlexcol([
+				container = new joFlexcol([
 					new joFlexrow([
-						new joButton("1"),
+						firstbutton = new joButton("1"),
 						new joButton("2"),
 						new joButton("3")
 					]),
@@ -259,14 +287,44 @@ var App = (function() {
 					]),
 					new joFlexrow([
 						new joButton("."),
-						new joButton("0")
+						new joButton("0").setStyle("double")
 					])
-				]),
+				]).setStyle("remote"),
 				new joDivider(),
 				new joButton("Back").selectEvent.subscribe(function() {
 					stack.pop();
 				}, this)
-			]);
+			]).setTitle("Remote Example");
+
+			// yeah, we did this -- should be in your app's own CSS, but hey
+			var x = new joCSSRule("joflexcol.remote jobutton { -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, .6); width: 33%; margin-right: 0; } joflexcol.remote jobutton.focus { -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .8); } joflexcol.remote jobutton:last-child {margin-right: 10px;} joflexcol.remote jobutton.double { width: 66%; } joflexcol.remote { margin-top: 10px; }");
+
+			// we want our button font to scale, so we add this interesting bit
+			joEvent.on(window, "resize", adjustfont, this);
+
+			card.activate = function() {
+				adjustfont();
+			};
+
+			function adjustfont() {
+				var c = firstbutton.container;
+				var h = c.offsetHeight - 20;
+				var w = c.offsetWidth - 20;
+				
+				var size = ((w > h) ? h : w) * .8;
+				container.setStyle({
+					lineHeight: h + "px",
+					fontSize: size + "px"
+				});
+
+				// our card needs to adjust with the new window size
+				// because we're doing a fixed-size card -- not the
+				// best idea, this should be a subclass of joCard in
+				// the framework.
+				card.setStyle({
+					height: "100%"
+				});
+			}
 
 			return card;
 		});
@@ -284,17 +342,16 @@ var App = (function() {
 		joGesture.backEvent.subscribe(stack.pop, stack);
 		
 //		var scroller = new joScroller(stack);
-		document.body.appendChild(stack.container);
 
 		stack.push(menu);
 	}
 	
 	function blip() {
-		blipsound.play();
+//		blipsound.play();
 	}
 	
 	function bloop() {
-		bloopsound.play();
+//		bloopsound.play();
 	}
 	
 	function link(href) {
@@ -315,8 +372,8 @@ var App = (function() {
 	return {
 		"init": init,
 		"getStack": function() { return stack },
-		"getButton": function() { return button }
+		"getButton": function() { return button },
+		"getSelect": function() { return select },
+		"getOption": function() { return option }
 	}
 }());
-
-App.init();
