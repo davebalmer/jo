@@ -21,10 +21,6 @@
 */
 
 joLog = function() {
-	// whoops, nothing to log; later we might downshift to something else
-	if (typeof console === "undefined" || typeof console.log === "undefined" || !console.log)
-		return;
-		
 	var strings = [];
 	
 	for (var i = 0; i < arguments.length; i++) {
@@ -149,6 +145,14 @@ if (typeof Function.prototype.bind === 'undefined') {
 	};
 }
 
+// hacky kludge for hacky browsers
+if (typeof HTMLElement === 'undefined')
+	HTMLElement = Object;
+
+// no console.log? sad...
+if (typeof console === 'undefined' || typeof console.log !== 'function')
+	console = {log: function(msg) {}};
+
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
@@ -211,6 +215,21 @@ jo = {
 		
 		if (joGesture)
 			joGesture.load();
+
+		if (this.matchPlatform("mozilla")) {
+			joScroller.prototype.transitionEnd = "transitionend";
+			joScroller.prototype.setTop = function(y) {
+					var node = this.container.firstChild;
+
+					if (y == 0)
+						node.style.MozTransform = "";
+					else
+						node.style.MozTransform = "translateY(" + y + "px)";
+
+					node.jotop = y;
+			};
+		}
+			
 
 		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
 
@@ -591,6 +610,9 @@ joEvent = {
 				call(e, data);
 		};
 		
+		// annoying kludge for Mozilla
+		wrappercall.capture = capture || false;
+
 		if (!window.addEventListener)
 			element.attachEvent("on" + event, wrappercall);
 		else
@@ -600,7 +622,7 @@ joEvent = {
 	},
 	
 	remove: function(element, event, wrappercall) {
-		element.removeEventListener(event, wrappercall);
+		element.removeEventListener(event, wrappercall, wrappercall.capture);
 	},
 		
 	stop: function(e) {
@@ -636,9 +658,10 @@ joEvent = {
 	==========
 	
 	Class for custom events using the Observer Pattern. This is designed to be used
-	inside a subject to create events observers can subscribe to. Unlike the classic
-	observer pattern, a subject can fire more than one event when called, and
-	each observer gets data from the subject. This is very similar to YUI 2.x event model.
+	inside a subject to create events which observers can subscribe to. Unlike
+	the classic observer pattern, a subject can fire more than one event when called,
+	and each observer gets data from the subject. This is very similar to YUI 2.x
+	event model.
 	
 	You can also "lock" the notification chain by using the `capture()` method, which
 	tells the event to only notify the most recent subscriber (observer) which requested
@@ -650,29 +673,37 @@ joEvent = {
 	- `subscribe(Function, context, data)`
 
 	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
-	  approach instead of passing in the `context` as a separate argument. All subscribers
-	  will be notified when the event is fired.
+	  approach instead of passing in the `context` as a separate argument.
+	  All subscribers will be notified when the event is fired.
 
 	- `unsubscribe(Function, context)`
 	
-	  Does what you'd think.
+	  Does what you'd think. The `context` is only required if you used one when
+	  you set up a subscriber.
 
-	- `fire(data)`
-	
-	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
-	  a reference to the `subject` and any static `data` which was passed in the
-	  `subscribe()` call.
-	
 	- `capture(Function, context, data)`
 	
 	  Only the last subscriber to capture this event will be notified until it is
 	  released. Note that you can stack `capture()` calls to produce a modal event
-	  heiarchy.
+	  heiarchy. Used in conjunction with the `resume()` method, you can build an
+	  event chain where each observer can fire the next based on some decision making.
 	
 	- `release(Function, context)`
 	
 	  Removes the most recent subscription called with `capture()`, freeing up the next
 	  subscribers in the list to be notified the next time the event is fired.
+
+	- `fire(data)`
+
+	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
+	  a reference to the `subject` and any static `data` which was passed in the
+	  `subscribe()` call.
+	
+	- `resume(data)`
+	
+	  If you used `capture()` to subscribe to this event, you can continue notifying
+	  other subscribers in the chain with this method. The `data` parameter, as in
+	  `fire()`, is optional.
 	
 	Use
 	---
@@ -706,6 +737,8 @@ joSubject = function(subject) {
 	this.subject = subject;	
 };
 joSubject.prototype = {
+	last: -1,
+	
 	subscribe: function(call, observer, data) {
 		if (!call)
 			return false;
@@ -738,11 +771,23 @@ joSubject.prototype = {
 		return this.subject;
 	},
 
-	fire: function(data) {
-		if (typeof data === 'undefined')
-			var data = "";
+	resume: function(data) {
+		if (this.last != -1)
+			this.fire(data, true);
 			
-		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
+		return this.subject;
+	},
+	
+	fire: function(data, resume) {
+		if (typeof data === 'undefined')
+			data = "";
+		
+		var i = (resume) ? (this.last || 0) : 0;
+
+		// reset our call stack
+		this.last = -1;
+			
+		for (var l = this.subscriptions.length; i < l; i++) {
 			var sub = this.subscriptions[i];
 			var subjectdata = (typeof sub.data !== 'undefined') ? sub.data : null;
 			
@@ -753,9 +798,13 @@ joSubject.prototype = {
 			
 			// if this subscriber wants to capture events,
 			// stop calling other subscribers
-			if (sub.capture)
+			if (sub.capture) {
+				this.last = i + 1;
 				break;
+			}
 		}
+		
+		return this.subject;
 	},
 
 	capture: function(call, observer, data) {
@@ -1638,7 +1687,7 @@ joInterface = function(parent) {
 };
 joInterface.prototype = {
 	get: function(parent) {
-		var parent = joDOM.get(parent);
+		parent = joDOM.get(parent);
 
 		if (!parent)
 			parent = document.body;
@@ -1850,13 +1899,25 @@ joView.prototype = {
 	},
 	
 	attach: function(parent) {
+		if (!this.container)
+			return this;
+		
 		var node = joDOM.get(parent) || document.body;
 		node.appendChild(this.container);
+		
+		return this;
 	},
 	
 	detach: function(parent) {
+		if (!this.container)
+			return this;
+
 		var node = joDOM.get(parent) || document.body;
-		node.removeChild(this.container);
+		
+		if (this.container && this.container.parentNode === node)
+			node.removeChild(this.container);
+		
+		return this;
 	},
 		
 	setEvents: function() {}
@@ -1925,14 +1986,21 @@ joContainer = function(data) {
 };
 joContainer.extend(joView, {
 	tagName: "jocontainer",
+	title: null,
 	
 	getContent: function() {
 		return this.container.childNodes;
 	},
 	
+	setTitle: function(title) {
+		this.title = title;
+		return this;
+	},
+	
 	setData: function(data) {
 		this.data = data;
 		this.refresh();
+		return this;
 	},
 	
 	activate: function() {},
@@ -1950,7 +2018,7 @@ joContainer.extend(joView, {
 				// ok, we have a single widget here
 				this.container.appendChild(data.container);
 			}
-			else if (data instanceof Object) {
+			else if (data instanceof HTMLElement) {
 				// DOM element attached directly
 				this.container.appendChild(data);
 			}
@@ -1961,6 +2029,10 @@ joContainer.extend(joView, {
 			o.innerHTML = data;
 			this.container.appendChild(o);
 		}
+	},
+	
+	getTitle: function() {
+		return this.title;
 	},
 	
 	refresh: function() {
@@ -2008,9 +2080,17 @@ joContainer.extend(joView, {
 	`div.control`
 
 */
-joControl = function(data) {
+joControl = function(data, value) {
 	this.selectEvent = new joSubject(this);
 	this.enabled = true;
+
+	if (typeof value !== "undefined" && value != null) {
+		console.log("we have a value: " + value);
+		if (value instanceof joDataSource)
+			this.setValueSource(value);
+		else
+			this.value = value;
+	}
 
 	if (data instanceof joDataSource) {
 		// we want to bind directly to some data
@@ -2023,6 +2103,7 @@ joControl = function(data) {
 };
 joControl.extend(joView, {
 	tagName: "jocontrol",
+	value: null,
 	
 	setEvents: function() {
 		// not sure what we want to do here, want to use
@@ -2064,13 +2145,26 @@ joControl.extend(joView, {
 		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
 		joEvent.stop(e);
 		this.blur();
+
 		this.changeEvent.fire(this.data);
 	},
 	
 	focus: function(e) {
 		joDOM.addCSSClass(this.container, 'focus');
+
 		if (!e)
 			this.container.focus();
+	},
+	
+	setValue: function(value) {
+		this.value = value;
+		this.changeEvent.fire(value);
+
+		return this;
+	},
+	
+	getValue: function() {
+		return this.value;
 	},
 	
 	blur: function() {
@@ -2079,9 +2173,13 @@ joControl.extend(joView, {
 	
 	setDataSource: function(source) {
 		this.dataSource = source;
-//		this.refresh();
 		source.changeEvent.subscribe(this.setData, this);
-	}
+	},
+	
+	setValueSource: function(source) {
+		this.valueSource = source;
+		source.changeEvent.subscribe(this.setValue, this);
+	},
 });
 /**
 	joButton
@@ -2123,8 +2221,10 @@ joButton.extend(joControl, {
 	tagName: "jobutton",
 	
 	createContainer: function() {
-		var o = joDOM.create(this);
-		o.setAttribute("tabindex", "1");
+		var o = joDOM.create(this.tagName);
+
+		if (o)
+			o.setAttribute("tabindex", "1");
 		
 		return o;
 	},
@@ -2231,8 +2331,9 @@ joBusy.extend(joContainer, {
 				return -1
 
 	- `setIndex(index)`
-
-	- `getIndex(index)`
+	- `getIndex()`
+	
+	  *DEPRECATED* USe `setValue()` and `getValue()` instead, see joControl.
 	
 	- `refresh()`
 	
@@ -2253,10 +2354,11 @@ joBusy.extend(joContainer, {
 	- `setAutoSort(boolean)`
 
 */
-joList = function(container, data) {
-	this.autoSort = false;
-	this.lastNode = null;
-	this.index = 0;
+joList = function() {
+	// these are being deprecated in the BETA
+	// for now, we'll keep references to the new stuff
+	this.setIndex = this.setValue;
+	this.getIndex = this.getValue;
 	
 	joControl.apply(this, arguments);
 };
@@ -2264,6 +2366,9 @@ joList.extend(joControl, {
 	tagName: "jolist",
 	data: null,
 	defaultMessage: "",
+	lastNode: null,
+	value: null,
+	autoSort: false,
 	
 	setDefault: function(msg) {
 		this.defaultMessage = msg;
@@ -2288,7 +2393,8 @@ joList.extend(joControl, {
 		var html = "";
 		var length = 0;
 
-		if ((typeof this.data === 'undefined' || !this.data.length) && this.defaultMessage) {
+		if ((typeof this.data === 'undefined' || !this.data.length)
+		&& this.defaultMessage) {
 			this.container.innerHTML = this.defaultMessage;
 			return;
 		}
@@ -2299,19 +2405,23 @@ joList.extend(joControl, {
 			if (element == null)
 				continue;
 			
-			if (typeof element == "string")
+			if (typeof element === "string")
 				html += element;
 			else
 				this.container.appendChild((element instanceof joView) ? element.container : element);
 
 			++length;
 		}
-
+		
 		// support setting the contents with innerHTML in one go,
 		// or getting back HTMLElements ready to append to the contents
 		if (html.length)
 			this.container.innerHTML = html;
 		
+		// refresh our current selection
+		if (this.value >= 0)
+			this.setValue(this.value, true);
+			
 		return;
 	},
 
@@ -2320,24 +2430,30 @@ joList.extend(joControl, {
 		|| !this.container['childNodes'])
 			return;
 
-		var node = this.getNode(this.index);
+		var node = this.getNode(this.value);
 		if (node) {
 			if (this.lastNode) {
 				joDOM.removeCSSClass(this.lastNode, "selected");
-				this.index = null;
+				this.value = null;
 			}
 		}
+		
+		return this;
 	},
 	
-	setIndex: function(index, silent) {
-		joLog("setIndex", index);
-		this.index = index;
+	setValue: function(index, silent) {
+		this.value = index;
 
-		if (typeof this.container == 'undefined'
-		|| !this.container['childNodes'])
+		if (index == null)
 			return;
 
-		var node = this.getNode(this.index);
+		if (typeof this.container === 'undefined'
+		|| !this.container
+		|| !this.container.firstChild) {
+			return this;
+		}
+
+		var node = this.getNode(this.value);
 		if (node) {
 			if (this.lastNode)
 				joDOM.removeCSSClass(this.lastNode, "selected");
@@ -2348,6 +2464,8 @@ joList.extend(joControl, {
 		
 		if (index >= 0 && !silent)
 			this.fireSelect(index);
+			
+		return this;
 	},
 	
 	getNode: function(index) {
@@ -2358,11 +2476,13 @@ joList.extend(joControl, {
 		this.selectEvent.fire(index);
 	},
 	
-	getIndex: function() {
-		return this.index;
+	getValue: function() {
+		return this.value;
 	},
 	
 	onMouseDown: function(e) {
+		joEvent.stop(e);
+
 		var node = joEvent.getTarget(e);
 		var index = -1;
 		
@@ -2371,16 +2491,13 @@ joList.extend(joControl, {
 			node = node.parentNode;
 		}
 
-		if (index >= 0) {
-			joEvent.stop(e);
-
-			this.setIndex(index);
-		}
+		if (index >= 0)
+			this.setValue(index);
 	},
 	
 	refresh: function() {
-		this.index = 0;
-		this.lastNode = null;
+//		this.value = null;
+//		this.lastNode = null;
 
 		if (this.autoSort)
 			this.sort();
@@ -2434,13 +2551,13 @@ joList.extend(joControl, {
 	},
 	
 	next: function() {
-		if (this.getIndex() < this.getLength() - 1)
-			this.setIndex(this.index + 1);
+		if (this.getValue() < this.getLength() - 1)
+			this.setValue(this.value + 1);
 	},
 	
 	prev: function() {
-		if (this.getIndex() > 0)
-			this.setIndex(this.index - 1);
+		if (this.getValue() > 0)
+			this.setValue(this.value - 1);
 	}
 });
 /**
@@ -2802,6 +2919,14 @@ joStack.extend(joContainer, {
 		}
 	},
 	
+	getTitle: function() {
+		var c = this.data[this.index];
+		if (typeof c.getTitle === 'function')
+			return c.getTitle();
+		else
+			return false;
+	},
+	
 	show: function() {
 		if (!this.visible) {
 			this.visible = true;
@@ -2883,6 +3008,7 @@ joScroller.extend(joContainer, {
 	bump: 50,
 	top: 0,
 	mousemove: null,
+	transitionEnd: "webkitTransitionEnd",
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
@@ -3051,7 +3177,7 @@ joScroller.extend(joContainer, {
 		if (test)
 			this.quickSnap = (ody != dy);
 
-		this.eventset = joEvent.on(node, "webkitTransitionEnd", this.snapBack, this);
+		this.eventset = joEvent.on(node, this.transitionEnd, this.snapBack, this);
 
 		if (this.getTop() != dy)
 			this.setTop(dy);
@@ -3070,7 +3196,7 @@ joScroller.extend(joContainer, {
 				var e = y.container;
 				
 			var t = 0 - e.offsetTop;
-			var h = e.offsetHeight;
+			var h = e.offsetHeight + 80;
 
 			var y = top;
 
@@ -3203,6 +3329,9 @@ joDivider.extend(joView, {
 
 */
 joExpando = function(data) {
+	this.openEvent = new joSubject(this);
+	this.closeEvent = new joSubject(this);
+	
 	joContainer.apply(this, arguments);
 };
 joExpando.extend(joContainer, {
@@ -3224,7 +3353,10 @@ joExpando.extend(joContainer, {
 	},
 	
 	toggle: function() {
-		joDOM.toggleCSSClass(this.container, "open");
+		if (this.container.className.indexOf("open") >= 0)
+			this.close();
+		else
+			this.open();
 	},
 	
 	open: function() {
@@ -3237,6 +3369,15 @@ joExpando.extend(joContainer, {
 		this.closeEvent.fire();
 	}
 });
+
+
+joExpandoContent = function() {
+	joContainer.apply(this, arguments);
+};
+joExpandoContent.extend(joContainer, {
+	tagName: "joexpandocontent"
+});
+
 
 /**
 
@@ -3258,10 +3399,15 @@ joExpando.extend(joContainer, {
 	
 */
 joExpandoTitle = function(data) {
-	joView.apply(this, arguments);
+	joControl.apply(this, arguments);
 };
-joExpandoTitle.extend(joView, {
+joExpandoTitle.extend(joControl, {
 	tagName: "joexpandotitle",
+	
+	setData: function() {
+		joView.prototype.setData.apply(this, arguments);
+		this.draw();
+	},
 	
 	draw: function() {
 		this.container.innerHTML = this.data + "<joicon></joicon>";
@@ -3515,8 +3661,6 @@ joGroup = function(data) {
 joGroup.extend(joContainer, {
 	tagName: "jogroup"
 });
-
-
 /**
 	joHTML
 	======
@@ -3799,11 +3943,13 @@ joLabel.extend(joControl, {
 		});
 
 */
-joMenu = function(data) {
+joMenu = function() {
 	joList.apply(this, arguments);
 };
 joMenu.extend(joList, {
 	tagName: "jomenu",
+	itemTagName: "jomenuitem",
+	value: null,
 
 	fireSelect: function(index) {
 		if (typeof this.data[index].id !== "undefined" && this.data[index].id)
@@ -3813,17 +3959,46 @@ joMenu.extend(joList, {
 	},
 	
 	formatItem: function(item, index) {
-		var o = joDOM.create("jomenuitem");
+		var o = joDOM.create(this.itemTagName);
 		
 		// TODO: not thrilled with this system of finding the
 		// selected item. It's flexible but annoying to code to.
 		o.setAttribute("index", index);
 		
 		// quick/dirty
-		o.innerHTML = ((item.icon) ? '<img src="' + item.icon + '">' : "") + '<jomenutitle>' + item.title + '</jomenutitle>';
+		if (typeof item === "object") {
+			o.innerHTML = item.title;
+			if (item.icon) {
+				o.style.backgroundImage = "url(" + item.icon + ");";
+				joDOM.addCSSClass(o, "icon");
+			}
+		}
+		else {
+			o.innerHTML = item;
+		}
 		
 		return o;
 	}
+});
+/**
+	joOption
+	========
+	
+	This controls lets the user select one of a few options. Basically, this
+	is a menu with a horizontal layout (depending on your CSS).
+	
+	Extends
+	-------
+	
+	- joMenu
+	
+*/
+joOption = function() {
+	joMenu.apply(this, arguments);
+};
+joOption.extend(joMenu, {
+	tagName: "jooption",
+	itemTagName: "jooptionitem"
 });
 /**
 	joPasswordInput
@@ -3884,10 +4059,17 @@ joPopup = function() {
 };
 joPopup.extend(joContainer, {
 	tagName: "jopopup",
+
+	setEvents: function() {
+		joEvent.on(this.container, "mousedown", this.onClick, this);
+	},
+	
+	onClick: function(e) {
+		joEvent.stop(e);
+	},
 	
 	hide: function() {
 		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
-		
 		this.container.className = 'hide';
 	},
 	
@@ -3962,7 +4144,7 @@ joPopup.extend(joContainer, {
 	
 */
 
-joScreen = function(data) {
+joScreen = function() {
 	this.resizeEvent = new joSubject(this);
 	this.menuEvent = new joSubject(this);
 	this.activateEvent = new joSubject(this);
@@ -4016,8 +4198,11 @@ joScreen.extend(joContainer, {
 	// shortcut to a simple alert dialog, not the most efficient
 	// way to do this, but for now, it serves its purpose and
 	// the API is clean enough.
-	alert: function(title, msg, options) {
+	alert: function(title, msg, options, context) {
 		var buttons = [];
+		var callback;
+		
+		var context = (typeof context === 'object') ? context : null;
 		
 		if (typeof options === 'object') {
 			if (options instanceof Array) {
@@ -4033,6 +4218,9 @@ joScreen.extend(joContainer, {
 			addbutton({ label: options });
 		}
 		else {
+			if (typeof options === 'function')
+				callback = options;
+
 			addbutton();
 		}
 	
@@ -4064,6 +4252,12 @@ joScreen.extend(joContainer, {
 		
 		function defaultaction() {
 			self.hidePopup();
+			if (callback) {
+				if (context)
+					callback.call(context);
+				else
+					callback();
+			}
 		}
 	}
 });
@@ -4105,12 +4299,13 @@ joShim.extend(joContainer, {
 	tagName: "joshim",
 	
 	setEvents: function() {
-		joEvent.on(this.container, "click", this.onClick, this);
+		joEvent.on(this.container, "mousedown", this.onMouseDown, this);
 	},
 	
-	onClick: function(e) {
+	onMouseDown: function(e) {
 		joEvent.stop(e);
-		this.selectEvent.fire();
+		this.hide();
+//		this.selectEvent.fire();
 	},
 	
 	hide: function() {
@@ -4572,4 +4767,199 @@ joForm = function() {
 };
 joForm.extend(joContainer, {
 	tagName: "form"
+});/**
+	joDialog
+	========
+	
+	This is a higher level container that wraps a joPopup with a joShim.
+*/
+joDialog = function(data) {
+	joShim.call(this, new joFlexcol([
+		'',
+		new joPopup(
+			new joScroller(data)
+		).setStyle("show"),
+		''
+	]));
+};
+joDialog.extend(joShim, {
+});
+/**
+	joSelectList
+	============
+	
+	A selection list of options used by joSelect.
+	
+	Extends
+	-------
+	
+	- joList
+*/
+
+joSelectList = function() {
+	joList.apply(this, arguments);
+};
+joSelectList.extend(joList, {
+	tagName: "joselectlist"
+});
+joNavbar = function(stack) {
+	var ui = [
+		this.title = new joView('&nbsp;').setStyle('title'),
+		new joFlexrow([this.back = new joBackButton('Back').selectEvent.subscribe(this.back, this), ""])
+	];
+	
+	joContainer.call(this, ui);
+
+	this.setStack(stack);
+};
+joNavbar.extend(joContainer, {
+	tagName: "jonavbar",
+	stack: null,
+	
+	back: function() {
+		if (this.stack)
+			this.stack.pop();
+	},
+	
+	setStack: function(stack) {
+		if (this.stack) {
+			this.stack.pushEvent.unsubscribe(this.update, this);
+			this.stack.popEvent.unsubscribe(this.update, this);
+		}
+		
+		if (!stack) {
+			this.stack = null;
+			return;
+		}
+		
+		this.stack = stack;
+		
+		stack.pushEvent.subscribe(this.update, this);
+		stack.popEvent.subscribe(this.update, this);
+
+		this.refresh();
+	},
+
+	update: function() {
+		if (!this.stack)
+			return;
+		
+		joDOM.removeCSSClass(this.back, 'selected');
+		joDOM.removeCSSClass(this.back, 'focus');
+
+		console.log('update ' + this.stack.data.length);
+		
+		if (this.stack.data.length > 1)
+			joDOM.addCSSClass(this.back, 'active');
+		else
+			joDOM.removeCSSClass(this.back, 'active');
+			
+		var title = this.stack.getTitle();
+
+		if (title)
+			this.title.setData(title);
+	}
+});
+
+joBackButton = function() {
+	joButton.apply(this, arguments);
+};
+joBackButton.extend(joButton, {
+	tagName: "jobackbutton"
+});
+/**
+	joSelect
+	========
+	
+	Multi-select control which presents a set of options for the user
+	to choose from.
+	
+	Methods
+	-------
+	
+	- `setValue(value)`
+	
+	  Set the current value, based on the index for the option list.
+	
+	- `getValue()`
+	
+	  Returns the index of the current selected item.
+		
+	Extends
+	-------
+	
+	- joExpando
+	
+	Consumes
+	--------
+	
+	- joExpandoTitle
+	- joSelectList
+	
+	Properties
+	----------
+	
+	- `field`
+	
+	  Reference to the value field for this control.
+	
+	- `list`
+	
+	  Reference to the joSelectList for this control.
+	
+	Use
+	---
+	
+		// pass in an array of options
+		var x = new joSelect([ "Apples", "Oranges", "Grapes" ]);
+		
+		// pass in a current value
+		var y = new joSelect([ "Apples", "Oranges", "Grapes" ], 2);
+		
+		// respond to the change event
+		y.changeEvent = function(value, list) {
+			console.log("Fruit: " + list.getNodeValue(value));
+		});
+	
+*/
+joSelect = function(data, value) {
+	var ui = [
+		this.field = new joSelectTitle(data[value || 0] || "Select"),
+		this.list = new joSelectList(data, value)
+	];
+	
+	this.changeEvent = this.list.changeEvent;
+	this.selectEvent = this.list.selectEvent;
+	
+	joExpando.call(this, ui);
+	this.container.setAttribute("tabindex", 1);
+
+	this.list.selectEvent.subscribe(this.setValue, this);
+};
+joSelect.extend(joExpando, {
+	setValue: function(value, list) {
+		this.field.setData(list.getNodeData(value));
+		this.close();
+	},
+	
+	getValue: function() {
+		return this.list.getValue();
+	},
+	
+	setEvents: function() {
+		joControl.prototype.setEvents.call(this);
+	},
+	
+	onBlur: function(e) {
+		joEvent.stop(e);
+		joDOM.removeCSSClass(this, "focus");
+		this.close();
+	}
+});
+
+
+joSelectTitle = function() {
+	joExpandoTitle.apply(this, arguments);
+};
+joSelectTitle.extend(joExpandoTitle, {
 });
