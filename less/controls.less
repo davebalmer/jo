@@ -1,0 +1,321 @@
+.widget {
+	margin: 0px 10px 10px 10px;
+}
+
+*.selected, *.focus {
+	.box-inset(5px);
+}
+
+.selected {
+	background-color: @select-color;
+	background-image: none;
+}
+
+.focus {
+	background-color: #fff;
+}
+
+jooptionitem {
+	.shiny;
+	text-align: center;
+	border: 1px solid rgba(0, 0, 0, .8);
+	border-right-width: 0;
+	margin: 0;
+}
+
+jooptionitem:first-child {
+	.round-left(5px);
+}
+
+jooptionitem:last-child {
+	.round-right(5px);
+	border-right-width: 1px;
+}
+
+jobutton {
+	display: block;
+	text-align: center;
+	.shiny;
+	.border-radius(10px);
+	.focus {
+		background-color: @select-color;
+	}
+}
+
+jooption {
+	.flex;
+	.widget;
+}
+
+jooptionitem {
+	.shiny;
+	border: 1px solid rgba(0, 0, 0, .8);
+	border-right-width: 0;
+	margin: 0;
+}
+
+jooptionitem:first-child {
+	.round-left(5px);
+}
+
+jooptionitem:last-child {
+	.round-right(5px);
+	border-right-width: 1px;
+}
+
+jobutton, input, jolabel, textarea, joexpando {
+	.widget;
+}
+
+jotitle {
+	text-align: center;
+	.matte;
+	background-color: #313539;
+	font-size: 18px;
+	margin: 0;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+
+*:focus {
+	outline: none;
+}
+
+jolistitem, jomenuitem {
+	.listitem
+}
+
+jobutton.focus {
+	background-color: @select-color;
+	background-image: none;
+}
+
+joselect.focus {
+	background-color: transparent;
+}
+
+jolist {
+	margin: 0;
+}
+
+joselectlist, joexpandocontent {
+	display: block;
+	border: 1px solid rgba(0, 0, 0, .6);
+	border-top: none;
+	.round-bottom(10px);
+}
+
+joexpando {
+	display: block;
+	padding-bottom: 0px;
+	margin-bottom: 0;
+}
+
+joexpando.open {
+	margin-bottom: 10px;
+}
+
+joexpandocontent {
+	padding-top: 10px;
+}
+
+joselectlist > *:last-child {
+	border-bottom: none;
+	.round-bottom(10px);
+}
+
+joselectlist > *:last-child.select {
+	border-bottom: none;
+	.round-bottom(10px);
+}
+
+joselectlist > *.first-child {
+	border-top: none;
+}
+
+jocard > jolist, jocard > jomenu {
+	margin: 0;
+}
+
+jobutton, jotitle, jooptionitem, joexpandotitle {
+	text-shadow: 0 0 5px rgba(0, 0, 0, .8);
+}
+
+joinput.password, input.password  {
+	-webkit-text-security: disc;
+	-moz-text-security: disc;
+	-o-text-security: disc;
+	text-security: disc;	
+}
+
+joinput, jotextarea, input, textarea {
+	cursor: text;
+	display: block;
+	border: 1px solid #000;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 0 10px 10px 10px;
+	padding: 5px 10px;
+	background: rgba(255, 255, 255, .4);
+	white-space: nowrap;
+	overflow: hidden;
+	outline: none;
+	font-family: "Apres", "Verdana";
+	font-size: 18px;
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	user-select: text;
+	-webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0);
+	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+}
+
+jolist, jomenu {
+	font-size: 18px;
+}
+
+jotextarea, textarea {
+	white-space: normal;
+}
+
+joinput.disabled, jotextarea.disabled,
+input.disabled, textarea.disabled {
+	color: #666;
+	cursor: text;
+}
+
+joexpandotitle joicon {
+	position: absolute;
+	border: none;
+	display: block;
+	height: 32px;
+	width: 32px;
+	right: 0px;
+	top: 13%;
+	background: url(aluminum/expando.png) no-repeat;
+
+	-webkit-transform-origin: 11px 16px 0;
+	-webkit-transform: rotateZ(0);
+	-webkit-transition: -webkit-transform .2s ease-out;
+
+	-moz-transform-origin: 11px 16px 0;
+	-moz-transform: rotateZ(0);
+	-moz-transition: -moz-transform .2s ease-out;
+
+	-o-transform-origin: 11px 16px 0;
+	-o-transform: rotateZ(0);
+	-o-transition: -o-transform .2s ease-out;
+}
+
+joexpando.open > joexpandotitle joicon {
+	-webkit-transform: rotateZ(90deg);
+	-moz-transform: rotateZ(90deg);
+	-o-transform: rotateZ(90deg);
+}
+
+
+joexpando > *:last-child {
+	height: 0;
+	overflow: hidden;
+	opacity: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+
+	-webkit-transform-style: preserve-3d;
+	-webkit-transform: rotateX(-45deg);
+	-webkit-transform-origin: 0 0 0;
+	-webkit-transition: -webkit-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+
+	-moz-transform-style: preserve-3d;
+	-moz-transform: rotateX(-45deg);
+	-moz-transform-origin: 0 0 0;
+	-moz-transition: -moz-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+
+	-o-transform-style: preserve-3d;
+	-o-transform: rotateX(-45deg);
+	-o-transform-origin: 0 0 0;
+	-o-transform: scaleY(1);
+	-o-transition: -o-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+}
+
+joexpando.open > *:last-child {
+	height: 100%;
+	overflow: visible;
+	opacity: 1;
+
+	-webkit-transform: rotateX(0);
+	-moz-transform: rotateX(0);
+	-o-transform: rotateX(0);
+}
+
+joexpando > *:first-child {
+	-webkit-transform: none;
+	opacity: 1;
+	overflow: visible;
+	height: auto;
+}
+
+joexpandotitle {
+	color: #fff;
+	position: relative;
+	
+	.shiny;
+	.border-radius(10px);
+	padding: 10px;
+	cursor: pointer;
+	text-align: left;
+}
+
+joexpando.open > *:first-child {
+	background-color: @select-color;
+	.box-inset(3px);
+	.round-top(10px);
+}
+
+joexpando > *:last-child {
+}
+joexpando.open > *:last-child {
+}
+
+jolabel {
+	margin-bottom: 5px;
+	text-shadow: 1px 1px 1px rgba(255, 255, 255, .6);
+}
+
+jocaption {
+	margin: 10px;
+}
+
+johtml {
+	padding: 0 10px;
+}
+
+jodivider {
+	border-top: 1px solid rgba(0, 0, 0, .5);
+	border-bottom: 1px solid rgba(255, 255, 255, .2);
+	margin: 0 0 10px 0;
+	text-align: center;
+	height: 0;
+	display: block;
+}
+
+jotable {
+	display: block;
+	margin: 0 10px;
+}
+
+tr {
+	margin: 0;
+}
+
+th {
+	text-align: left;
+	padding: 5px;
+}
+
+td {
+	padding: 5px;
+}
+
