@@ -18,10 +18,15 @@
 	
 */
 joExpandoTitle = function(data) {
-	joView.apply(this, arguments);
+	joControl.apply(this, arguments);
 };
-joExpandoTitle.extend(joView, {
+joExpandoTitle.extend(joControl, {
 	tagName: "joexpandotitle",
+	
+	setData: function() {
+		joView.prototype.setData.apply(this, arguments);
+		this.draw();
+	},
 	
 	draw: function() {
 		this.container.innerHTML = this.data + "<joicon></joicon>";
