@@ -3,9 +3,10 @@
 	==========
 	
 	Class for custom events using the Observer Pattern. This is designed to be used
-	inside a subject to create events observers can subscribe to. Unlike the classic
-	observer pattern, a subject can fire more than one event when called, and
-	each observer gets data from the subject. This is very similar to YUI 2.x event model.
+	inside a subject to create events which observers can subscribe to. Unlike
+	the classic observer pattern, a subject can fire more than one event when called,
+	and each observer gets data from the subject. This is very similar to YUI 2.x
+	event model.
 	
 	You can also "lock" the notification chain by using the `capture()` method, which
 	tells the event to only notify the most recent subscriber (observer) which requested
@@ -17,29 +18,37 @@
 	- `subscribe(Function, context, data)`
 
 	  Both `context` and `data` are optional. Also, you may use the `Function.bind(this)`
-	  approach instead of passing in the `context` as a separate argument. All subscribers
-	  will be notified when the event is fired.
+	  approach instead of passing in the `context` as a separate argument.
+	  All subscribers will be notified when the event is fired.
 
 	- `unsubscribe(Function, context)`
 	
-	  Does what you'd think.
+	  Does what you'd think. The `context` is only required if you used one when
+	  you set up a subscriber.
 
-	- `fire(data)`
-	
-	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
-	  a reference to the `subject` and any static `data` which was passed in the
-	  `subscribe()` call.
-	
 	- `capture(Function, context, data)`
 	
 	  Only the last subscriber to capture this event will be notified until it is
 	  released. Note that you can stack `capture()` calls to produce a modal event
-	  heiarchy.
+	  heiarchy. Used in conjunction with the `resume()` method, you can build an
+	  event chain where each observer can fire the next based on some decision making.
 	
 	- `release(Function, context)`
 	
 	  Removes the most recent subscription called with `capture()`, freeing up the next
 	  subscribers in the list to be notified the next time the event is fired.
+
+	- `fire(data)`
+
+	  Calls subscriber methods for all observers, and passes in: `data` from the subject,
+	  a reference to the `subject` and any static `data` which was passed in the
+	  `subscribe()` call.
+	
+	- `resume(data)`
+	
+	  If you used `capture()` to subscribe to this event, you can continue notifying
+	  other subscribers in the chain with this method. The `data` parameter, as in
+	  `fire()`, is optional.
 	
 	Use
 	---
@@ -73,6 +82,8 @@ joSubject = function(subject) {
 	this.subject = subject;	
 };
 joSubject.prototype = {
+	last: -1,
+	
 	subscribe: function(call, observer, data) {
 		if (!call)
 			return false;
@@ -105,11 +116,23 @@ joSubject.prototype = {
 		return this.subject;
 	},
 
-	fire: function(data) {
-		if (typeof data === 'undefined')
-			var data = "";
+	resume: function(data) {
+		if (this.last != -1)
+			this.fire(data, true);
 			
-		for (var i = 0, l = this.subscriptions.length; i < l; i++) {
+		return this.subject;
+	},
+	
+	fire: function(data, resume) {
+		if (typeof data === 'undefined')
+			data = "";
+		
+		var i = (resume) ? (this.last || 0) : 0;
+
+		// reset our call stack
+		this.last = -1;
+			
+		for (var l = this.subscriptions.length; i < l; i++) {
 			var sub = this.subscriptions[i];
 			var subjectdata = (typeof sub.data !== 'undefined') ? sub.data : null;
 			
@@ -120,9 +143,13 @@ joSubject.prototype = {
 			
 			// if this subscriber wants to capture events,
 			// stop calling other subscribers
-			if (sub.capture)
+			if (sub.capture) {
+				this.last = i + 1;
 				break;
+			}
 		}
+		
+		return this.subject;
 	},
 
 	capture: function(call, observer, data) {
