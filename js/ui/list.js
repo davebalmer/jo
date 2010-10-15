@@ -45,8 +45,9 @@
 				return -1
 
 	- `setIndex(index)`
-
-	- `getIndex(index)`
+	- `getIndex()`
+	
+	  *DEPRECATED* USe `setValue()` and `getValue()` instead, see joControl.
 	
 	- `refresh()`
 	
@@ -67,10 +68,11 @@
 	- `setAutoSort(boolean)`
 
 */
-joList = function(container, data) {
-	this.autoSort = false;
-	this.lastNode = null;
-	this.index = 0;
+joList = function() {
+	// these are being deprecated in the BETA
+	// for now, we'll keep references to the new stuff
+	this.setIndex = this.setValue;
+	this.getIndex = this.getValue;
 	
 	joControl.apply(this, arguments);
 };
@@ -78,6 +80,9 @@ joList.extend(joControl, {
 	tagName: "jolist",
 	data: null,
 	defaultMessage: "",
+	lastNode: null,
+	value: null,
+	autoSort: false,
 	
 	setDefault: function(msg) {
 		this.defaultMessage = msg;
@@ -102,7 +107,8 @@ joList.extend(joControl, {
 		var html = "";
 		var length = 0;
 
-		if ((typeof this.data === 'undefined' || !this.data.length) && this.defaultMessage) {
+		if ((typeof this.data === 'undefined' || !this.data.length)
+		&& this.defaultMessage) {
 			this.container.innerHTML = this.defaultMessage;
 			return;
 		}
@@ -113,19 +119,23 @@ joList.extend(joControl, {
 			if (element == null)
 				continue;
 			
-			if (typeof element == "string")
+			if (typeof element === "string")
 				html += element;
 			else
 				this.container.appendChild((element instanceof joView) ? element.container : element);
 
 			++length;
 		}
-
+		
 		// support setting the contents with innerHTML in one go,
 		// or getting back HTMLElements ready to append to the contents
 		if (html.length)
 			this.container.innerHTML = html;
 		
+		// refresh our current selection
+		if (this.value >= 0)
+			this.setValue(this.value, true);
+			
 		return;
 	},
 
@@ -134,24 +144,30 @@ joList.extend(joControl, {
 		|| !this.container['childNodes'])
 			return;
 
-		var node = this.getNode(this.index);
+		var node = this.getNode(this.value);
 		if (node) {
 			if (this.lastNode) {
 				joDOM.removeCSSClass(this.lastNode, "selected");
-				this.index = null;
+				this.value = null;
 			}
 		}
+		
+		return this;
 	},
 	
-	setIndex: function(index, silent) {
-		joLog("setIndex", index);
-		this.index = index;
+	setValue: function(index, silent) {
+		this.value = index;
 
-		if (typeof this.container == 'undefined'
-		|| !this.container['childNodes'])
+		if (index == null)
 			return;
 
-		var node = this.getNode(this.index);
+		if (typeof this.container === 'undefined'
+		|| !this.container
+		|| !this.container.firstChild) {
+			return this;
+		}
+
+		var node = this.getNode(this.value);
 		if (node) {
 			if (this.lastNode)
 				joDOM.removeCSSClass(this.lastNode, "selected");
@@ -162,6 +178,8 @@ joList.extend(joControl, {
 		
 		if (index >= 0 && !silent)
 			this.fireSelect(index);
+			
+		return this;
 	},
 	
 	getNode: function(index) {
@@ -172,11 +190,13 @@ joList.extend(joControl, {
 		this.selectEvent.fire(index);
 	},
 	
-	getIndex: function() {
-		return this.index;
+	getValue: function() {
+		return this.value;
 	},
 	
 	onMouseDown: function(e) {
+		joEvent.stop(e);
+
 		var node = joEvent.getTarget(e);
 		var index = -1;
 		
@@ -185,16 +205,13 @@ joList.extend(joControl, {
 			node = node.parentNode;
 		}
 
-		if (index >= 0) {
-			joEvent.stop(e);
-
-			this.setIndex(index);
-		}
+		if (index >= 0)
+			this.setValue(index);
 	},
 	
 	refresh: function() {
-		this.index = 0;
-		this.lastNode = null;
+//		this.value = null;
+//		this.lastNode = null;
 
 		if (this.autoSort)
 			this.sort();
@@ -248,12 +265,12 @@ joList.extend(joControl, {
 	},
 	
 	next: function() {
-		if (this.getIndex() < this.getLength() - 1)
-			this.setIndex(this.index + 1);
+		if (this.getValue() < this.getLength() - 1)
+			this.setValue(this.value + 1);
 	},
 	
 	prev: function() {
-		if (this.getIndex() > 0)
-			this.setIndex(this.index - 1);
+		if (this.getValue() > 0)
+			this.setValue(this.value - 1);
 	}
 });
