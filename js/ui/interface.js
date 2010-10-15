@@ -126,7 +126,7 @@ joInterface = function(parent) {
 };
 joInterface.prototype = {
 	get: function(parent) {
-		var parent = joDOM.get(parent);
+		parent = joDOM.get(parent);
 
 		if (!parent)
 			parent = document.body;
