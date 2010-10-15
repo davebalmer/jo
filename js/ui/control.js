@@ -33,9 +33,17 @@
 	`div.control`
 
 */
-joControl = function(data) {
+joControl = function(data, value) {
 	this.selectEvent = new joSubject(this);
 	this.enabled = true;
+
+	if (typeof value !== "undefined" && value != null) {
+		console.log("we have a value: " + value);
+		if (value instanceof joDataSource)
+			this.setValueSource(value);
+		else
+			this.value = value;
+	}
 
 	if (data instanceof joDataSource) {
 		// we want to bind directly to some data
@@ -48,6 +56,7 @@ joControl = function(data) {
 };
 joControl.extend(joView, {
 	tagName: "jocontrol",
+	value: null,
 	
 	setEvents: function() {
 		// not sure what we want to do here, want to use
@@ -89,13 +98,26 @@ joControl.extend(joView, {
 		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
 		joEvent.stop(e);
 		this.blur();
+
 		this.changeEvent.fire(this.data);
 	},
 	
 	focus: function(e) {
 		joDOM.addCSSClass(this.container, 'focus');
+
 		if (!e)
 			this.container.focus();
+	},
+	
+	setValue: function(value) {
+		this.value = value;
+		this.changeEvent.fire(value);
+
+		return this;
+	},
+	
+	getValue: function() {
+		return this.value;
 	},
 	
 	blur: function() {
@@ -104,7 +126,11 @@ joControl.extend(joView, {
 	
 	setDataSource: function(source) {
 		this.dataSource = source;
-//		this.refresh();
 		source.changeEvent.subscribe(this.setData, this);
+	},
+	
+	setValueSource: function(source) {
+		this.valueSource = source;
+		source.changeEvent.subscribe(this.setValue, this);
 	}
 });
