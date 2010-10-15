@@ -58,11 +58,13 @@
 		});
 
 */
-joMenu = function(data) {
+joMenu = function() {
 	joList.apply(this, arguments);
 };
 joMenu.extend(joList, {
 	tagName: "jomenu",
+	itemTagName: "jomenuitem",
+	value: null,
 
 	fireSelect: function(index) {
 		if (typeof this.data[index].id !== "undefined" && this.data[index].id)
@@ -72,14 +74,23 @@ joMenu.extend(joList, {
 	},
 	
 	formatItem: function(item, index) {
-		var o = joDOM.create("jomenuitem");
+		var o = joDOM.create(this.itemTagName);
 		
 		// TODO: not thrilled with this system of finding the
 		// selected item. It's flexible but annoying to code to.
 		o.setAttribute("index", index);
 		
 		// quick/dirty
-		o.innerHTML = ((item.icon) ? '<img src="' + item.icon + '">' : "") + '<jomenutitle>' + item.title + '</jomenutitle>';
+		if (typeof item === "object") {
+			o.innerHTML = item.title;
+			if (item.icon) {
+				o.style.backgroundImage = "url(" + item.icon + ");";
+				joDOM.addCSSClass(o, "icon");
+			}
+		}
+		else {
+			o.innerHTML = item;
+		}
 		
 		return o;
 	}
