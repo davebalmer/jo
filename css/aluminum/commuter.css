@@ -1,0 +1,106 @@
+jolist {
+}
+
+
+jolistitem:first-child {
+	border: none;
+}
+
+jocard {
+	background: none;
+}
+
+jostack, jostackscroller {
+	position: absolute;
+}
+
+#traffic {
+}
+
+#traffic > * {
+/*
+	background-image: url(shiny.png);
+	background-repeat: repeat-x;
+	background-size: 100% 19px;
+*/
+	background-color: rgba(255, 229, 18, .7);
+	color: #f3f4f5;
+	
+	border-bottom: 1px solid rgb(0, 0, 0);
+
+	color: rgb(0, 0, 0);
+}
+
+#traffic .major {
+	background-color: rgba(253, 147, 28, .7);
+}
+
+#traffic .minor {
+	background-color: rgba(10, 220, 60, .7);
+}
+
+#traffic jocaption {
+	color: inherit;
+}
+
+#traffic {
+	width: auto;
+}
+
+#traffic .selected {
+	background-color: rgba(0, 0, 0, .6);
+	color: #fff;
+}
+
+joexpando {
+	padding: 0;
+}
+
+joexpando joexpandotitle {
+	border: none;
+	background: none;
+	padding: 10px 40px 0px 10px;
+	color: inherit;
+	font-weight: bold;
+}
+
+joexpando > * {
+	margin: 0px;
+}
+
+joexpando > *:last-child {
+	margin: 0 10px;
+}
+
+joexpando joexpandotitle joicon {
+	top: 3px;
+	right: -2px;
+	opacity: .2;
+}
+
+joexpando > *:last-child {
+	margin-bottom: 0;
+	padding-bottom: 10px;
+}
+
+joexpando img {
+	display: block;
+	margin: 10px auto 0 auto;
+	-webkit-border-radius: 10px;
+}
+
+.map {
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-opacity: .8;
+	background-color: rgba(0, 0, 0, .8);
+	display: block;
+	margin: 10px;
+	border: 1px solid rgba(0, 0, 0, .8);
+	-webkit-border-radius: 5px;
+	height: 240px;
+}
+
+jocard {
+	padding-bottom: 50px;
+}
