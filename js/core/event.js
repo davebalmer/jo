@@ -72,6 +72,9 @@ joEvent = {
 				call(e, data);
 		};
 		
+		// annoying kludge for Mozilla
+		wrappercall.capture = capture || false;
+
 		if (!window.addEventListener)
 			element.attachEvent("on" + event, wrappercall);
 		else
@@ -81,7 +84,7 @@ joEvent = {
 	},
 	
 	remove: function(element, event, wrappercall) {
-		element.removeEventListener(event, wrappercall);
+		element.removeEventListener(event, wrappercall, wrappercall.capture);
 	},
 		
 	stop: function(e) {
