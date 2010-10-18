@@ -229,6 +229,19 @@ jo = {
 					node.jotop = y;
 			};
 		}
+		else if (this.matchPlatform("opera")) {
+			joScroller.prototype.transitionEnd = "transitionend";
+			joScroller.prototype.setTop = function(y) {
+					var node = this.container.firstChild;
+
+					if (y == 0)
+						node.style.transform = "";
+					else
+						node.style.transform = "translateY(" + y + "px)";
+
+					node.jotop = y;
+			};
+		}
 			
 
 		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
@@ -2179,7 +2192,7 @@ joControl.extend(joView, {
 	setValueSource: function(source) {
 		this.valueSource = source;
 		source.changeEvent.subscribe(this.setValue, this);
-	},
+	}
 });
 /**
 	joButton
@@ -3306,7 +3319,7 @@ joDivider.extend(joView, {
 			new joContainer([
 				new joLabel("Label"),
 				new joInput("sample field")
-			]
+			])
 		]);
 	
 	Extends
@@ -3371,6 +3384,16 @@ joExpando.extend(joContainer, {
 });
 
 
+/**
+	joExpandoContent
+	================
+	
+	New widget to contain expando contents, used by joExpando.
+	
+	Extends
+	-------
+	- joContainer
+*/
 joExpandoContent = function() {
 	joContainer.apply(this, arguments);
 };
@@ -3390,7 +3413,7 @@ joExpandoContent.extend(joContainer, {
 	Extends
 	-------
 	
-	- joView
+	- joControl
 	
 	Use
 	---
@@ -4717,7 +4740,7 @@ joTextarea = function(data) {
 	joInput.apply(this, arguments);
 };
 joTextarea.extend(joInput, {
-	tagName: "jotextarea",
+	tagName: "textarea",
 	
 	onKeyDown: function(e) {
 		// here we want the enter key to work, overriding joInput's behavior
