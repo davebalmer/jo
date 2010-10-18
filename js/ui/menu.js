@@ -51,7 +51,7 @@
 	the appropriate card based on the menu `id` selected.
 
 	You could use the `id` in conjunction with view keys you create with joCache.
-	The handler would then something like:
+	The handler would then be something like:
 	
 		menu.selectEvent.subscribe(function(id) {
 			mystack.push(joCache.get(id));

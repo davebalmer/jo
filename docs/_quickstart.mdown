@@ -62,7 +62,7 @@ The simplest UI would be something like:
 
 Something more interesting would look like:
 
-	// inialize jo
+	// initialize jo
 	jo.load();
 	
 	// setup a stack and screen
