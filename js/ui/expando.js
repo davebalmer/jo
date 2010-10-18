@@ -15,7 +15,7 @@
 			new joContainer([
 				new joLabel("Label"),
 				new joInput("sample field")
-			]
+			])
 		]);
 	
 	Extends
@@ -80,6 +80,16 @@ joExpando.extend(joContainer, {
 });
 
 
+/**
+	joExpandoContent
+	================
+	
+	New widget to contain expando contents, used by joExpando.
+	
+	Extends
+	-------
+	- joContainer
+*/
 joExpandoContent = function() {
 	joContainer.apply(this, arguments);
 };

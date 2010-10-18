@@ -9,7 +9,7 @@
 	Extends
 	-------
 	
-	- joView
+	- joControl
 	
 	Use
 	---
