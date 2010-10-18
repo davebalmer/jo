@@ -43,7 +43,7 @@ joTextarea = function(data) {
 	joInput.apply(this, arguments);
 };
 joTextarea.extend(joInput, {
-	tagName: "jotextarea",
+	tagName: "textarea",
 	
 	onKeyDown: function(e) {
 		// here we want the enter key to work, overriding joInput's behavior
