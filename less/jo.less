@@ -9,6 +9,7 @@ body {
 	background: #666;
 	word-wrap: break-word;
 	overflow: hidden;
+	font: normal 15px "Apres", "Trebuchet MS";
 }
 
 jobutton, joview, jolist, jolistitem, jomenu, jomenuitem, joexpando, joexpandotitle, jogroup, jocard, jostack, jotitle, jocaption, jolabel, jodivider, joinput, input, textarea, jotextarea, jooption, jooptionitem, jonavbar, jocontainer {
@@ -17,8 +18,9 @@ jobutton, joview, jolist, jolistitem, jomenu, jomenuitem, joexpando, joexpandoti
 	padding: 0;
 	-webkit-user-select: none;
 	-moz-user-select: none;
+	-o-user-select: none;
 	user-select: none;
-	background: transparent;
+/*	background: transparent; */
 }
 
 /*
@@ -34,25 +36,33 @@ em, i, b, span, u, a, button, input {
 }
 
 .round-left (@radius: 10px) {
-	-webkit-border-radius: @radius 0 0 @radius;
+	-webkit-border-radius: 0;
+	-webkit-border-top-left-radius: @radius;
+	-webkit-border-bottom-left-radius: @radius;
 	-moz-border-radius: @radius 0 0 @radius;
 	border-radius: @radius 0 0 @radius;
 }
 
 .round-right (@radius: 10px) {
-	-webkit-border-radius: 0 @radius @radius 0;
+	-webkit-border-radius: 0;
+	-webkit-border-top-right-radius: @radius;
+	-webkit-border-bottom-right-radius: @radius;
 	-moz-border-radius: 0 @radius @radius 0;
 	border-radius: 0 @radius @radius 0;
 }
 
 .round-top (@radius: 10px) {
-	-webkit-border-radius: @radius @radius 0 0;
+	-webkit-border-radius: 0;
+	-webkit-border-top-right-radius: @radius;
+	-webkit-border-top-left-radius: @radius;
 	-moz-border-radius: @radius @radius 0 0;
 	border-radius: @radius @radius 0 0;
 }
 
 .round-bottom (@radius: 10px) {
-	-webkit-border-radius: 0 0 @radius @radius;
+	-webkit-border-radius: 0;
+	-webkit-border-bottom-right-radius: @radius;
+	-webkit-border-bottom-left-radius: @radius;
 	-moz-border-radius: 0 0 @radius @radius;
 	border-radius: 0 0 @radius @radius;
 }
@@ -69,23 +79,6 @@ em, i, b, span, u, a, button, input {
 	-o-box-shadow: 0 0 @size @shadow;
 }
 
-.flex {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -o-box;
-	display: box;
-	margin: 0;
-
-	-moz-box-align: stretch;
-
-	> * {
-		-webkit-box-flex: 1;
-		-moz-box-flex: 1;
-		-o-box-flex: 1;
-		box-flex: 1;
-	}
-}
-
 .noflex {
 	-webkit-box-flex: 0;
 	-moz-box-flex: 0;
@@ -93,8 +86,28 @@ em, i, b, span, u, a, button, input {
 	box-flex: 0;
 }
 
+.flexible {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-o-box-flex: 1;
+	box-flex: 1;
+}	
+
+.flex {
+	display: block;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -o-box;
+	display: box;
+	margin: 0;
+
+	-moz-box-align: stretch;
+	-o-box-align: stretch;
+	box-align: stretch;
+}
+
 .listitem {
-	border-top: 1px solid rgba(255, 255, 255, .4);
+	border-top: 1px solid rgba(0, 0, 0, .4);
 	margin: 0;
 	padding: 10px;
 	cursor: pointer;
@@ -112,30 +125,27 @@ em, i, b, span, u, a, button, input {
 	padding: 10px 0;
 }
 
+.imagebg(@image: url(full-matte.png), @height: 100%) {
+	background-image: @image;
+	background-repeat: repeat-x;
+	background-position: top left;
+	background-size: 100% @height;
+	-webkit-background-size: 100% @height;
+	-moz-background-size: 100% @height;
+}	
+
 .shiny {
 	.widgety;
-
 	border: 1px solid rgba(0, 0, 0, .8);
-	background-image: url(aluminum/shiny.png);
-
-	background-repeat: repeat-x;
-
-	background-position: top left;
-	background-size: 100% 50%;
+	.imagebg(url(shiny.png), 50%);
 }
 
 .matte {
 	.widgety;
+	.imagebg(url(subtle-matte-full.png));
+/*
 	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
-}
-
-body {
-	margin: 0;
-	padding: 0;
-	background: #000;
-	word-wrap: break-word;
-	overflow: hidden;
-	font: normal 15px "Apres", "Trebuchet MS";
+*/
 }
 
 .stretch-full {
@@ -149,3 +159,7 @@ body {
 
 @import "containers.less";
 @import "controls.less";
+
+html {
+    -webkit-text-size-adjust: none;
+}

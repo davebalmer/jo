@@ -8,23 +8,11 @@
 
 .selected {
 	background-color: @select-color;
-	background-image: none;
+	.imagebg(url(shade-top.png), 50%);
 }
 
 .focus {
 	background-color: #fff;
-}
-
-jooptionitem {
-	.shiny;
-	text-align: center;
-	border: 1px solid rgba(0, 0, 0, .8);
-	border-right-width: 0;
-	margin: 0;
-}
-
-jooptionitem:first-child {
-	.round-left(5px);
 }
 
 jooptionitem:last-child {
@@ -39,6 +27,7 @@ jobutton {
 	.border-radius(10px);
 	.focus {
 		background-color: @select-color;
+		.imagebg(url(shade-top.png), 50%);
 	}
 }
 
@@ -49,6 +38,8 @@ jooption {
 
 jooptionitem {
 	.shiny;
+	.flexible;
+	text-align: center;
 	border: 1px solid rgba(0, 0, 0, .8);
 	border-right-width: 0;
 	margin: 0;
@@ -104,6 +95,7 @@ joselectlist, joexpandocontent {
 	border: 1px solid rgba(0, 0, 0, .6);
 	border-top: none;
 	.round-bottom(10px);
+	background-color: rgba(255, 255, 255, .6);
 }
 
 joexpando {
@@ -139,7 +131,7 @@ jocard > jolist, jocard > jomenu {
 }
 
 jobutton, jotitle, jooptionitem, joexpandotitle {
-	text-shadow: 0 0 5px rgba(0, 0, 0, .8);
+	text-shadow: 0 0 5px rgba(0, 0, 0, .6);
 }
 
 joinput.password, input.password  {
@@ -152,13 +144,13 @@ joinput.password, input.password  {
 joinput, jotextarea, input, textarea {
 	cursor: text;
 	display: block;
-	border: 1px solid #000;
+	border: 1px solid rgba(0, 0, 0, .6);
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	margin: 0 10px 10px 10px;
 	padding: 5px 10px;
-	background: rgba(255, 255, 255, .4);
+	background: rgba(255, 255, 255, .6);
 	white-space: nowrap;
 	overflow: hidden;
 	outline: none;
@@ -192,27 +184,27 @@ joexpandotitle joicon {
 	display: block;
 	height: 32px;
 	width: 32px;
-	right: 0px;
-	top: 13%;
-	background: url(aluminum/expando.png) no-repeat;
+	right: 4px;
+	top: 10%;
+	background: url(expando.png) no-repeat;
 
-	-webkit-transform-origin: 11px 16px 0;
+	-webkit-transform-origin: 16px 16px 0;
 	-webkit-transform: rotateZ(0);
 	-webkit-transition: -webkit-transform .2s ease-out;
 
-	-moz-transform-origin: 11px 16px 0;
-	-moz-transform: rotateZ(0);
+	-moz-transform-origin: 16px 16px 0;
+	-moz-transform: rotate(0);
 	-moz-transition: -moz-transform .2s ease-out;
 
-	-o-transform-origin: 11px 16px 0;
-	-o-transform: rotateZ(0);
+	-o-transform-origin: 16px 16px 0;
+	-o-transform: rotate(0);
 	-o-transition: -o-transform .2s ease-out;
 }
 
 joexpando.open > joexpandotitle joicon {
 	-webkit-transform: rotateZ(90deg);
-	-moz-transform: rotateZ(90deg);
-	-o-transform: rotateZ(90deg);
+	-moz-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
 }
 
 
@@ -319,3 +311,10 @@ td {
 	padding: 5px;
 }
 
+jotoggle {
+	.flex;
+	> *:last-child {
+		.noflex;
+		width: 3em;
+	}
+}

@@ -80,9 +80,7 @@ var App = (function() {
 			new joContainer([
 				new joFlexcol([
 					nav = new joNavbar(),
-					new joContainer(
-						stack = new joStackScroller()
-					)
+					stack = new joStackScroller()
 				]),
 				toolbar = new joToolbar("This is a footer, neat huh?")
 			]).setStyle({position: "absolute", top: "0", left: "0", bottom: "0", right: "0"})
@@ -222,11 +220,11 @@ var App = (function() {
 
 			var card = new joCard([
 				new joLabel(),
-				new joTextarea("Here is some sample text in a multiline joTextarea control."
+				new joFlexrow(new joTextarea("Here is some sample text in a multiline joTextarea control."
 				+ " As you type, it will grow, but stop at its max height.").setStyle({
 					minHeight: "100px",
 					maxHeight: "300px"
-				}),
+				})),
 				new joDivider(),
 				back = new joButton("Back")
 			]).setTitle("Auto-sized Text Area");

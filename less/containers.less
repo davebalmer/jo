@@ -4,57 +4,44 @@ joflexrow {
 	width: 100%;
 }
 
-joflexcol {
-	display: block;
-	display: -webkit-box;
-	display: -moz-box;
-	display: -o-box;
-	display: box;
-
-	-webkit-box-flex: 1;
-	-webkit-box-orient: vertical;
-	-webkit-box-align: stretch;
-	-moz-box-flex: 1;
-	-moz-box-orient: vertical;
-	-moz-box-align: stretch;
-	box-flex: 1;
-	box-orient: vertical;
-	box-align: stretch;
-
-	margin: 0;
-	height: 100%;
-}
-
-joflexcol>* {
-	-webkit-box-flex: 1;
-	-moz-box-flex: 1;
-	-o-box-flex: 1;
-	box-flex: 1;
-}
-
-jotitle + joflexcol, jotitle + joflexrow {
-	margin-top: 10px;
-}
-
 joflexrow > * {
+	.flexible;
 	margin-right: 0;
+	position: relative;
 }
 
 joflexrow > *:last-child {
 	margin-right: 10px;
 }
 
-
-jostack {
-	position: absolute;
-	top: 0;
-	left: 0;
+joflexcol {
+	.flex;
 	height: 100%;
-	right: 0;
+	width: 100%;
+
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	-o-box-orient: vertical;
+	-o-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+
+	margin: 0;
 }
 
+joflexcol > * {
+	.flexible;
+}
+
+jotitle + joflexcol, jotitle + joflexrow {
+	margin-top: 10px;
+}
+
+
 jostack {
-	.stretch-full;
+	height: 100%;
 	-webkit-perspective: 400px;
 	-moz-perspective: 400px;
 	-o-perspective: 400px;
@@ -65,6 +52,7 @@ jocard {
 	min-height: 100%;
 	display: -webkit-box;
 	display: -moz-box;
+	display: -o-box;
 	display: box;
 	padding: 0;
 	margin: 0;
@@ -72,6 +60,8 @@ jocard {
 	-webkit-box-align: stretch;
 	-moz-box-orient: vertical;
 	-moz-box-align: stretch;
+	-o-box-orient: vertical;
+	-o-box-align: stretch;
 	box-orient: vertical;
 	box-align: stretch;
 	background: @card-color;
@@ -95,38 +85,41 @@ joscroller {
 	margin: 0;
 	-webkit-transform: translate3d(0, 0, 0);
 	-moz-transform: translateY(0);
-	-o-transform: translate(0, 0);
+	-o-transform: translateY(0);
 }
 joscroller > * {
 	position: absolute;
 	-webkit-animation-fill-mode: forwards;
 	-webkit-transition: -webkit-transform 0s ease;
 	-moz-animation-fill-mode: forwards;
-	-moz-transition: -webkit-transform 0s ease;
+	-moz-transition: -moz-transform 0s ease;
+	-o-animation-fill-mode: forwards;
+	-o-transition: -o-transform 0s ease;
 }
 
 .flick {
 	-webkit-transition: -webkit-transform 1.8s cubic-bezier(0, .2, 0, 1);
 	-moz-transition: -moz-transform 1.8s cubic-bezier(0, .2, 0, 1);
+	-o-transition: -o-transform 1.8s cubic-bezier(0, .2, 0, 1);
 }
 
 .flickback {
 	-webkit-transition: -webkit-transform .2s cubic-bezier(0, 0, 0.4, 1);
 	-moz-transition: -moz-transform .2s cubic-bezier(0, 0, 0.4, 1);
+	-o-transition: -o-transform .2s cubic-bezier(0, 0, 0.4, 1);
 }
 
 .flickfast {
 	-webkit-transition: -webkit-transform .5s cubic-bezier(0, .2, 0, 1);
 	-moz-transition: -moz-transform .5s cubic-bezier(0, .2, 0, 1);
+	-o-transition: -o-transform .5s cubic-bezier(0, .2, 0, 1);
 }
 
 jocontainer {
 	margin: 0;
-	position: relative;
 	display: block;
+	position: relative;
 }
-
-body { height: 100%; }
 
 jogroup {
 	margin: 10px;
@@ -167,6 +160,7 @@ jofooter {
 jofooter > * {
 	-webkit-box-align: end;
 	-moz-box-align: end;
+	-o-box-align: end;
 	box-align: end;
 }
 
@@ -185,6 +179,7 @@ joshim {
 	
 	-webkit-transition: opacity .2s ease;
 	-moz-transition: opacity .2s ease;
+	-o-transition: opacity .2s ease;
 }
 joshim.show {
 	display: block;
@@ -195,12 +190,13 @@ jotoolbar {
 	border-top: 1px solid rgba(0, 0, 0, .8);
 	padding: 10px 0;
 	.matte;
-	background-color: rgba(0, 0, 0, .5);
+	background-color: rgba(0, 0, 0, .8);
 	z-index: 1;
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
+	text-align: center;
 }
 
 jotoolbar jobutton {
@@ -208,32 +204,33 @@ jotoolbar jobutton {
 }
 
 jopopup {
+	.noflex;
 	font-size: 15px;
-	-webkit-box-flex: 0;
 	display: block;
 	overflow: hidden;
 
 	margin: 0 auto;
-
 	border: 2px solid #fff;
-	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
-	
+	.box-shadow(20px);
 	background-color: #34c;
 	color: #fff;
 
 	background-image: url(aluminum/shiny.png);
-	background-repeat: no-repeat;
+	background-repeat: repeat-x;
 	background-position: top left;
 	background-size: 100% 20px;
 
 	-webkit-transition: -webkit-transform .4s ease-in, opacity .4s ease-in;
 	-moz-transition: -moz-transform .4s ease-in, opacity .4s ease-in;
+	-o-transition: -o-transform .4s ease-in, opacity .4s ease-in;
 	
 	/* ios */
 	-webkit-border-radius: 20px;
 	-webkit-transform: scale(.5);
 	-moz-border-radius: 20px;
 	-moz-transform: scale(.5);
+	-o-border-radius: 20px;
+	-o-transform: scale(.5);
 	max-width: 280px;
 	margin: 0 auto;
 	opacity: 0;
@@ -262,7 +259,7 @@ jopopup > joscroller {
 }
 
 jonavbar {
-	.shiny;
+	.imagebg(url(subtle-shiny-button.png));
 	display: block;
 	position: relative;
 	margin: 0;
@@ -287,18 +284,19 @@ jonavbar > joflexrow {
 	position: absolute;
 	top: 0;
 	left: 0;
-	bottom: 0;
 	right: 0;
+	bottom: 0;
 }
 
 jobackbutton {
-	.shiny;
-	background-color: #333;
-	border-color: rgba(0, 0, 0, .5);
+	.imagebg(url(subtle-shiny.png), 50%);
+/*	background-color: #333; */
+	border: 1px solid rgba(0, 0, 0, .3);
+	border-bottom-color: rgba(255, 255, 255, .3);
 	padding: 5px 10px;
 	margin: 5px 10px;
 	.border-radius(5px);
-	.box-inset(1px, rgba(255, 255, 255, .4));
+	.box-inset(1px, rgba(255, 255, 255, .6));
 	display: none;
 	color: #ddd;
 }
@@ -311,8 +309,13 @@ jobackbutton.active {
 	display: block;
 }
 
-jonavbar > joflexrow > *:first-child {
+jonavbar > joflexrow > * {
+	.flexible;
+}
+	
+jonavbar > joflexrow > jobackbutton {
 	.noflex;
+	max-width: 4em;
 }
 
 jopopup > jotitle {
@@ -323,4 +326,21 @@ jopopup > jotitle {
 
 jopopup > jobutton {
 	background-color: rgba(255, 255, 255, .4);
+}
+
+jocontainer {
+}
+
+jostack {
+}
+
+joflexcol {
+	height: 100%;
+	width: 100%;
+}
+
+jotoolbar {
+}
+
+jocard {
 }

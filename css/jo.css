@@ -4,6 +4,7 @@ body {
   background: #666;
   word-wrap: break-word;
   overflow: hidden;
+  font: normal 15px "Apres", "Trebuchet MS";
 }
 jobutton,
 joview,
@@ -33,36 +34,41 @@ jocontainer {
   padding: 0;
   -webkit-user-select: none;
   -moz-user-select: none;
+  -o-user-select: none;
   user-select: none;
-  background: transparent;
+  /*	background: transparent; */
+
 }
 /*
 em, i, b, span, u, a, button, input {
 	display: inline;
 }
 */
-.flex {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -o-box;
-  display: box;
-  margin: 0;
-  -moz-box-align: stretch;
-}
-.flex > * {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-}
 .noflex {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
 }
+.flexible {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  box-flex: 1;
+}
+.flex {
+  display: block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+  margin: 0;
+  -moz-box-align: stretch;
+  -o-box-align: stretch;
+  box-align: stretch;
+}
 .listitem {
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(0, 0, 0, 0.4);
   margin: 0;
   padding: 10px;
   cursor: pointer;
@@ -85,10 +91,12 @@ em, i, b, span, u, a, button, input {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
+  background-image: url(shiny.png);
   background-repeat: repeat-x;
   background-position: top left;
   background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
 }
 .matte {
   color: rgba(255, 255, 255, 0.9);
@@ -98,15 +106,16 @@ em, i, b, span, u, a, button, input {
   outline: none;
   outline-color: transparent;
   padding: 10px 0;
-  background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, 0.3)), to(rgba(0, 0, 0, 0)));
-}
-body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  word-wrap: break-word;
-  overflow: hidden;
-  font: normal 15px "Apres", "Trebuchet MS";
+  background-image: url(subtle-matte-full.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  /*
+	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
+*/
+
 }
 .stretch-full {
   display: block;
@@ -117,12 +126,15 @@ body {
   bottom: 0;
 }
 joflexrow {
+  display: block;
   display: -webkit-box;
   display: -moz-box;
   display: -o-box;
   display: box;
   margin: 0;
   -moz-box-align: stretch;
+  -o-box-align: stretch;
+  box-align: stretch;
   width: 100%;
 }
 joflexrow > * {
@@ -130,6 +142,11 @@ joflexrow > * {
   -moz-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
+  margin-right: 0;
+  position: relative;
+}
+joflexrow > *:last-child {
+  margin-right: 10px;
 }
 joflexcol {
   display: block;
@@ -137,17 +154,21 @@ joflexcol {
   display: -moz-box;
   display: -o-box;
   display: box;
-  -webkit-box-flex: 1;
+  margin: 0;
+  -moz-box-align: stretch;
+  -o-box-align: stretch;
+  box-align: stretch;
+  height: 100%;
+  width: 100%;
   -webkit-box-orient: vertical;
   -webkit-box-align: stretch;
-  -moz-box-flex: 1;
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
-  box-flex: 1;
+  -o-box-orient: vertical;
+  -o-box-align: stretch;
   box-orient: vertical;
   box-align: stretch;
   margin: 0;
-  height: 100%;
 }
 joflexcol > * {
   -webkit-box-flex: 1;
@@ -158,26 +179,8 @@ joflexcol > * {
 jotitle + joflexcol, jotitle + joflexrow {
   margin-top: 10px;
 }
-joflexrow > * {
-  margin-right: 0;
-}
-joflexrow > *:last-child {
-  margin-right: 10px;
-}
 jostack {
-  position: absolute;
-  top: 0;
-  left: 0;
   height: 100%;
-  right: 0;
-}
-jostack {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   -webkit-perspective: 400px;
   -moz-perspective: 400px;
   -o-perspective: 400px;
@@ -187,6 +190,7 @@ jocard {
   min-height: 100%;
   display: -webkit-box;
   display: -moz-box;
+  display: -o-box;
   display: box;
   padding: 0;
   margin: 0;
@@ -194,6 +198,8 @@ jocard {
   -webkit-box-align: stretch;
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
+  -o-box-orient: vertical;
+  -o-box-align: stretch;
   box-orient: vertical;
   box-align: stretch;
   background: #a6a8b9;
@@ -215,34 +221,36 @@ joscroller {
   margin: 0;
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translatey(0);
-  -o-transform: translate(0, 0);
+  -o-transform: translatey(0);
 }
 joscroller > * {
   position: absolute;
   -webkit-animation-fill-mode: forwards;
   -webkit-transition: -webkit-transform 0s ease;
   -moz-animation-fill-mode: forwards;
-  -moz-transition: -webkit-transform 0s ease;
+  -moz-transition: -moz-transform 0s ease;
+  -o-animation-fill-mode: forwards;
+  -o-transition: -o-transform 0s ease;
 }
 .flick {
   -webkit-transition: -webkit-transform 1.8s cubic-bezier(0, 0.2, 0, 1);
   -moz-transition: -moz-transform 1.8s cubic-bezier(0, 0.2, 0, 1);
+  -o-transition: -o-transform 1.8s cubic-bezier(0, 0.2, 0, 1);
 }
 .flickback {
   -webkit-transition: -webkit-transform 0.2s cubic-bezier(0, 0, 0.4, 1);
   -moz-transition: -moz-transform 0.2s cubic-bezier(0, 0, 0.4, 1);
+  -o-transition: -o-transform 0.2s cubic-bezier(0, 0, 0.4, 1);
 }
 .flickfast {
   -webkit-transition: -webkit-transform 0.5s cubic-bezier(0, 0.2, 0, 1);
   -moz-transition: -moz-transform 0.5s cubic-bezier(0, 0.2, 0, 1);
+  -o-transition: -o-transform 0.5s cubic-bezier(0, 0.2, 0, 1);
 }
 jocontainer {
   margin: 0;
-  position: relative;
   display: block;
-}
-body {
-  height: 100%;
+  position: relative;
 }
 jogroup {
   margin: 10px;
@@ -278,6 +286,7 @@ jofooter {
 jofooter > * {
   -webkit-box-align: end;
   -moz-box-align: end;
+  -o-box-align: end;
   box-align: end;
 }
 joshim {
@@ -294,6 +303,7 @@ joshim {
   opacity: 0;
   -webkit-transition: opacity .2s ease;
   -moz-transition: opacity .2s ease;
+  -o-transition: opacity .2s ease;
 }
 joshim.show {
   display: block;
@@ -309,13 +319,23 @@ jotoolbar {
   outline: none;
   outline-color: transparent;
   padding: 10px 0;
-  background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, 0.3)), to(rgba(0, 0, 0, 0)));
-  background-color: rgba(0, 0, 0, 0.5);
+  background-image: url(subtle-matte-full.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  /*
+	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
+*/
+
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 1;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  text-align: center;
 }
 jotoolbar jobutton {
   -webkit-border-radius: 0;
@@ -323,40 +343,52 @@ jotoolbar jobutton {
   border-radius: 0;
 }
 jopopup {
-  font-size: 15px;
   -webkit-box-flex: 0;
+  -moz-box-flex: 0;
+  -o-box-flex: 0;
+  box-flex: 0;
+  font-size: 15px;
   display: block;
   overflow: hidden;
   margin: 0 auto;
   border: 2px solid #fff;
-  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  -o-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   background-color: #34c;
   color: #fff;
   background-image: url(aluminum/shiny.png);
-  background-repeat: no-repeat;
+  background-repeat: repeat-x;
   background-position: top left;
   background-size: 100% 20px;
   -webkit-transition: -webkit-transform 0.4s ease-in, opacity 0.4s ease-in;
   -moz-transition: -moz-transform 0.4s ease-in, opacity 0.4s ease-in;
+  -o-transition: -o-transform 0.4s ease-in, opacity 0.4s ease-in;
   /* ios */
 
   -webkit-border-radius: 20px;
   -webkit-transform: scale(0.5);
   -moz-border-radius: 20px;
   -moz-transform: scale(0.5);
+  -o-border-radius: 20px;
+  -o-transform: scale(0.5);
   max-width: 280px;
   margin: 0 auto;
   opacity: 0;
 }
 jopopup > jolist > *.select:first-childjopopup > jomenu > *.select:first-child {
   border-top: none;
-  -webkit-border-radius: 20px 20px 0 0;
+  -webkit-border-radius: 0;
+  -webkit-border-top-right-radius: 20px;
+  -webkit-border-top-left-radius: 20px;
   -moz-border-radius: 20px 20px 0 0;
   border-radius: 20px 20px 0 0;
 }
 jopopup > jolist > *:last-child.selectjopopup > jomenu > *:first-child.select {
   border-bottom: none;
-  -webkit-border-radius: 0 0 20px 20px;
+  -webkit-border-radius: 0;
+  -webkit-border-bottom-right-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
   -moz-border-radius: 0 0 20px 20px;
   border-radius: 0 0 20px 20px;
 }
@@ -369,18 +401,12 @@ jopopup > joscroller {
   width: 100%;
 }
 jonavbar {
-  color: rgba(255, 255, 255, 0.9);
-  background-color: #7e82a1;
-  font-weight: normal;
-  cursor: pointer;
-  outline: none;
-  outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
+  background-image: url(subtle-shiny-button.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   display: block;
   position: relative;
   margin: 0;
@@ -406,32 +432,28 @@ jonavbar > joflexrow {
   position: absolute;
   top: 0;
   left: 0;
-  bottom: 0;
   right: 0;
+  bottom: 0;
 }
 jobackbutton {
-  color: rgba(255, 255, 255, 0.9);
-  background-color: #7e82a1;
-  font-weight: normal;
-  cursor: pointer;
-  outline: none;
-  outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
+  background-image: url(subtle-shiny.png);
   background-repeat: repeat-x;
   background-position: top left;
   background-size: 100% 50%;
-  background-color: #333;
-  border-color: rgba(0, 0, 0, 0.5);
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
+  /*	background-color: #333; */
+
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-bottom-color: rgba(255, 255, 255, 0.3);
   padding: 5px 10px;
   margin: 5px 10px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
-  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.4);
-  -moz-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.4);
-  -o-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6);
+  -moz-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6);
+  -o-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6);
   display: none;
   color: #ddd;
 }
@@ -441,21 +463,34 @@ jobackbutton.focus, jobackbutton.selected {
 jobackbutton.active {
   display: block;
 }
-jonavbar > joflexrow > *:first-child {
+jonavbar > joflexrow > * {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  box-flex: 1;
+}
+jonavbar > joflexrow > jobackbutton {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
+  max-width: 4em;
 }
 jopopup > jotitle {
   color: #fff;
-  -webkit-border-radius: 20px 20px 0 0;
+  -webkit-border-radius: 0;
+  -webkit-border-top-right-radius: 20px;
+  -webkit-border-top-left-radius: 20px;
   -moz-border-radius: 20px 20px 0 0;
   border-radius: 20px 20px 0 0;
   background: transparent;
 }
 jopopup > jobutton {
   background-color: rgba(255, 255, 255, 0.4);
+}
+joflexcol {
+  height: 100%;
+  width: 100%;
 }
 .widget {
   margin: 0px 10px 10px 10px;
@@ -467,36 +502,20 @@ jopopup > jobutton {
 }
 .selected {
   background-color: #e98021;
-  background-image: none;
+  background-image: url(shade-top.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
 }
 .focus {
   background-color: #fff;
 }
-jooptionitem {
-  color: rgba(255, 255, 255, 0.9);
-  background-color: #7e82a1;
-  font-weight: normal;
-  cursor: pointer;
-  outline: none;
-  outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 50%;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-right-width: 0;
-  margin: 0;
-}
-jooptionitem:first-child {
-  -webkit-border-radius: 5px 0 0 5px;
-  -moz-border-radius: 5px 0 0 5px;
-  border-radius: 5px 0 0 5px;
-}
 jooptionitem:last-child {
-  -webkit-border-radius: 0 5px 5px 0;
+  -webkit-border-radius: 0;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
   -moz-border-radius: 0 5px 5px 0;
   border-radius: 0 5px 5px 0;
   border-right-width: 1px;
@@ -512,31 +531,36 @@ jobutton {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
+  background-image: url(shiny.png);
   background-repeat: repeat-x;
   background-position: top left;
   background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
 }
 jobutton .focus {
   background-color: #e98021;
+  background-image: url(shade-top.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
 }
 jooption {
+  display: block;
   display: -webkit-box;
   display: -moz-box;
   display: -o-box;
   display: box;
   margin: 0;
   -moz-box-align: stretch;
+  -o-box-align: stretch;
+  box-align: stretch;
   margin: 0px 10px 10px 10px;
-}
-jooption > * {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
 }
 jooptionitem {
   color: rgba(255, 255, 255, 0.9);
@@ -547,21 +571,32 @@ jooptionitem {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
+  background-image: url(shiny.png);
   background-repeat: repeat-x;
   background-position: top left;
   background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  box-flex: 1;
+  text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.8);
   border-right-width: 0;
   margin: 0;
 }
 jooptionitem:first-child {
-  -webkit-border-radius: 5px 0 0 5px;
+  -webkit-border-radius: 0;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px;
 }
 jooptionitem:last-child {
-  -webkit-border-radius: 0 5px 5px 0;
+  -webkit-border-radius: 0;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
   -moz-border-radius: 0 5px 5px 0;
   border-radius: 0 5px 5px 0;
   border-right-width: 1px;
@@ -582,7 +617,16 @@ jotitle {
   outline: none;
   outline-color: transparent;
   padding: 10px 0;
-  background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, 0.3)), to(rgba(0, 0, 0, 0)));
+  background-image: url(subtle-matte-full.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  /*
+	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
+*/
+
   background-color: #313539;
   font-size: 18px;
   margin: 0;
@@ -594,7 +638,7 @@ jotitle {
   outline: none;
 }
 jolistitem, jomenuitem {
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(0, 0, 0, 0.4);
   margin: 0;
   padding: 10px;
   cursor: pointer;
@@ -613,9 +657,12 @@ joselectlist, joexpandocontent {
   display: block;
   border: 1px solid rgba(0, 0, 0, 0.6);
   border-top: none;
-  -webkit-border-radius: 0 0 10px 10px;
+  -webkit-border-radius: 0;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
   -moz-border-radius: 0 0 10px 10px;
   border-radius: 0 0 10px 10px;
+  background-color: rgba(255, 255, 255, 0.6);
 }
 joexpando {
   display: block;
@@ -630,13 +677,17 @@ joexpandocontent {
 }
 joselectlist > *:last-child {
   border-bottom: none;
-  -webkit-border-radius: 0 0 10px 10px;
+  -webkit-border-radius: 0;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
   -moz-border-radius: 0 0 10px 10px;
   border-radius: 0 0 10px 10px;
 }
 joselectlist > *:last-child.select {
   border-bottom: none;
-  -webkit-border-radius: 0 0 10px 10px;
+  -webkit-border-radius: 0;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
   -moz-border-radius: 0 0 10px 10px;
   border-radius: 0 0 10px 10px;
 }
@@ -650,7 +701,7 @@ jobutton,
 jotitle,
 jooptionitem,
 joexpandotitle {
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
 }
 joinput.password, input.password {
   -webkit-text-security: disc;
@@ -664,13 +715,13 @@ input,
 textarea {
   cursor: text;
   display: block;
-  border: 1px solid #000;
+  border: 1px solid rgba(0, 0, 0, 0.6);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   margin: 0 10px 10px 10px;
   padding: 5px 10px;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.6);
   white-space: nowrap;
   overflow: hidden;
   outline: none;
@@ -702,23 +753,23 @@ joexpandotitle joicon {
   display: block;
   height: 32px;
   width: 32px;
-  right: 0px;
-  top: 13%;
-  background: url(aluminum/expando.png) no-repeat;
-  -webkit-transform-origin: 11px 16px 0;
+  right: 4px;
+  top: 10%;
+  background: url(expando.png) no-repeat;
+  -webkit-transform-origin: 16px 16px 0;
   -webkit-transform: rotatez(0);
   -webkit-transition: -webkit-transform 0.2s ease-out;
-  -moz-transform-origin: 11px 16px 0;
-  -moz-transform: rotatez(0);
+  -moz-transform-origin: 16px 16px 0;
+  -moz-transform: rotate(0);
   -moz-transition: -moz-transform 0.2s ease-out;
-  -o-transform-origin: 11px 16px 0;
-  -o-transform: rotatez(0);
+  -o-transform-origin: 16px 16px 0;
+  -o-transform: rotate(0);
   -o-transition: -o-transform 0.2s ease-out;
 }
 joexpando.open > joexpandotitle joicon {
   -webkit-transform: rotatez(90deg);
-  -moz-transform: rotatez(90deg);
-  -o-transform: rotatez(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
 }
 joexpando > *:last-child {
   height: 0;
@@ -765,10 +816,12 @@ joexpandotitle {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(aluminum/shiny.png);
+  background-image: url(shiny.png);
   background-repeat: repeat-x;
   background-position: top left;
   background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
@@ -781,7 +834,9 @@ joexpando.open > *:first-child {
   -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
   -o-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
-  -webkit-border-radius: 10px 10px 0 0;
+  -webkit-border-radius: 0;
+  -webkit-border-top-right-radius: 10px;
+  -webkit-border-top-left-radius: 10px;
   -moz-border-radius: 10px 10px 0 0;
   border-radius: 10px 10px 0 0;
 }
@@ -816,4 +871,25 @@ th {
 }
 td {
   padding: 5px;
+}
+jotoggle {
+  display: block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+  margin: 0;
+  -moz-box-align: stretch;
+  -o-box-align: stretch;
+  box-align: stretch;
+}
+jotoggle > *:last-child {
+  -webkit-box-flex: 0;
+  -moz-box-flex: 0;
+  -o-box-flex: 0;
+  box-flex: 0;
+  width: 3em;
+}
+html {
+  -webkit-text-size-adjust: none;
 }
