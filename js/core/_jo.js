@@ -196,6 +196,19 @@ jo = {
 					node.jotop = y;
 			};
 		}
+		else if (this.matchPlatform("opera")) {
+			joScroller.prototype.transitionEnd = "transitionend";
+			joScroller.prototype.setTop = function(y) {
+					var node = this.container.firstChild;
+
+					if (y == 0)
+						node.style.transform = "";
+					else
+						node.style.transform = "translateY(" + y + "px)";
+
+					node.jotop = y;
+			};
+		}
 			
 
 		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
