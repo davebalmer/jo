@@ -339,7 +339,10 @@ var App = (function() {
 		joGesture.forwardEvent.subscribe(stack.forward, stack);
 		joGesture.backEvent.subscribe(stack.pop, stack);
 		
-//		var scroller = new joScroller(stack);
+		document.body.addEventListener('touchmove', function(e) {
+		    e.preventDefault();
+			joEvent.stop(e);
+		});
 
 		stack.push(menu);
 	}
