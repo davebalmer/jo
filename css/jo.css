@@ -401,12 +401,12 @@ jopopup > joscroller {
   width: 100%;
 }
 jonavbar {
-  background-image: url(subtle-shiny-button.png);
+  background-image: url(shiny.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
+  background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
   display: block;
   position: relative;
   margin: 0;
@@ -609,7 +609,6 @@ joexpando {
   margin: 0px 10px 10px 10px;
 }
 jotitle {
-  text-align: center;
   color: rgba(255, 255, 255, 0.9);
   background-color: #7e82a1;
   font-weight: normal;
@@ -627,6 +626,10 @@ jotitle {
 	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
 */
 
+  background-image: none;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
   background-color: #313539;
   font-size: 18px;
   margin: 0;
@@ -848,7 +851,9 @@ jocaption {
   margin: 10px;
 }
 johtml {
-  padding: 0 10px;
+  display: block;
+  margin: 0 10px 10px 10px;
+  padding: 0;
 }
 jodivider {
   border-top: 1px solid rgba(0, 0, 0, 0.5);
