@@ -6,7 +6,7 @@
 	subscribe to the `changeEvent` to update their own data.
 
 	This base class can be used as-is as a data dispatcher, but is
-	designed to be extended to handle asyncronous file or SQL queries.
+	designed to be extended to handle asynchronous file or SQL queries.
 
 	Methods
 	-------
