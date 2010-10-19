@@ -1,12 +1,13 @@
-joNavbar = function(stack) {
+joNavbar = function(title) {
+	if (title)
+		this.firstTitle = title;
+	
 	var ui = [
-		this.title = new joView('&nbsp;').setStyle('title'),
+		this.titlebar = new joView(title || '&nbsp;').setStyle('title'),
 		new joFlexrow([this.back = new joBackButton('Back').selectEvent.subscribe(this.back, this), ""])
 	];
 	
 	joContainer.call(this, ui);
-
-	this.setStack(stack);
 };
 joNavbar.extend(joContainer, {
 	tagName: "jonavbar",
@@ -43,7 +44,7 @@ joNavbar.extend(joContainer, {
 		joDOM.removeCSSClass(this.back, 'selected');
 		joDOM.removeCSSClass(this.back, 'focus');
 
-		console.log('update ' + this.stack.data.length);
+//		console.log('update ' + this.stack.data.length);
 		
 		if (this.stack.data.length > 1)
 			joDOM.addCSSClass(this.back, 'active');
@@ -52,8 +53,15 @@ joNavbar.extend(joContainer, {
 			
 		var title = this.stack.getTitle();
 
-		if (title)
-			this.title.setData(title);
+		if (typeof title === 'string')
+			this.titlebar.setData(title);
+		else
+			this.titlebar.setData(this.firstTitle);
+	},
+	
+	setTitle: function(title) {
+		this.titlebar.setData(title);
+		this.firstTitle = title;
 	}
 });
 
