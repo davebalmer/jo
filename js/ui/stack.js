@@ -214,6 +214,11 @@ joStack.extend(joContainer, {
 	push: function(o) {
 //		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
 //			return;
+			
+		// don't push the same view we already have
+		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
+			return;
+			
 		this.data.push(o);
 		this.index = this.data.length - 1;
 		this.draw();
@@ -243,14 +248,21 @@ joStack.extend(joContainer, {
 			this.popEvent.fire();
 	},
 	
-	home: function(o) {
+	home: function() {
 		if (this.data && this.data.length) {
 			var o = this.data[0];
+			var c = this.data[this.index];
 			
-			this.data = [];
-			this.data.push(o);
+			if (o === c)
+				return;
+			
+			this.data = [o];
+			this.lastIndex = 1;
+			this.index = 0;
+//			this.lastNode = null;
 			this.draw();
-			
+						
+			this.popEvent.fire();
 			this.homeEvent.fire();
 		}
 	},

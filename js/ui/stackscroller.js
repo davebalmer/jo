@@ -84,10 +84,14 @@ joStackScroller.extend(joStack, {
 
 	home: function() {
 		this.switchScroller();
-		joStack.prototype.push.call(this);
+		joStack.prototype.home.call(this);
 	},
 		
 	push: function(o) {
+		// don't push the same view we already have
+		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
+			return;
+			
 		this.switchScroller();
 
 		joDOM.removeCSSClass(o, 'flick');
