@@ -2881,6 +2881,11 @@ joStack.extend(joContainer, {
 	push: function(o) {
 //		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
 //			return;
+			
+		// don't push the same view we already have
+		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
+			return;
+			
 		this.data.push(o);
 		this.index = this.data.length - 1;
 		this.draw();
@@ -2910,14 +2915,21 @@ joStack.extend(joContainer, {
 			this.popEvent.fire();
 	},
 	
-	home: function(o) {
+	home: function() {
 		if (this.data && this.data.length) {
 			var o = this.data[0];
+			var c = this.data[this.index];
 			
-			this.data = [];
-			this.data.push(o);
+			if (o === c)
+				return;
+			
+			this.data = [o];
+			this.lastIndex = 1;
+			this.index = 0;
+//			this.lastNode = null;
 			this.draw();
-			
+						
+			this.popEvent.fire();
 			this.homeEvent.fire();
 		}
 	},
@@ -3959,7 +3971,7 @@ joLabel.extend(joControl, {
 	the appropriate card based on the menu `id` selected.
 
 	You could use the `id` in conjunction with view keys you create with joCache.
-	The handler would then something like:
+	The handler would then be something like:
 	
 		menu.selectEvent.subscribe(function(id) {
 			mystack.push(joCache.get(id));
@@ -4550,10 +4562,14 @@ joStackScroller.extend(joStack, {
 
 	home: function() {
 		this.switchScroller();
-		joStack.prototype.push.call(this);
+		joStack.prototype.home.call(this);
 	},
 		
 	push: function(o) {
+		// don't push the same view we already have
+		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
+			return;
+			
 		this.switchScroller();
 
 		joDOM.removeCSSClass(o, 'flick');
@@ -4825,15 +4841,16 @@ joSelectList = function() {
 joSelectList.extend(joList, {
 	tagName: "joselectlist"
 });
-joNavbar = function(stack) {
+joNavbar = function(title) {
+	if (title)
+		this.firstTitle = title;
+	
 	var ui = [
-		this.title = new joView('&nbsp;').setStyle('title'),
+		this.titlebar = new joView(title || '&nbsp;').setStyle('title'),
 		new joFlexrow([this.back = new joBackButton('Back').selectEvent.subscribe(this.back, this), ""])
 	];
 	
 	joContainer.call(this, ui);
-
-	this.setStack(stack);
 };
 joNavbar.extend(joContainer, {
 	tagName: "jonavbar",
@@ -4870,7 +4887,7 @@ joNavbar.extend(joContainer, {
 		joDOM.removeCSSClass(this.back, 'selected');
 		joDOM.removeCSSClass(this.back, 'focus');
 
-		console.log('update ' + this.stack.data.length);
+//		console.log('update ' + this.stack.data.length);
 		
 		if (this.stack.data.length > 1)
 			joDOM.addCSSClass(this.back, 'active');
@@ -4879,8 +4896,15 @@ joNavbar.extend(joContainer, {
 			
 		var title = this.stack.getTitle();
 
-		if (title)
-			this.title.setData(title);
+		if (typeof title === 'string')
+			this.titlebar.setData(title);
+		else
+			this.titlebar.setData(this.firstTitle);
+	},
+	
+	setTitle: function(title) {
+		this.titlebar.setData(title);
+		this.firstTitle = title;
 	}
 });
 
