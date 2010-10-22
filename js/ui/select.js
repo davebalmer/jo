@@ -54,11 +54,12 @@
 	
 */
 joSelect = function(data, value) {
-//	if (value instanceof joDataSource)
-//		v = value.getData();
+	var v = value;
+	if (value instanceof joDataSource)
+		v = value.getData();
 	
 	var ui = [
-		this.field = new joSelectTitle(value),
+		this.field = new joSelectTitle(v),
 		this.list = new joSelectList(data, value)
 	];
 	
@@ -113,7 +114,7 @@ joSelectTitle.extend(joExpandoTitle, {
 	
 	setData: function(value) {
 		if (this.list)
-			this.container.innerHTML = this.list.data[value];
+			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value));
 		else
 			joExpandoTitle.prototype.setData.call(this, value);
 	}
