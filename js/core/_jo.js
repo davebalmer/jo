@@ -118,17 +118,18 @@ if (typeof HTMLElement === 'undefined')
 
 // no console.log? sad...
 if (typeof console === 'undefined' || typeof console.log !== 'function')
-	console = {log: function(msg) {}};
+	console = {log: function(msg) { }};
 
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.2.0",
+	version: "0.3.0",
 	
 	useragent: [
 		'ipad',
 		'iphone',
 		'webos',
+		'bada',
 		'android',
 		'opera',
 		'chrome',
@@ -183,35 +184,43 @@ jo = {
 		if (joGesture)
 			joGesture.load();
 
-		if (this.matchPlatform("mozilla")) {
-			joScroller.prototype.transitionEnd = "transitionend";
-			joScroller.prototype.setTop = function(y) {
+		var s = joScroller.prototype;
+		
+		// setup transition css hooks for the scroller
+		if (typeof document.body.style.webkitTransition !== "undefined") {
+			// webkit, leave everything alone
+		}
+		else if (typeof document.body.style.MozTransition !== "undefined") {
+			// mozilla with transitions
+			s.transitionEnd = "transitionend";
+			s.setTop = function(y) {
 					var node = this.container.firstChild;
-
-					if (y == 0)
-						node.style.MozTransform = "";
-					else
-						node.style.MozTransform = "translateY(" + y + "px)";
-
+					node.style.MozTransform = y ? ("translateY(" + y + "px)") : "";
 					node.jotop = y;
 			};
 		}
-		else if (this.matchPlatform("opera")) {
-			joScroller.prototype.transitionEnd = "transitionend";
-			joScroller.prototype.setTop = function(y) {
+		else if (typeof document.body.style.OTransition !== "undefined") {
+			// opera with transitions
+			s.transitionEnd = "otransitionend";
+			s.setTop = function(y) {
 					var node = this.container.firstChild;
-
-					if (y == 0)
-						node.style.transform = "";
-					else
-						node.style.transform = "translateY(" + y + "px)";
-
+					node.style.OTransform = y ? ("translateY(" + y + "px)") : "";
 					node.jotop = y;
 			};
 		}
-			
+		else {
+			// no transitions, disable flick scrolling
+			s.velocity = 0;
+			s.bump = 0;
+			s.transitionEnd = "transitionend";
+			s.setTop = function(y) {
+					var node = this.container.firstChild;
+					node.style.top = y ? (y + "px") : "0";
+					node.jotop = y;
+			};
+		}
 
-		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
+		joLog("Jo", this.version, "loaded for", this.platform, "environment");
 
 		this.loadEvent.fire();
 	},
