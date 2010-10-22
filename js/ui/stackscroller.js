@@ -83,8 +83,10 @@ joStackScroller.extend(joStack, {
 	},
 
 	home: function() {
-		this.switchScroller();
-		joStack.prototype.home.call(this);
+		if (this.data && this.data.length && this.data.length > 1) {
+			this.switchScroller();
+			joStack.prototype.home.call(this);
+		}
 	},
 		
 	push: function(o) {
