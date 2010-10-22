@@ -32,6 +32,7 @@ var App = (function() {
 //	var blipsound = new joSound("blip2.wav");
 //	var bloopsound = new joSound("blip0.wav");
 	var cancelbutton;
+	var testds;
 
 	/*
 		EXAMPLE: if you want to configure what HTML tag and optional CSS class name a given
@@ -52,7 +53,7 @@ var App = (function() {
 		
 		// more css, but deferred loading until after the app initializes
 /*
-		joYield(function() {
+		joDefer(function() {
 //			bodycssnode = joDOM.loadCSS("../docs/html/doc.css");
 			
 			// dynamic CSS loading based on platform, in this case FireFox
@@ -92,29 +93,36 @@ var App = (function() {
 		// space at the bottom of scrolling views to allow for our floating
 		// toolbar. Going to find a slick way to automagically do this in the
 		// framework at some point.
-		joYield(function() {
-			var style = new joCSSRule('jostack > joscroller > *:after { content: ""; display: block; height: ' + (toolbar.container.offsetHeight) + 'px; }');
+		joDefer(function() {
+			var style = new joCSSRule('jostack > joscroller > *:last-child:after { content: ""; display: block; height: ' + (toolbar.container.offsetHeight) + 'px; }');
 		});
 		
 		var ex;
+	
+		testds = new joRecord({
+			uid: "jo",
+			pwd: "password",
+			num: 2,
+			fruit: 3
+		});
 		
 		// our bogus login view
 		login = new joCard([
 			new joGroup([
 				new joLabel("Username"),
-				new joFlexrow(nameinput = new joInput("Dave")),
+				new joFlexrow(nameinput = new joInput(testds.link("uid"))),
 				new joLabel("Password"),
-				new joFlexrow(new joPasswordInput("heyjo")),
+				new joFlexrow(new joPasswordInput(testds.link("pwd"))),
 				new joLabel("Options"),
 				new joFlexrow(option = new joOption([
 					"One", "Two", "Three", "Four", "Five"
-				], 3).selectEvent.subscribe(function(value) {
+				], testds.link("num")).selectEvent.subscribe(function(value) {
 					console.log("option selected: " + value);
 				})),
 				new joLabel("Selection"),
 				select = new joSelect([
 					"Apple", "Orange", "Banana", "Grape", "Cherry", "Mango"
-				], 2)
+				], testds.link("fruit"))
 			]),
 			new joDivider(),
 			ex = new joExpando([
@@ -250,7 +258,7 @@ var App = (function() {
 						["Frank", "555-5678", "frank@frank.not"]
 					]).selectEvent.subscribe(function(index, table) {
 						joLog("table cell:", table.getRow(), table.getCol());
-					}, this)
+					}, this).setStyle({width: "100%"})
 				),
 				new joDivider(),
 				back = new joButton("Back")
@@ -295,14 +303,14 @@ var App = (function() {
 			]).setTitle("Remote Example");
 
 			// yeah, we did this -- should be in your app's own CSS, but hey
-			var x = new joCSSRule("joflexcol.remote jobutton { -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, .6); width: 33%; margin-right: 0; } joflexcol.remote jobutton.focus { -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .8); } joflexcol.remote jobutton:last-child {margin-right: 10px;} joflexcol.remote jobutton.double { width: 66%; } joflexcol.remote { margin-top: 10px; }");
+			var x = new joCSSRule("joflexcol.remote jobutton { -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, .6); width: 33%; margin-right: 0; } joflexcol.remote jobutton.focus { -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .8); } joflexcol.remote jobutton:last-child {margin-right: 10px;} joflexcol.remote jobutton.double { width: 66%; } joflexcol.remote { margin-top: 10px; height: 100%; }");
 
 			// we want our button font to scale, so we add this interesting bit
-			joEvent.on(window, "resize", adjustfont, this);
-
+			adjustfont();
 			card.activate = function() {
-				adjustfont();
+				joDefer(adjustfont, this, 500);
 			};
+			joEvent.on(window, "resize", card.activate, this);
 
 			function adjustfont() {
 				var c = firstbutton.container;
@@ -342,7 +350,7 @@ var App = (function() {
 		document.body.addEventListener('touchmove', function(e) {
 		    e.preventDefault();
 			joEvent.stop(e);
-		});
+		}, false);
 
 		stack.push(menu);
 	}
@@ -372,9 +380,10 @@ var App = (function() {
 	// public stuff
 	return {
 		"init": init,
-		"getStack": function() { return stack },
-		"getButton": function() { return button },
-		"getSelect": function() { return select },
-		"getOption": function() { return option }
+		"getData": function() { return testds; },
+		"getStack": function() { return stack; },
+		"getButton": function() { return button; },
+		"getSelect": function() { return select; },
+		"getOption": function() { return option; }
 	}
 }());
