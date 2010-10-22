@@ -1,5 +1,5 @@
 /**
-	joYield
+	joDefer
 	========
 	
 	Utility function which calls a given method within a given context after `n`
@@ -8,12 +8,12 @@
 	Use
 	-----
 	
-		joYield(Function, context, delay, data);
+		joDefer(Function, context, delay, data);
 	
 	Note that delay defaults to 100ms if not specified, and `data` is optional.
 
 */
-function joYield(call, context, delay, data) {
+function joDefer(call, context, delay, data) {
 	if (!delay)
 		var delay = 100;
 

@@ -145,7 +145,7 @@ joStack.extend(joContainer, {
 		var self = this;
 		var transitionevent = null;
 
-		joYield(animate, this, 1);
+		joDefer(animate, this, 1);
 		
 		function animate() {
 			// FIXME: AHHH must have some sort of transition for this to work,
@@ -154,7 +154,7 @@ joStack.extend(joContainer, {
 			if (typeof window.onwebkittransitionend !== 'undefined')
 				transitionevent = joEvent.on(newchild, "webkitTransitionEnd", cleanup, self);
 			else
-				joYield(cleanup, this, 200);
+				joDefer(cleanup, this, 200);
 
 			if (newclass && newchild)
 				joDOM.removeCSSClass(newchild, newclass);
@@ -249,7 +249,7 @@ joStack.extend(joContainer, {
 	},
 	
 	home: function() {
-		if (this.data && this.data.length) {
+		if (this.data && this.data.length && this.data.length > 1) {
 			var o = this.data[0];
 			var c = this.data[this.index];
 			
@@ -290,7 +290,7 @@ joStack.extend(joContainer, {
 			this.visible = true;
 			joDOM.addCSSClass(this.container, "show");
 
-			joYield(this.showEvent.fire, this.showEvent, 500);
+			joDefer(this.showEvent.fire, this.showEvent, 500);
 		}
 	},
 	
@@ -299,7 +299,7 @@ joStack.extend(joContainer, {
 			this.visible = false;
 			joDOM.removeCSSClass(this.container, "show");			
 
-			joYield(this.hideEvent.fire, this.hideEvent, 500);
+			joDefer(this.hideEvent.fire, this.hideEvent, 500);
 		}
 	}
 });

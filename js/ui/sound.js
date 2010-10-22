@@ -38,7 +38,7 @@ joSound = function(filename, repeat) {
 	if (!this.audio)
 		return;
 		
-	joYield(function() {
+	joDefer(function() {
 		this.audio.src = filename;
 		this.audio.load();
 	}, this, 5);
