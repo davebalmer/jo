@@ -71,7 +71,7 @@ Processing
 ----------
 
 * joChain
-* joYield
+* joDefer
 * joWait
 
 Utility
