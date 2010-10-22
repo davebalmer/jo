@@ -32,11 +32,14 @@ joDataSource = function(data) {
 	this.errorEvent = new joSubject(this);
 
 	if (typeof data !== "undefined")
-		this.setData();
+		this.setData(data);
 	else
 		this.data = "";
 };
 joDataSource.prototype = {
+	autoSave: true,
+	data: null,
+	
 	setQuery: function(query) {
 		this.query = query;
 	},
