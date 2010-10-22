@@ -127,10 +127,14 @@ joControl.extend(joView, {
 	setDataSource: function(source) {
 		this.dataSource = source;
 		source.changeEvent.subscribe(this.setData, this);
+		this.setData(source.getData());
+		this.changeEvent.subscribe(source.setData, source);
 	},
 	
 	setValueSource: function(source) {
 		this.valueSource = source;
 		source.changeEvent.subscribe(this.setValue, this);
+		this.setValue(source.getData());
+		this.changeEvent.subscribe(source.setData, source);
 	}
 });
