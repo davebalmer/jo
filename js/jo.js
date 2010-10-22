@@ -156,7 +156,7 @@ if (typeof console === 'undefined' || typeof console.log !== 'function')
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.2.0",
+	version: "0.3.0",
 	
 	useragent: [
 		'ipad',
@@ -216,33 +216,41 @@ jo = {
 		if (joGesture)
 			joGesture.load();
 
-		if (this.matchPlatform("mozilla")) {
+		// setup transition css hooks for the scroller
+		if (typeof document.body.style.webkitTransition !== "undefined") {
+			// webkit, leave everything alone
+		}
+		else if (typeof document.body.style.MozTransition !== "undefined") {
+			// mozilla with transitions
 			joScroller.prototype.transitionEnd = "transitionend";
 			joScroller.prototype.setTop = function(y) {
 					var node = this.container.firstChild;
-
-					if (y == 0)
-						node.style.MozTransform = "";
-					else
-						node.style.MozTransform = "translateY(" + y + "px)";
-
+					node.style.MozTransform = y ? ("translateY(" + y + "px)") : "";
 					node.jotop = y;
 			};
+			this.platform = "mozilla";
 		}
-		else if (this.matchPlatform("opera")) {
+		else if (typeof document.body.style.OTransition !== "undefined") {
+			// opera with transitions
+			joScroller.prototype.transitionEnd = "otransitionend";
+			joScroller.prototype.setTop = function(y) {
+					var node = this.container.firstChild;
+					node.style.OTransform = y ? ("translateY(" + y + "px)") : "";
+					node.jotop = y;
+			};
+			this.platform = "opera";
+		}
+		else {
+			// no transitions, disable flick scrolling
+			joScroller.prototype.velocity = 0;
+			joScroller.prototype.bump = 0;
 			joScroller.prototype.transitionEnd = "transitionend";
 			joScroller.prototype.setTop = function(y) {
 					var node = this.container.firstChild;
-
-					if (y == 0)
-						node.style.transform = "";
-					else
-						node.style.transform = "translateY(" + y + "px)";
-
+					node.style.top = y ? (y + "px") : "0";
 					node.jotop = y;
 			};
 		}
-			
 
 		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
 
@@ -884,7 +892,7 @@ joTime = {
 	}
 };
 /**
-	joYield
+	joDefer
 	========
 	
 	Utility function which calls a given method within a given context after `n`
@@ -893,12 +901,12 @@ joTime = {
 	Use
 	-----
 	
-		joYield(Function, context, delay, data);
+		joDefer(Function, context, delay, data);
 	
 	Note that delay defaults to 100ms if not specified, and `data` is optional.
 
 */
-function joYield(call, context, delay, data) {
+function joDefer(call, context, delay, data) {
 	if (!delay)
 		var delay = 100;
 
@@ -1125,7 +1133,7 @@ joClipboard = {
 	subscribe to the `changeEvent` to update their own data.
 
 	This base class can be used as-is as a data dispatcher, but is
-	designed to be extended to handle asyncronous file or SQL queries.
+	designed to be extended to handle asynchronous file or SQL queries.
 
 	Methods
 	-------
@@ -1151,11 +1159,14 @@ joDataSource = function(data) {
 	this.errorEvent = new joSubject(this);
 
 	if (typeof data !== "undefined")
-		this.setData();
+		this.setData(data);
 	else
 		this.data = "";
 };
 joDataSource.prototype = {
+	autoSave: true,
+	data: null,
+	
 	setQuery: function(query) {
 		this.query = query;
 	},
@@ -1212,6 +1223,80 @@ joDataSource.prototype = {
 	load: function(){
 	}
 };
+joRecord = function(data) {
+	joDataSource.call(this, data);
+};
+joRecord.extend(joDataSource, {
+	delegate: {},
+	
+	link: function(p) {
+		return this.getDelegate(p);
+	},
+	
+	getDelegate: function(p) {
+		if (!this.delegate[p])
+			this.delegate[p] = new joProperty(this, p);
+			
+		return this.delegate[p];
+	},
+	
+	getProperty: function(p) {
+		console.log(p + "=" + this.data[p]);
+		return this.data[p];
+	},
+	
+	setProperty: function(p, data) {
+		if (this.data[p] === data)
+			return;
+		
+		this.data[p] = data;
+		this.changeEvent.fire(this);
+		
+		if (this.autoSave)
+			this.save();
+
+		return this;
+	},
+	
+	load: function() {
+		console.log("TODO: extend the load() method");
+		return this;
+	},
+
+	save: function() {
+		console.log("TODO: extend the save() method");
+		return this;
+	}
+});
+	
+joProperty = function(datasource, p) {
+	joDataSource.call(this);
+
+	this.changeEvent = new joSubject(this);
+	datasource.changeEvent.subscribe(this.onSourceChange, this);
+
+	this.datasource = datasource;
+	this.p = p;
+};
+joProperty.extend(joDataSource, {
+	setData: function(data) {
+		if (this.datasource)
+			this.datasource.setProperty(this.p, data);
+		
+		return this;
+	},
+	
+	getData: function() {
+		if (!this.datasource)
+			return null;
+
+		return this.datasource.getProperty(this.p);
+	},
+	
+	onSourceChange: function() {
+		this.changeEvent.fire(this.getData());
+	}
+});
 /**
 	- - -
 
@@ -2187,11 +2272,15 @@ joControl.extend(joView, {
 	setDataSource: function(source) {
 		this.dataSource = source;
 		source.changeEvent.subscribe(this.setData, this);
+		this.setData(source.getData());
+		this.changeEvent.subscribe(source.setData, source);
 	},
 	
 	setValueSource: function(source) {
 		this.valueSource = source;
 		source.changeEvent.subscribe(this.setValue, this);
+		this.setValue(source.getData());
+		this.changeEvent.subscribe(source.setData, source);
 	}
 });
 /**
@@ -2373,7 +2462,7 @@ joList = function() {
 	this.setIndex = this.setValue;
 	this.getIndex = this.getValue;
 	
-	joControl.apply(this, arguments);
+	joControl.apply(this, arguments);	
 };
 joList.extend(joControl, {
 	tagName: "jolist",
@@ -2812,7 +2901,7 @@ joStack.extend(joContainer, {
 		var self = this;
 		var transitionevent = null;
 
-		joYield(animate, this, 1);
+		joDefer(animate, this, 1);
 		
 		function animate() {
 			// FIXME: AHHH must have some sort of transition for this to work,
@@ -2821,7 +2910,7 @@ joStack.extend(joContainer, {
 			if (typeof window.onwebkittransitionend !== 'undefined')
 				transitionevent = joEvent.on(newchild, "webkitTransitionEnd", cleanup, self);
 			else
-				joYield(cleanup, this, 200);
+				joDefer(cleanup, this, 200);
 
 			if (newclass && newchild)
 				joDOM.removeCSSClass(newchild, newclass);
@@ -2916,7 +3005,7 @@ joStack.extend(joContainer, {
 	},
 	
 	home: function() {
-		if (this.data && this.data.length) {
+		if (this.data && this.data.length && this.data.length > 1) {
 			var o = this.data[0];
 			var c = this.data[this.index];
 			
@@ -2957,7 +3046,7 @@ joStack.extend(joContainer, {
 			this.visible = true;
 			joDOM.addCSSClass(this.container, "show");
 
-			joYield(this.showEvent.fire, this.showEvent, 500);
+			joDefer(this.showEvent.fire, this.showEvent, 500);
 		}
 	},
 	
@@ -2966,7 +3055,7 @@ joStack.extend(joContainer, {
 			this.visible = false;
 			joDOM.removeCSSClass(this.container, "show");			
 
-			joYield(this.hideEvent.fire, this.hideEvent, 500);
+			joDefer(this.hideEvent.fire, this.hideEvent, 500);
 		}
 	}
 });
@@ -4408,7 +4497,7 @@ joSound = function(filename, repeat) {
 	if (!this.audio)
 		return;
 		
-	joYield(function() {
+	joDefer(function() {
 		this.audio.src = filename;
 		this.audio.load();
 	}, this, 5);
@@ -4561,8 +4650,10 @@ joStackScroller.extend(joStack, {
 	},
 
 	home: function() {
-		this.switchScroller();
-		joStack.prototype.home.call(this);
+		if (this.data && this.data.length && this.data.length > 1) {
+			this.switchScroller();
+			joStack.prototype.home.call(this);
+		}
 	},
 		
 	push: function(o) {
