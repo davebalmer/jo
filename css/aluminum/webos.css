@@ -28,3 +28,7 @@ joshim>joflexcol>*:first-child {
 joshim>joflexcol>*:last-child {
 	display: none;
 }
+
+jobackbutton.active {
+  display: none;
+}
