@@ -176,8 +176,10 @@ joList.extend(joControl, {
 			this.lastNode = node;
 		}
 		
-		if (index >= 0 && !silent)
+		if (index >= 0 && !silent) {
 			this.fireSelect(index);
+			this.changeEvent.fire(index);
+		}
 			
 		return this;
 	},

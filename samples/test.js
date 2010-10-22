@@ -102,8 +102,8 @@ var App = (function() {
 		testds = new joRecord({
 			uid: "jo",
 			pwd: "password",
-			num: 2,
-			fruit: 3
+			num: 1,
+			fruit: 2
 		});
 		
 		// our bogus login view

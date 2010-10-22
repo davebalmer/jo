@@ -151,7 +151,7 @@ if (typeof HTMLElement === 'undefined')
 
 // no console.log? sad...
 if (typeof console === 'undefined' || typeof console.log !== 'function')
-	console = {log: function(msg) {}};
+	console = {log: function(msg) { }};
 
 // just a place to hang our hat
 jo = {
@@ -162,6 +162,7 @@ jo = {
 		'ipad',
 		'iphone',
 		'webos',
+		'bada',
 		'android',
 		'opera',
 		'chrome',
@@ -216,43 +217,43 @@ jo = {
 		if (joGesture)
 			joGesture.load();
 
+		var s = joScroller.prototype;
+		
 		// setup transition css hooks for the scroller
 		if (typeof document.body.style.webkitTransition !== "undefined") {
 			// webkit, leave everything alone
 		}
 		else if (typeof document.body.style.MozTransition !== "undefined") {
 			// mozilla with transitions
-			joScroller.prototype.transitionEnd = "transitionend";
-			joScroller.prototype.setTop = function(y) {
+			s.transitionEnd = "transitionend";
+			s.setTop = function(y) {
 					var node = this.container.firstChild;
 					node.style.MozTransform = y ? ("translateY(" + y + "px)") : "";
 					node.jotop = y;
 			};
-			this.platform = "mozilla";
 		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
-			joScroller.prototype.transitionEnd = "otransitionend";
-			joScroller.prototype.setTop = function(y) {
+			s.transitionEnd = "otransitionend";
+			s.setTop = function(y) {
 					var node = this.container.firstChild;
 					node.style.OTransform = y ? ("translateY(" + y + "px)") : "";
 					node.jotop = y;
 			};
-			this.platform = "opera";
 		}
 		else {
 			// no transitions, disable flick scrolling
-			joScroller.prototype.velocity = 0;
-			joScroller.prototype.bump = 0;
-			joScroller.prototype.transitionEnd = "transitionend";
-			joScroller.prototype.setTop = function(y) {
+			s.velocity = 0;
+			s.bump = 0;
+			s.transitionEnd = "transitionend";
+			s.setTop = function(y) {
 					var node = this.container.firstChild;
 					node.style.top = y ? (y + "px") : "0";
 					node.jotop = y;
 			};
 		}
 
-		joLog("Jo", this.version, "loaded for", this.platform, "environment.");
+		joLog("Jo", this.version, "loaded for", this.platform, "environment");
 
 		this.loadEvent.fire();
 	},
@@ -2280,7 +2281,7 @@ joControl.extend(joView, {
 		this.valueSource = source;
 		source.changeEvent.subscribe(this.setValue, this);
 		this.setValue(source.getData());
-		this.changeEvent.subscribe(source.setData, source);
+		this.selectEvent.subscribe(source.setData, source);
 	}
 });
 /**
@@ -2564,8 +2565,10 @@ joList.extend(joControl, {
 			this.lastNode = node;
 		}
 		
-		if (index >= 0 && !silent)
+		if (index >= 0 && !silent) {
 			this.fireSelect(index);
+			this.changeEvent.fire(index);
+		}
 			
 		return this;
 	},
@@ -5061,23 +5064,35 @@ joBackButton.extend(joButton, {
 	
 */
 joSelect = function(data, value) {
+//	if (value instanceof joDataSource)
+//		v = value.getData();
+	
 	var ui = [
-		this.field = new joSelectTitle(data[value || 0] || "Select"),
+		this.field = new joSelectTitle(value),
 		this.list = new joSelectList(data, value)
 	];
+	
+	this.field.setList(this.list);
 	
 	this.changeEvent = this.list.changeEvent;
 	this.selectEvent = this.list.selectEvent;
 	
 	joExpando.call(this, ui);
 	this.container.setAttribute("tabindex", 1);
+	
+	this.field.setData(this.list.value);
 
 	this.list.selectEvent.subscribe(this.setValue, this);
 };
 joSelect.extend(joExpando, {
 	setValue: function(value, list) {
-		this.field.setData(list.getNodeData(value));
-		this.close();
+		if (list) {
+			this.field.setData(value);
+			this.close();
+		}
+		else {
+			this.field.setData(value);
+		}
 	},
 	
 	getValue: function() {
@@ -5100,4 +5115,16 @@ joSelectTitle = function() {
 	joExpandoTitle.apply(this, arguments);
 };
 joSelectTitle.extend(joExpandoTitle, {
+	list: null,
+
+	setList: function(list) {
+		this.list = list;
+	},
+	
+	setData: function(value) {
+		if (this.list)
+			this.container.innerHTML = this.list.data[value];
+		else
+			joExpandoTitle.prototype.setData.call(this, value);
+	}
 });

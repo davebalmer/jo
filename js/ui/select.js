@@ -54,23 +54,35 @@
 	
 */
 joSelect = function(data, value) {
+//	if (value instanceof joDataSource)
+//		v = value.getData();
+	
 	var ui = [
-		this.field = new joSelectTitle(data[value || 0] || "Select"),
+		this.field = new joSelectTitle(value),
 		this.list = new joSelectList(data, value)
 	];
+	
+	this.field.setList(this.list);
 	
 	this.changeEvent = this.list.changeEvent;
 	this.selectEvent = this.list.selectEvent;
 	
 	joExpando.call(this, ui);
 	this.container.setAttribute("tabindex", 1);
+	
+	this.field.setData(this.list.value);
 
 	this.list.selectEvent.subscribe(this.setValue, this);
 };
 joSelect.extend(joExpando, {
 	setValue: function(value, list) {
-		this.field.setData(list.getNodeData(value));
-		this.close();
+		if (list) {
+			this.field.setData(value);
+			this.close();
+		}
+		else {
+			this.field.setData(value);
+		}
 	},
 	
 	getValue: function() {
@@ -93,4 +105,16 @@ joSelectTitle = function() {
 	joExpandoTitle.apply(this, arguments);
 };
 joSelectTitle.extend(joExpandoTitle, {
+	list: null,
+
+	setList: function(list) {
+		this.list = list;
+	},
+	
+	setData: function(value) {
+		if (this.list)
+			this.container.innerHTML = this.list.data[value];
+		else
+			joExpandoTitle.prototype.setData.call(this, value);
+	}
 });
