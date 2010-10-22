@@ -80,7 +80,8 @@ this.nextEvent.fire(nextcall);nextcall.call.call(nextcall.context,nextcall.data)
 this.timer=joEvent.yield(this.next,this,this.delay);else
 this.timer=null;}};joClipboard={data:"",get:function(){return joPreference.get("joClipboardData")||this.data;},set:function(clip){this.data=clip;joPreference.set("joClipboardData");}};joDataSource=function(data){this.changeEvent=new joSubject(this);this.errorEvent=new joSubject(this);if(typeof data!=="undefined")
 this.setData(data);else
-this.data="";};joDataSource.prototype={autoSave:true,data:null,setQuery:function(query){this.query=query;},getQuery:function(){return this.query;},setData:function(data){this.data=data;this.changeEvent.fire(data);},getData:function(){return this.data;},getDataCount:function(){return this.getData().length;},getPageCount:function(){if(this.pageSize)
+this.data="";};joDataSource.prototype={autoSave:true,data:null,setQuery:function(query){this.query=query;},getQuery:function(){return this.query;},setData:function(data){var last=this.data;this.data=data;if(data!==last)
+this.changeEvent.fire(data);},getData:function(){return this.data;},getDataCount:function(){return this.getData().length;},getPageCount:function(){if(this.pageSize)
 return Math.floor(this.getData().length/this.pageSize)+1;else
 return 1;},getPage:function(index){var start=index*this.pageSize;var end=start+this.pageSize;if(end>this.getData().length)
 end=this.getData().length;if(start<0)

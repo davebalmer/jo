@@ -1177,8 +1177,11 @@ joDataSource.prototype = {
 	},
 	
 	setData: function(data) {
+		var last = this.data;
 		this.data = data;
-		this.changeEvent.fire(data);
+
+		if (data !== last)
+			this.changeEvent.fire(data);
 	},
 	
 	getData: function() {
