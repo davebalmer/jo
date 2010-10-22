@@ -47,6 +47,56 @@ jostack {
 	-o-perspective: 400px;
 }
 
+jostack {
+	-webkit-transition: opacity .3s ease-out;
+	-moz-transition: opacity .3s ease-out;
+	-o-transition: opacity .3s ease-out;
+}
+
+jostack > * {
+	-webkit-transform-origin: 50% 100% 0;
+	-webkit-transform: rotateZ(0) translateZ(0);
+	-webkit-transition: -webkit-transform .3s ease-out, z-index .3s ease-out, height 0s ease, overflow 0s ease;
+
+	-moz-transform-origin: 50% 100% 0;
+	-moz-transform: rotateZ(0) translateZ(0);
+	-moz-transition: -moz-transform .3s ease-out, z-index .3s ease-out, height 0s ease, overflow 0s ease;
+
+	-o-transform-origin: 50% 100% 0;
+	-o-transform: rotateZ(0);
+	-o-transition: -o-transform .3s ease-out;
+}
+
+jostack > .next {
+	z-index: -1;
+
+	-webkit-transform: rotateZ(45deg) translateY(-10%) translateX(100%);
+	-moz-transform: rotateZ(45deg);
+	-o-transform: rotateZ(45deg);
+
+	height: 100%;
+	overflow: hidden;
+}
+
+jostack > .prev {
+	z-index: 1;
+
+	-webkit-transform: rotateZ(-45deg) translateY(10%) translateX(-100%);
+	-moz-transform: rotateZ(-45deg);
+	-o-transform: rotateZ(-45deg);
+	
+	height: 100%;
+	overflow: hidden;
+}
+
+* {
+   -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+jobutton {
+	background-repeat: repeat-x;
+}
+
 jocard {
 	width: 100%;
 	min-height: 100%;
@@ -85,10 +135,11 @@ joscroller {
 	margin: 0;
 	-webkit-transform: translate3d(0, 0, 0);
 	-moz-transform: translateY(0);
-	-o-transform: translateY(0);
+	-o-transform: translate(0, 0);
 }
 joscroller > * {
 	position: absolute;
+	top: 0;
 	-webkit-animation-fill-mode: forwards;
 	-webkit-transition: -webkit-transform 0s ease;
 	-moz-animation-fill-mode: forwards;
@@ -212,6 +263,7 @@ jopopup {
 	margin: 0 auto;
 	border: 2px solid #fff;
 	.box-shadow(20px);
+	.border-radius(20px);
 	background-color: #34c;
 	color: #fff;
 
@@ -224,13 +276,10 @@ jopopup {
 	-moz-transition: -moz-transform .4s ease-in, opacity .4s ease-in;
 	-o-transition: -o-transform .4s ease-in, opacity .4s ease-in;
 	
-	/* ios */
-	-webkit-border-radius: 20px;
 	-webkit-transform: scale(.5);
-	-moz-border-radius: 20px;
 	-moz-transform: scale(.5);
-	-o-border-radius: 20px;
 	-o-transform: scale(.5);
+
 	max-width: 280px;
 	margin: 0 auto;
 	opacity: 0;
@@ -251,6 +300,7 @@ jopopup > jomenu > *:first-child.select
 jopopup.show {
 	-webkit-transform: scale(1);
 	-moz-transform: scale(1);
+	-o-transform: scale(1);
 	opacity: 1;
 }
 
@@ -289,11 +339,11 @@ jonavbar > joflexrow {
 }
 
 jobackbutton {
-	.imagebg(url(subtle-shiny.png), 50%);
-/*	background-color: #333; */
+/*	.imagebg(url(subtle-shiny.png), 50%); */
+	background: transparent url(back-mini.png) 10px center no-repeat;
 	border: 1px solid rgba(0, 0, 0, .3);
 	border-bottom-color: rgba(255, 255, 255, .3);
-	padding: 5px 10px;
+	padding: 5px 10px 5px 20px;
 	margin: 5px 10px;
 	.border-radius(5px);
 	.box-inset(1px, rgba(255, 255, 255, .6));
@@ -302,7 +352,7 @@ jobackbutton {
 }
 
 jobackbutton.focus, jobackbutton.selected {
-	background-color: #333;
+	background-color: rgba(0, 0, 0, .5);
 }
 
 jobackbutton.active {
