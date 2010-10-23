@@ -133,7 +133,7 @@ jocard > jolist, jocard > jomenu {
 	margin: 0;
 }
 
-jobutton, jotitle, jooptionitem, joexpandotitle {
+jobutton, jotitle, jooptionitem, joexpandotitle, jotoggle {
 	text-shadow: 0 0 5px rgba(0, 0, 0, .6);
 }
 
@@ -152,13 +152,13 @@ joinput, jotextarea, input, textarea {
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	margin: 0 10px 10px 10px;
-	padding: 5px 10px;
+	padding: 9px;
 	background: rgba(255, 255, 255, .6);
 	white-space: nowrap;
 	overflow: hidden;
 	outline: none;
 	font-family: "Apres", "Verdana";
-	font-size: 18px;
+	font-size: 17px;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	user-select: text;
@@ -298,6 +298,54 @@ jodivider {
 	display: block;
 }
 
+joflexrow > jotoggle {
+	.noflex;
+}
+
+jotoggle {
+	cursor: pointer;
+	display: block;
+	margin: 10px 10px 0 10px;
+	.border-radius(10px);
+	border: 1px solid rgba(0, 0, 0, .6);
+	background-color: inherit;
+	.imagebg(url(shade-top.png), 50%);
+	.box-inset(5px);
+	position: relative;
+	overflow: hidden;
+	width: 90px;
+	
+	> * {
+		.widget;
+		.shiny;
+		
+		border-color: #000;
+		margin: 0;
+		text-align: center;
+		.border-radius(9px);
+		padding: 10px 0;
+		width: 60px;
+		-webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, .2);
+		
+		-webkit-transition: -webkit-transform .1s ease, background-color .1s ease;
+		-moz-transition: -moz-transform .1s ease, background-color .1s ease;
+		-o-transition: -o-transform .1s ease, background-color .1s ease;
+	}
+}
+
+jotoggle.on {
+	background-color: inherit;
+	.imagebg(url(shade-top.png), 50%);
+
+	> * {
+		-webkit-box-shadow: -2px 0 2px rgba(0, 0, 0, .2);
+		background-color: @select-color;
+		-webkit-transform: translateX(28px);
+		-moz-transform: translateX(26px);
+		-o-transform: translateX(26px);
+	}
+}
+
 jotable {
 	display: block;
 	margin: 0 10px;
@@ -316,10 +364,7 @@ td {
 	padding: 5px;
 }
 
-jotoggle {
-	.flex;
-	> *:last-child {
-		.noflex;
-		width: 3em;
-	}
+jolabel.left {
+	margin-top: 10px;
+	padding: 9px 0;
 }

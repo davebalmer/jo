@@ -44,6 +44,11 @@ joDataSource.prototype = {
 		this.query = query;
 	},
 	
+	setAutoSave: function(state) {
+		this.autoSave = state;
+		return this;
+	},
+	
 	getQuery: function() {
 		return this.query;
 	},

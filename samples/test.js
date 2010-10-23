@@ -103,8 +103,10 @@ var App = (function() {
 			uid: "jo",
 			pwd: "password",
 			num: 1,
-			fruit: 2
-		});
+			fruit: 2,
+			active: true,
+			note: false
+		}).setAutoSave(false);
 		
 		// our bogus login view
 		login = new joCard([
@@ -122,7 +124,15 @@ var App = (function() {
 				new joLabel("Selection"),
 				select = new joSelect([
 					"Apple", "Orange", "Banana", "Grape", "Cherry", "Mango"
-				], testds.link("fruit"))
+				], testds.link("fruit")),
+				new joFlexrow([
+					new joLabel("Activate").setStyle("left"),
+					new joToggle(testds.link("active"))
+				]),
+				new joFlexrow([
+					new joLabel("Notify").setStyle("left"),
+					new joToggle(testds.link("note")).setLabels(["No", "Yes"])
+				])
 			]),
 			new joDivider(),
 			ex = new joExpando([

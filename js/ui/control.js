@@ -38,7 +38,6 @@ joControl = function(data, value) {
 	this.enabled = true;
 
 	if (typeof value !== "undefined" && value != null) {
-		console.log("we have a value: " + value);
 		if (value instanceof joDataSource)
 			this.setValueSource(value);
 		else
@@ -127,14 +126,14 @@ joControl.extend(joView, {
 	setDataSource: function(source) {
 		this.dataSource = source;
 		source.changeEvent.subscribe(this.setData, this);
-		this.setData(source.getData());
+		this.setData(source.getData() || null);
 		this.changeEvent.subscribe(source.setData, source);
 	},
 	
 	setValueSource: function(source) {
 		this.valueSource = source;
 		source.changeEvent.subscribe(this.setValue, this);
-		this.setValue(source.getData());
+		this.setValue(source.getData() || null);
 		this.selectEvent.subscribe(source.setData, source);
 	}
 });
