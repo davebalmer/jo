@@ -307,9 +307,9 @@ joScroller.extend(joContainer, {
 //		node.style.top = y + "px";
 		
 		// faster
-		if (y == 0)
-			node.style.webkitTransform = "";
-		else
+//		if (y == 0)
+//			node.style.webkitTransform = "";
+//		else
 			node.style.webkitTransform = "translate3d(0, " + y + "px, 0)";
 
 		node.jotop = y;
