@@ -1,6 +1,6 @@
 /**
 	joDefer
-	========
+	=======
 	
 	Utility function which calls a given method within a given context after `n`
 	milliseconds with optional static data.
@@ -11,6 +11,11 @@
 		joDefer(Function, context, delay, data);
 	
 	Note that delay defaults to 100ms if not specified, and `data` is optional.
+
+	joYield
+	=======
+	
+	Deprecated, use joDefer instead.
 
 */
 function joDefer(call, context, delay, data) {
@@ -26,3 +31,4 @@ function joDefer(call, context, delay, data) {
 	
 	return timer;
 };
+joYield = joDefer;
