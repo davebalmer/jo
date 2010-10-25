@@ -47,7 +47,9 @@ joToggle.extend(joControl, {
 			this.data = data;
 
 		this.draw();
-		this.changeEvent.fire(data);
+		
+		if (this.data !== data)
+			this.changeEvent.fire(data);
 		
 		return this;
 	},
