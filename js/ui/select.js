@@ -114,7 +114,7 @@ joSelectTitle.extend(joExpandoTitle, {
 	
 	setData: function(value) {
 		if (this.list)
-			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value));
+			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value) || "Select...");
 		else
 			joExpandoTitle.prototype.setData.call(this, value);
 	}
