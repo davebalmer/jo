@@ -142,7 +142,7 @@ joScreen.extend(joContainer, {
 	
 		var view = [
 			new joTitle(title),
-			new joCaption(msg),
+			new joHTML(msg),
 			buttons
 		];
 		this.showPopup(view);
