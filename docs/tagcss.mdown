@@ -18,13 +18,19 @@ are outside of your document's typical CSS name space (except `body`).
 Special Tag Examples
 --------------------
 
-	<jodialog>
-		<jofieldset>
-			<joinput></joinput>
-			<jobutton></jobutton>
-		</jofieldset>
-	</jodialog>
+	<jocard>
+		<jotitle>My title</jotitle>
+		<jogroup>
+			<jolabel>Username</jolabel>
+			<input type="text">
+			<jodivider></jodivider>
+			<jobutton>Save</jobutton>
+		</jogroup>
+	</jocard>
 
 One side benefit of this is that it is possible to load styled HTML content from
 another source and not have that content's CSS corrupt your application's user
 interface.
+
+Bottom line here is the special UI controls you add with Jo can coexist with
+your standard HTML content-driven tags without undue CSS headaches.

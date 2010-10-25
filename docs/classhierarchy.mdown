@@ -30,7 +30,6 @@ User Interface
 		* joButton
 			* joBackButton
 		* joCaption
-		* joCheckBox
 		* joExpando
 			* joSelect
 		* joHTML
@@ -46,6 +45,7 @@ User Interface
 			* joTable
 		* joKnob
 		* joSlider
+		* joToggle
 		* joOption
 	* joDivider
 	* joNavbarTitle
@@ -57,7 +57,9 @@ Data
 * joDataSource
 	* joFileDataSource
 	* joSQLDataSource
+	* joProperty
 * joFile
+* joRecord
 * joScript
 
 Events
