@@ -1,0 +1,54 @@
+joCache.set("widgets", function() {
+	var card = new joCard([
+		new joTitle("Input Boxes"),
+		new joGroup([
+			new joLabel("joInput"),
+			new joFlexrow(new joInput("Hello, Jo!")),
+			new joLabel("joPasswordInput"),
+			new joFlexrow(new joPasswordInput("password")),
+			new joLabel("joTextArea"),
+			new joFlexrow(new joTextarea("This is some multi-line text, Jo!")),
+			new joDivider(),
+			new joFlexrow([
+				new joLabel("Left Aligned").setStyle({className:"left", marginTop:"2px"}),
+				new joInput("From CSS").setStyle({width: "150px", marginBottom: "0"})
+			])
+		]),
+		new joTitle("Selection Widgets"),
+		new joGroup([
+			new joLabel("joOption"),
+			new joFlexrow(new joOption([
+				"Red", "Green", "Blue"
+			])),
+			new joLabel("joSelect"),
+			new joSelect([
+				"Baked Alaska",
+				"Chocolate Mousse",
+				"Rum Raisin Ice Cream",
+				"Fudge Sundae"
+			]),
+			new joFlexrow([
+				new joLabel("joToggle").setStyle("left"),
+				new joToggle(true)
+			]),
+			new joFlexrow([
+				new joLabel("With customized labels").setStyle("left"),
+				new joToggle().setLabels(["No", "Yes"])
+			])
+		]),
+		new joExpando([
+			new joExpandoTitle("joExpando"),
+			new joExpandoContent([
+				new joLabel("Tuck away more UI controls"),
+				new joFlexrow(new joInput("Hello again, Jo!"))
+			])
+		]),
+		new joDivider(),
+		new joButton("joButton").selectEvent.subscribe(function() {
+			App.scn.alert("You pressed a button!");
+		}),
+		new joButton("Disabled").disable()
+	]).setTitle("Form Widgets");
+	
+	return card;
+});
