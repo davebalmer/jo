@@ -541,9 +541,7 @@ joCSSRule.prototype = {
 	
 	setData: function(data) {
 		this.data = data || "";
-		
-		if (data)
-			this.enable();
+		this.enable();
 	},
 	
 	clear: function() {
@@ -1237,6 +1235,110 @@ joDataSource.prototype = {
 	load: function(){
 	}
 };
+/**
+	joRecord
+	========
+	
+	An event-driven wrapper for an object and its properties. Useful as a
+	data interface for forms and other collections of UI controls.
+	
+	Extends
+	-------
+	
+	- joDataSource
+	
+	Methods
+	-------
+	
+	- `link(property)`
+	
+	  Returns a reference to a joProperty object which can be used with UI
+	  controls (children of joControl) to automatically save or load data
+	  based on user interaction.
+	
+	- `save()`
+	
+	  Saves the object's data. The base class does not itself save the data;
+	  you will need to make your own action for the save method, or have
+	  something which subscribes to the `saveEvent`.
+	
+	- `load()`
+	
+	  Loads the object's data, and fires off notifications to any UI controls
+	  which are linked to this joRecord object. Same as the `save()` method,
+	  you will have to make this function do some actual file loading if that's
+	  what you want it to do.
+	
+	- `getProperty(property)`
+	- `setProperty(property, value)`
+	
+	  Get or set a given property. Used in conjunction with `setAutoSave()`,
+	  `setProprty()` will also trigger a call to the `save()` method.
+
+	- `getDelegate(property)`
+	
+	  Returns a reference to the joProperty object which fires off events
+	  for data changes for that property. If none exists, one is created.
+	  This method is used by the `link()` method, and can be overriden if
+	  you extend this class to provide some other flavor of a joDataSource
+	  to manage events for your properties.
+
+	Use
+	---
+	
+		// setup a joRecord
+		var r = new joRecord({
+			user: "Jo",
+			password: "1234",
+			active: true
+		});
+		
+		// bind it to some fields
+		var x = new joGroup([
+			new joLabel("User"),
+			new joInput(r.link("user")),
+			new joLabel("Password"),
+			new joPasswordInput(r.link("password")),
+			new joFlexBox([
+				new joLabel("Active"),
+				new joToggle(r.link("active"))
+			])
+		]);
+
+	And if you want the data to be persistent, or interact with some
+	cloud service, you'll need to do something like this:
+	
+		// make something happen to load the data
+		r.load = function() {
+			// some AJAX or SQL call here
+		};
+		
+		// make something happen to save the data
+		r.save = function() {
+			// some AJAX or SQL call here
+		};
+	
+	You could also make your own subclass of joRecord with your own save
+	and load methods using `extend()` like this:
+	
+		var preferences = function() {
+			// call to the superclass constructor
+			joRecord.apply(this, arguments);
+		};
+		preferences.extend(joRecord, {
+			save: function() {
+				// do an AJAX or SQL call here
+			},
+			
+			load: function() {
+				// do an AJAX or SQL call here
+			}
+		}
+
+	See Class Patterns for more details on this method of "subclassing"
+	in JavaScript.
+
+*/
 joRecord = function(data) {
 	joDataSource.call(this, data);
 };
@@ -1283,6 +1385,23 @@ joRecord.extend(joDataSource, {
 	}
 });
 	
+/**
+	joProperty
+	==========
+	
+	Used by joRecord to provide an event-driven binding to properties.
+	This class is instantiated by joRecord and not of much use on its own.
+	
+	Extends
+	-------
+	
+	- joDataSource
+	
+	Use
+	---
+	
+	See joRecord for examples.
+*/
 joProperty = function(datasource, p) {
 	joDataSource.call(this);
 
@@ -1548,130 +1667,22 @@ function joScript(url, call, context) {
 	joPreference
 	============
 
-	A class used for storing and retrieving preferences. Meant to be
-	augmented with persistent storage methods for `set()` and `get()`.
+	A class used for storing and retrieving preferences in your application.
 
-	> This is a work in progress, and totally subject to change. Binding
-	> persistent storage to GUI controls in a way that doesn't require
-	> goofy syntax is tricky.
-
-	Methods
+	*The interface for this is changing.* joPreference will become a specialized
+	application-level extension of joRecord in the near future. Until then, you
+	should use joRecord to achieve this use-case.
+	
+	Extends
 	-------
-
-	- `bind(key)`
-
-	  Returns a joDataSource class for a key. Used to automagically bind
-	  GUI controls in a two-way link with preference data for a key.
-
-	- `get(key)`
-
-	  Returns the current value for a key or `null` if there is no value.
-
-	- `set(key, value)`
-
-	  Sets an arbitrary value for a given key.
-
-	Consumes
-	--------
-
-	- joDataSource
-	- joSubject
-
-	Events
-	------
-
-	- `changeEvent`
-
-	> This is getting hairy. Sorting out the data types and adding different
-	> data sources to the picture is getting messy.
+	
+	- joRecord
 
 */
 
-joPreference = function(data) {
-	this.preference = data || {};
-	this.changeEvent = new joSubject(this);
-};
-joPreference.prototype = {
-	loadEvent: new joSubject(this),
-	preference: {},
-
-	setDataSource: function(source) {
-		this.dataSource = source;
-		source.loadEvent.subscribe(this.load, this);
-//		this.load(source.getData());
-	},
-	
-	load: function(data) {
-		// shove the data in, would be nice if it accepted
-		// an array of arrays (SQL) or an object with
-		// properties (JSON)
-		if (data instanceof Array) {
-			// an array of arrays (we hope) like from SQL
-			for (var i = 0; i < data.length; i++)
-				this.set(data[i][0], data[i][1]);
-		}
-		else if (typeof data === "object") {
-			this.data = data;
-		}
-	},
-	
-	save: function(key) {
-		// set our data source with the new data... this
-		// might get ugly
-		if (key) {
-			// single key
-//			this.dataSource.set(key, this.data[key].get());
-		}
-		else {
-			// otherwise we save all our stuff
-//			for (var i in this.data) {
-//				this.dataSource.set(i, this.data[i].get());
-//			}
-		}
-	},
-	
-	getNumber: function(key) {
-		return 0 + this.get(key);
-	},
-	
-	getBoolen: function(key) {
-		return 0 + this.parseInt(this.get(key));
-	},
-	
-	get: function(key) {
-		if (typeof this.preference[key] === 'undefined')
-			return "";
-		else
-			return this.preference[key].get();
-	},
-
-	setBoolean: function(key, value) {
-		this.set(key, (value) ? 1 : 0);
-	},
-	
-	set: function(key, value) {
-		if (typeof this.preference[key] === 'undefined')
-			this.preference[key] = new joDataSource(value);
-		else
-			this.preference[key].set(value);
-			
-		this.save(key);
-		this.changeEvent.fire(key);
-	},
-
-	bind: function(key) {
-		var self = this;
-
-		// create new key if it doesn't exist
-		if (typeof this.preference[key] === 'undefined')
-			return new joDataSource(key);
-		else
-			return this.preference[key];
-	}
-};
-
-		
-		/**
+// placeholder for now
+joPreference = joRecord;
+/**
 	joInterface
 	===========
 	
@@ -2239,12 +2250,16 @@ joControl.extend(joView, {
 		joDOM.removeCSSClass(this.container, 'disabled');
 		this.container.contentEditable = true;
 		this.enabled = true;
+		
+		return this;
 	},
 	
 	disable: function() {
 		joDOM.addCSSClass(this.container, 'disabled');
 		this.container.contentEditable = false;
 		this.enabled = false;
+		
+		return this;
 	},
 
 	onFocus: function(e) {
@@ -2265,6 +2280,8 @@ joControl.extend(joView, {
 
 		if (!e)
 			this.container.focus();
+			
+		return this;
 	},
 	
 	setValue: function(value) {
@@ -2280,6 +2297,8 @@ joControl.extend(joView, {
 	
 	blur: function() {
 		joDOM.removeCSSClass(this.container, 'focus');
+		
+		return this;
 	},
 	
 	setDataSource: function(source) {
@@ -2287,6 +2306,8 @@ joControl.extend(joView, {
 		source.changeEvent.subscribe(this.setData, this);
 		this.setData(source.getData() || null);
 		this.changeEvent.subscribe(source.setData, source);
+		
+		return this;
 	},
 	
 	setValueSource: function(source) {
@@ -2294,6 +2315,8 @@ joControl.extend(joView, {
 		source.changeEvent.subscribe(this.setValue, this);
 		this.setValue(source.getData() || null);
 		this.selectEvent.subscribe(source.setData, source);
+		
+		return this;
 	}
 });
 /**
@@ -2346,13 +2369,13 @@ joButton.extend(joControl, {
 
 	enable: function() {
 		this.container.setAttribute("tabindex", "1");
-		joControl.prototype.enable.call(this);
+		return joControl.prototype.enable.call(this);
 	},
 	
 	disable: function() {
 		// this doesn't seem to work in safari doh
 		this.container.removeAttribute("tabindex");
-		joControl.prototype.disable.call(this);
+		return joControl.prototype.disable.call(this);
 	}
 });
 /**
@@ -4365,7 +4388,7 @@ joScreen.extend(joContainer, {
 	
 		var view = [
 			new joTitle(title),
-			new joCaption(msg),
+			new joHTML(msg),
 			buttons
 		];
 		this.showPopup(view);
@@ -5136,7 +5159,7 @@ joSelectTitle.extend(joExpandoTitle, {
 	
 	setData: function(value) {
 		if (this.list)
-			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value));
+			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value) || "Select...");
 		else
 			joExpandoTitle.prototype.setData.call(this, value);
 	}
@@ -5190,7 +5213,9 @@ joToggle.extend(joControl, {
 			this.data = data;
 
 		this.draw();
-		this.changeEvent.fire(data);
+		
+		if (this.data !== data)
+			this.changeEvent.fire(data);
 		
 		return this;
 	},

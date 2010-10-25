@@ -39,8 +39,7 @@ else if(typeof style!=="undefined"){throw("joDOM.setStyle(): unrecognized type f
 document.body.removeChild(oldnode);var css=joDOM.create('jostyle');css.innerHTML='<style>'+style+'</style>';document.body.appendChild(css);return css;},removeCSS:function(node){document.body.removeChild(node);},loadCSS:function(filename,oldnode){if(oldnode)
 var css=oldnode;else
 var css=joDOM.create('link');css.rel='stylesheet';css.type='text/css';css.href=filename+(jo.debug?("?"+joTime.timestamp()):"");if(!oldnode)
-document.body.appendChild(css);return css;}};joCSSRule=function(data){this.setData(data);};joCSSRule.prototype={container:null,setData:function(data){this.data=data||"";if(data)
-this.enable();},clear:function(){this.setData();},disable:function(){joDOM.removeCSS(this.container);},enable:function(){this.container=joDOM.applyCSS(this.data,this.container);}};joEvent={eventMap:{"mousedown":"touchstart","mousemove":"touchmove","mouseup":"touchend","mouseout":"touchcancel"},touchy:false,getTarget:function(e){if(!e)
+document.body.appendChild(css);return css;}};joCSSRule=function(data){this.setData(data);};joCSSRule.prototype={container:null,setData:function(data){this.data=data||"";this.enable();},clear:function(){this.setData();},disable:function(){joDOM.removeCSS(this.container);},enable:function(){this.container=joDOM.applyCSS(this.data,this.container);}};joEvent={eventMap:{"mousedown":"touchstart","mousemove":"touchmove","mouseup":"touchend","mouseout":"touchcancel"},touchy:false,getTarget:function(e){if(!e)
 var e=window.event;return e.target?e.target:e.srcElement;},capture:function(element,event,call,context,data){this.on(element,event,call,context,data,true);},on:function(element,event,call,context,data,capture){if(!call||!element)
 return false;if(this.touchy){if(this.eventMap[event])
 event=this.eventMap[event];}
@@ -106,16 +105,7 @@ function handler(error){if(call){if(context)
 call.call(context,error,url);else
 call(error,url);}
 document.body.removeChild(node);node=null;}}
-joPreference=function(data){this.preference=data||{};this.changeEvent=new joSubject(this);};joPreference.prototype={loadEvent:new joSubject(this),preference:{},setDataSource:function(source){this.dataSource=source;source.loadEvent.subscribe(this.load,this);},load:function(data){if(data instanceof Array){for(var i=0;i<data.length;i++)
-this.set(data[i][0],data[i][1]);}
-else if(typeof data==="object"){this.data=data;}},save:function(key){if(key){}
-else{}},getNumber:function(key){return 0+this.get(key);},getBoolen:function(key){return 0+this.parseInt(this.get(key));},get:function(key){if(typeof this.preference[key]==='undefined')
-return"";else
-return this.preference[key].get();},setBoolean:function(key,value){this.set(key,(value)?1:0);},set:function(key,value){if(typeof this.preference[key]==='undefined')
-this.preference[key]=new joDataSource(value);else
-this.preference[key].set(value);this.save(key);this.changeEvent.fire(key);},bind:function(key){var self=this;if(typeof this.preference[key]==='undefined')
-return new joDataSource(key);else
-return this.preference[key];}};joInterface=function(parent){jo.initTagMap();return this.get(parent);};joInterface.prototype={get:function(parent){parent=joDOM.get(parent);if(!parent)
+joPreference=joRecord;joInterface=function(parent){jo.initTagMap();return this.get(parent);};joInterface.prototype={get:function(parent){parent=joDOM.get(parent);if(!parent)
 parent=document.body;var ui={};var setContainer=joView.setContainer;var draw=joView.draw;parse(parent);joView.setContainer=setContainer;joView.draw=draw;function parse(node){if(!node)
 return;var args="";if(node.childNodes&&node.firstChild){var kids=node.childNodes;args=[];for(var i=0,l=kids.length;i<l;i++){var p=parse(kids[i]);if(p)
 args.push(p);}}
@@ -147,10 +137,10 @@ this.setValueSource(value);else
 this.value=value;}
 if(data instanceof joDataSource){joView.call(this);this.setDataSource(data);}
 else{joView.apply(this,arguments);}};joControl.extend(joView,{tagName:"jocontrol",value:null,setEvents:function(){joEvent.on(this.container,"click",this.onMouseDown,this);joEvent.on(this.container,"blur",this.onBlur,this);joEvent.on(this.container,"focus",this.onFocus,this);},onMouseDown:function(e){this.select(e);},select:function(e){if(e)
-joEvent.stop(e);this.selectEvent.fire(this.data);},enable:function(){joDOM.removeCSSClass(this.container,'disabled');this.container.contentEditable=true;this.enabled=true;},disable:function(){joDOM.addCSSClass(this.container,'disabled');this.container.contentEditable=false;this.enabled=false;},onFocus:function(e){joEvent.stop(e);joFocus.set(this);},onBlur:function(e){this.data=(this.container.value)?this.container.value:this.container.innerHTML;joEvent.stop(e);this.blur();this.changeEvent.fire(this.data);},focus:function(e){joDOM.addCSSClass(this.container,'focus');if(!e)
-this.container.focus();},setValue:function(value){this.value=value;this.changeEvent.fire(value);return this;},getValue:function(){return this.value;},blur:function(){joDOM.removeCSSClass(this.container,'focus');},setDataSource:function(source){this.dataSource=source;source.changeEvent.subscribe(this.setData,this);this.setData(source.getData()||null);this.changeEvent.subscribe(source.setData,source);},setValueSource:function(source){this.valueSource=source;source.changeEvent.subscribe(this.setValue,this);this.setValue(source.getData()||null);this.selectEvent.subscribe(source.setData,source);}});joButton=function(data,classname){joControl.apply(this,arguments);if(classname)
+joEvent.stop(e);this.selectEvent.fire(this.data);},enable:function(){joDOM.removeCSSClass(this.container,'disabled');this.container.contentEditable=true;this.enabled=true;return this;},disable:function(){joDOM.addCSSClass(this.container,'disabled');this.container.contentEditable=false;this.enabled=false;return this;},onFocus:function(e){joEvent.stop(e);joFocus.set(this);},onBlur:function(e){this.data=(this.container.value)?this.container.value:this.container.innerHTML;joEvent.stop(e);this.blur();this.changeEvent.fire(this.data);},focus:function(e){joDOM.addCSSClass(this.container,'focus');if(!e)
+this.container.focus();return this;},setValue:function(value){this.value=value;this.changeEvent.fire(value);return this;},getValue:function(){return this.value;},blur:function(){joDOM.removeCSSClass(this.container,'focus');return this;},setDataSource:function(source){this.dataSource=source;source.changeEvent.subscribe(this.setData,this);this.setData(source.getData()||null);this.changeEvent.subscribe(source.setData,source);return this;},setValueSource:function(source){this.valueSource=source;source.changeEvent.subscribe(this.setValue,this);this.setValue(source.getData()||null);this.selectEvent.subscribe(source.setData,source);return this;}});joButton=function(data,classname){joControl.apply(this,arguments);if(classname)
 this.container.className=classname;};joButton.extend(joControl,{tagName:"jobutton",createContainer:function(){var o=joDOM.create(this.tagName);if(o)
-o.setAttribute("tabindex","1");return o;},enable:function(){this.container.setAttribute("tabindex","1");joControl.prototype.enable.call(this);},disable:function(){this.container.removeAttribute("tabindex");joControl.prototype.disable.call(this);}});joBusy=function(data){joContainer.apply(this,arguments);};joBusy.extend(joContainer,{tagName:"jobusy",draw:function(){this.container.innerHTML="";for(var i=0;i<9;i++)
+o.setAttribute("tabindex","1");return o;},enable:function(){this.container.setAttribute("tabindex","1");return joControl.prototype.enable.call(this);},disable:function(){this.container.removeAttribute("tabindex");return joControl.prototype.disable.call(this);}});joBusy=function(data){joContainer.apply(this,arguments);};joBusy.extend(joContainer,{tagName:"jobusy",draw:function(){this.container.innerHTML="";for(var i=0;i<9;i++)
 this.container.appendChild(joDom.create("jobusyblock"));},setMessage:function(msg){this.message=msg||"";},setEvents:function(){return this;}});joList=function(){this.setIndex=this.setValue;this.getIndex=this.getValue;joControl.apply(this,arguments);};joList.extend(joControl,{tagName:"jolist",data:null,defaultMessage:"",lastNode:null,value:null,autoSort:false,setDefault:function(msg){this.defaultMessage=msg;if(typeof this.data==='undefined'||!this.data||!this.data.length){if(typeof msg==='object'){this.innerHTML="";if(msg instanceof joView)
 this.container.appendChild(msg.container);else if(msg instanceof HTMLElement)
 this.container.appendChild(msg);}
@@ -282,7 +272,7 @@ else{addbutton(options);}}
 else if(typeof options==='string'){addbutton({label:options});}
 else{if(typeof options==='function')
 callback=options;addbutton();}
-var view=[new joTitle(title),new joCaption(msg),buttons];this.showPopup(view);var self=this;function addbutton(options){if(!options)
+var view=[new joTitle(title),new joHTML(msg),buttons];this.showPopup(view);var self=this;function addbutton(options){if(!options)
 var options={label:'OK'};var button=new joButton(options.label);button.selectEvent.subscribe(function(){if(options.action)
 options.action.call(options.context);defaultaction();},options.context||self);buttons.push(button);}
 function defaultaction(){self.hidePopup();if(callback){if(context)
@@ -319,11 +309,12 @@ this.titlebar.setData(title);else
 this.titlebar.setData(this.firstTitle);},setTitle:function(title){this.titlebar.setData(title);this.firstTitle=title;}});joBackButton=function(){joButton.apply(this,arguments);};joBackButton.extend(joButton,{tagName:"jobackbutton"});joSelect=function(data,value){var v=value;if(value instanceof joDataSource)
 v=value.getData();var ui=[this.field=new joSelectTitle(v),this.list=new joSelectList(data,value)];this.field.setList(this.list);this.changeEvent=this.list.changeEvent;this.selectEvent=this.list.selectEvent;joExpando.call(this,ui);this.container.setAttribute("tabindex",1);this.field.setData(this.list.value);this.list.selectEvent.subscribe(this.setValue,this);};joSelect.extend(joExpando,{setValue:function(value,list){if(list){this.field.setData(value);this.close();}
 else{this.field.setData(value);}},getValue:function(){return this.list.getValue();},setEvents:function(){joControl.prototype.setEvents.call(this);},onBlur:function(e){joEvent.stop(e);joDOM.removeCSSClass(this,"focus");this.close();}});joSelectTitle=function(){joExpandoTitle.apply(this,arguments);};joSelectTitle.extend(joExpandoTitle,{list:null,setList:function(list){this.list=list;},setData:function(value){if(this.list)
-joExpandoTitle.prototype.setData.call(this,this.list.getNodeData(value));else
+joExpandoTitle.prototype.setData.call(this,this.list.getNodeData(value)||"Select...");else
 joExpandoTitle.prototype.setData.call(this,value);}});joToggle=function(data){joControl.call(this,data);};joToggle.extend(joControl,{tagName:"jotoggle",button:null,labels:["Off","On"],setData:function(data){if(!this.container)
 return;if(typeof data==='object')
 this.data=false;else
-this.data=data;this.draw();this.changeEvent.fire(data);return this;},setLabels:function(labels){if(labels instanceof Array)
+this.data=data;this.draw();if(this.data!==data)
+this.changeEvent.fire(data);return this;},setLabels:function(labels){if(labels instanceof Array)
 this.labels=labels;else if(arguments.length==2)
 this.labels=arguments;this.draw();return this;},select:function(e){if(e)
 joEvent.stop(e);this.setData((this.data)?false:true);},onBlur:function(e){joEvent.stop(e);this.blur();},draw:function(){if(!this.container)
