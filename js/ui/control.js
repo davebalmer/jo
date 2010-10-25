@@ -80,12 +80,16 @@ joControl.extend(joView, {
 		joDOM.removeCSSClass(this.container, 'disabled');
 		this.container.contentEditable = true;
 		this.enabled = true;
+		
+		return this;
 	},
 	
 	disable: function() {
 		joDOM.addCSSClass(this.container, 'disabled');
 		this.container.contentEditable = false;
 		this.enabled = false;
+		
+		return this;
 	},
 
 	onFocus: function(e) {
@@ -106,6 +110,8 @@ joControl.extend(joView, {
 
 		if (!e)
 			this.container.focus();
+			
+		return this;
 	},
 	
 	setValue: function(value) {
@@ -121,6 +127,8 @@ joControl.extend(joView, {
 	
 	blur: function() {
 		joDOM.removeCSSClass(this.container, 'focus');
+		
+		return this;
 	},
 	
 	setDataSource: function(source) {
@@ -128,6 +136,8 @@ joControl.extend(joView, {
 		source.changeEvent.subscribe(this.setData, this);
 		this.setData(source.getData() || null);
 		this.changeEvent.subscribe(source.setData, source);
+		
+		return this;
 	},
 	
 	setValueSource: function(source) {
@@ -135,5 +145,7 @@ joControl.extend(joView, {
 		source.changeEvent.subscribe(this.setValue, this);
 		this.setValue(source.getData() || null);
 		this.selectEvent.subscribe(source.setData, source);
+		
+		return this;
 	}
 });
