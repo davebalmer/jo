@@ -225,9 +225,7 @@ joCSSRule.prototype = {
 	
 	setData: function(data) {
 		this.data = data || "";
-		
-		if (data)
-			this.enable();
+		this.enable();
 	},
 	
 	clear: function() {
