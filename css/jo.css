@@ -589,6 +589,12 @@ jolabel.left {
   margin-top: 10px;
   padding: 9px 0;
 }
+.disabled {
+  opacity: .2;
+}
+jotoolbar {
+  padding: 10px;
+}
 joflexrow {
   display: block;
   display: -webkit-box;
@@ -938,8 +944,6 @@ jonavbar > joflexrow {
   bottom: 0;
 }
 jobackbutton {
-  /*	.imagebg(url(subtle-shiny.png), 50%); */
-
   background: transparent url(back-mini.png) 10px center no-repeat;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-bottom-color: rgba(255, 255, 255, 0.3);
