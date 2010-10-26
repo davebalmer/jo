@@ -145,7 +145,8 @@ this.container.appendChild(joDom.create("jobusyblock"));},setMessage:function(ms
 this.container.appendChild(msg.container);else if(msg instanceof HTMLElement)
 this.container.appendChild(msg);}
 else{this.innerHTML=msg;}}
-return this;},draw:function(){var html="";var length=0;if((typeof this.data==='undefined'||!this.data.length)&&this.defaultMessage){this.container.innerHTML=this.defaultMessage;return;}
+return this;},draw:function(){var html="";var length=0;if(typeof this.data==='undefined'||!this.data||!this.data.length){if(this.defaultMessage)
+this.container.innerHTML=this.defaultMessage;return;}
 for(var i=0,l=this.data.length;i<l;i++){var element=this.formatItem(this.data[i],i,length);if(element==null)
 continue;if(typeof element==="string")
 html+=element;else

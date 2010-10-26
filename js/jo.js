@@ -2054,10 +2054,10 @@ joView.prototype = {
 	controls at once, and is a very powerful UI component in jo.
 	
 	Use
-	-----
+	---
 	
 		// plain container
-		var x = new joContainer(data);
+		var x = new joContainer();
 		
 		// HTML or plain text
 		var y = new joContainer("Some HTML");
@@ -2079,6 +2079,9 @@ joView.prototype = {
 			]),
 			new joButton("Done")
 		]);
+		
+		// set an optional title string, used with joNavbar
+		z.setTitle("About");
 	
 	Extends
 	-------
@@ -2102,6 +2105,12 @@ joView.prototype = {
 	
 	  Same support as `setData()`, but places the new content at the end of the
 	  existing content.
+	
+	- `setTitle(string)`
+	- `getTitle(string)`
+	
+	  Titles are optional, but used with joStack & joStackScroller to update a
+	  joNavbar control automagically.
 
 */
 joContainer = function(data) {
@@ -2195,12 +2204,14 @@ joContainer.extend(joView, {
 	- `focus()`
 	- `blur()`
 	- `setDataSource(joDataSource)`
+	- `setValueSource(joDataSource)`
 	- `setEvents()`
+
+	See Also
+	--------
 	
-	CSS
-	---
-	
-	`div.control`
+	- joRecord and joProperty are specialized joDataSource classes which
+	  make it simple to bind control values to a data structure.
 
 */
 joControl = function(data, value) {
@@ -2531,9 +2542,10 @@ joList.extend(joControl, {
 		var html = "";
 		var length = 0;
 
-		if ((typeof this.data === 'undefined' || !this.data.length)
-		&& this.defaultMessage) {
-			this.container.innerHTML = this.defaultMessage;
+		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
+			if (this.defaultMessage)
+				this.container.innerHTML = this.defaultMessage;
+
 			return;
 		}
 
@@ -3453,12 +3465,25 @@ joDivider.extend(joView, {
 	Use
 	---
 	
+	This is a typical pattern:
+	
+		// normal look & feel
 		var x = new joExpando([
 			new joExpandoTitle("Options"),
-			new joContainer([
+			new joExpandoContent([
 				new joLabel("Label"),
 				new joInput("sample field")
 			])
+		]);
+	
+	Note that joExpando doesn't care what sort of controls you tell it
+	to use. In this example, we have a joButton that hides and shows a
+	DOM element:
+		
+		// you can use other things though
+		var y = new joExpando([
+			new joButton("More..."),
+			joDOM.get("someelementid")
 		]);
 	
 	Extends
@@ -3527,7 +3552,8 @@ joExpando.extend(joContainer, {
 	joExpandoContent
 	================
 	
-	New widget to contain expando contents, used by joExpando.
+	New widget to contain expando contents. This is normally used with
+	joExpando, but not required.
 	
 	Extends
 	-------
@@ -3579,8 +3605,20 @@ joExpandoTitle.extend(joControl, {
 	joFlexrow
 	=========
 	
-	Uses the box model to stretch elements evenly across a row.
+	Uses the flexible box model in CSS to stretch elements evenly across a row.
 	
+	Use
+	---
+	
+		// a simple row of things
+		var x = new joFlexrow([
+			new joButton("OK"),
+			new joButton("Cancel")
+		]);
+		
+		// making a control stretch
+		var y = new joFlexrow(new joInput("Bob"));
+		
 	Extends
 	-------
 	
@@ -3598,7 +3636,16 @@ joFlexrow.extend(joContainer, {
 	joFlexcol
 	=========
 	
-	Uses the box model to stretch elements evenly across a column.
+	Uses the flexible box model in CSS to stretch elements evenly across a column.
+	
+	Use
+	---
+	
+		// fill up a vertical space with things
+		var x = new joFlexcol([
+			new joNavbar(),
+			new joStackScroller()
+		]);
 	
 	Extends
 	-------
@@ -3915,12 +3962,14 @@ joHTML.extend(joControl, {
 		// simple value, simple field
 		var x = new joInput(a);
 		
-		// attach the value to a preference
-		var y = new joInput(joPreference.bind("username"));
-		
-		// attach input control to a custom joDataSource
-		var username = new joDataSource("bob");
-		var z = new joInput(username);
+		// set up a simple joRecord instance with some default data
+		var pref = new joRecord({
+			username: "Bob",
+			password: "password"
+		});
+				
+		// attach the value to a data structure property
+		var y = new joInput(pref.link("username"));
 	
 	Extends
 	-------
@@ -4148,6 +4197,34 @@ joMenu.extend(joList, {
 	
 	This controls lets the user select one of a few options. Basically, this
 	is a menu with a horizontal layout (depending on your CSS).
+	
+	Use
+	---
+	
+		// simple set of options
+		var x = new joOption([
+			"Red",
+			"Blue",
+			"Green"
+		]);
+		
+		// set the current value
+		x.setValue(2);
+		
+		// or, associate the value with a joRecord property
+		var pref = new joRecord();
+		
+		var y = new joOption([
+			"Orange",
+			"Banana",
+			"Grape",
+			"Lime"
+		], pref.link("fruit"));
+		
+		// you can even associate the list with a datasource
+		var fruits = new joDataSource( ... some query stuff ...);
+		var z = new joOption(fruits, pref.link("fruit"));
+	
 	
 	Extends
 	-------
@@ -4760,23 +4837,8 @@ joTabBar.extend(joList, {
 	joTable
 	=======
 	
-	Table control.
-	
-	Extends
-	-------
-	
-	- joList
-	
-	Methods
-	-------
-	
-	- setCell(row, column)
-	
-	  Sets the active cell for the table, also makes it editiable and sets focus.
-	
-	- getRow(), getCol()
-	
-	  Return the current row or column
+	Table control, purely visual representation of tabular data (usually
+	an array of arrays).
 	
 	Use
 	---
@@ -4791,6 +4853,22 @@ joTabBar.extend(joList, {
 		s.selectEvent.subscribe(function(cell) {
 			joLog("Table cell clicked:", cell.row, cell.col);
 		});
+
+	Extends
+	-------
+
+	- joList
+
+	Methods
+	-------
+
+	- setCell(row, column)
+
+	  Sets the active cell for the table, also makes it editiable and sets focus.
+
+	- getRow(), getCol()
+
+	  Return the current row or column
 */
 
 joTable = function(data) {
@@ -4970,6 +5048,40 @@ joSelectList = function() {
 joSelectList.extend(joList, {
 	tagName: "joselectlist"
 });
+/**
+	joNavbar
+	========
+	
+	Floating navigation control. Usually tied to a joStack or joStackScroller.
+	Will handle display of a "back" button (controllable in CSS) and show the
+	title string of the current view in a stack (if it exists).
+
+	Use
+	---
+	
+		// make a stack
+		var stack = new joStackScroller();
+		
+		// new navbar
+		var x = new joNavbar();
+		
+		// link to a stack
+		x.setStack(stack);
+		
+	Methods
+	-------
+	
+	- `back()`
+	
+	  Signals the associated stack to move back in its stack (i.e. calls
+	  the stack's `pop()` method).
+	
+	- `setStack(joStack or joStackScroller)`
+	
+	  Links this control to a stack.
+	
+*/
+
 joNavbar = function(title) {
 	if (title)
 		this.firstTitle = title;
@@ -5037,6 +5149,22 @@ joNavbar.extend(joContainer, {
 	}
 });
 
+
+/**
+	joBackButton
+	============
+	
+	A "back" button, which can be made to be shown only in appropriate
+	platforms (e.g. iOS, Safari, Chrome) through CSS styling.
+	
+	See joNavbar for more information.
+	
+	Extends
+	-------
+	
+	- joButton
+	
+*/
 joBackButton = function() {
 	joButton.apply(this, arguments);
 };
@@ -5069,7 +5197,7 @@ joBackButton.extend(joButton, {
 	Consumes
 	--------
 	
-	- joExpandoTitle
+	- joSelectTitle
 	- joSelectList
 	
 	Properties
@@ -5146,7 +5274,17 @@ joSelect.extend(joExpando, {
 	}
 });
 
-
+/**
+	joSelectTitle
+	=============
+	
+	joSelect flavor of joExpandoTitle.
+	
+	Extends
+	-------
+	
+	- joExpandoTitle
+*/
 joSelectTitle = function() {
 	joExpandoTitle.apply(this, arguments);
 };
@@ -5193,6 +5331,8 @@ joSelectTitle.extend(joExpandoTitle, {
 		
 		// with custom labels
 		var z = new joToggle().setLabels(["No", "Yes"]);
+		
+	See Data Driven Controls for more examples.
 	
 */
 joToggle = function(data) {

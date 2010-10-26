@@ -48,7 +48,6 @@ User Interface
 		* joToggle
 		* joOption
 	* joDivider
-	* joNavbarTitle
 
 Data
 ----
@@ -56,10 +55,10 @@ Data
 * joDatabase
 * joDataSource
 	* joFileDataSource
-	* joSQLDataSource
 	* joProperty
+	* joRecord
+	* joSQLDataSource
 * joFile
-* joRecord
 * joScript
 
 Events

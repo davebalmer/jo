@@ -15,8 +15,8 @@
 			["Jane", "555-6789", "jane@janeco.not"]
 		]);
 		
-		s.selectEvent.subscribe(function(cell) {
-			joLog("Table cell clicked:", cell.row, cell.col);
+		x.selectEvent.subscribe(function(index, table) {
+			joLog("Table cell clicked:", table.getRow(), table.getCol());
 		});
 
 	Extends

@@ -2,7 +2,7 @@
 	- - -
 
 	jo
-	===
+	==
 
 	Singleton which the framework uses to store global infomation. It also is
 	responsible for initializing the rest of the framework, detecting your environment,
