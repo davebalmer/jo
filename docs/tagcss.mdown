@@ -34,3 +34,6 @@ interface.
 
 Bottom line here is the special UI controls you add with Jo can coexist with
 your standard HTML content-driven tags without undue CSS headaches.
+
+See joInterface and joView for more uses of direct HTML and DOM nodes which are
+common for all UI elements.

@@ -24,7 +24,7 @@
 	Consumes
 	--------
 	
-	- joExpandoTitle
+	- joSelectTitle
 	- joSelectList
 	
 	Properties
@@ -101,7 +101,17 @@ joSelect.extend(joExpando, {
 	}
 });
 
-
+/**
+	joSelectTitle
+	=============
+	
+	joSelect flavor of joExpandoTitle.
+	
+	Extends
+	-------
+	
+	- joExpandoTitle
+*/
 joSelectTitle = function() {
 	joExpandoTitle.apply(this, arguments);
 };

@@ -27,6 +27,8 @@
 		
 		// with custom labels
 		var z = new joToggle().setLabels(["No", "Yes"]);
+		
+	See Data Driven Controls for more examples.
 	
 */
 joToggle = function(data) {

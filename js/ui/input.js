@@ -12,12 +12,14 @@
 		// simple value, simple field
 		var x = new joInput(a);
 		
-		// attach the value to a preference
-		var y = new joInput(joPreference.bind("username"));
-		
-		// attach input control to a custom joDataSource
-		var username = new joDataSource("bob");
-		var z = new joInput(username);
+		// set up a simple joRecord instance with some default data
+		var pref = new joRecord({
+			username: "Bob",
+			password: "password"
+		});
+				
+		// attach the value to a data structure property
+		var y = new joInput(pref.link("username"));
 	
 	Extends
 	-------

@@ -1,0 +1,17 @@
+Data Driven Controls
+====================
+
+Jo isn't just a pretty face with some DOM fiddling and standard DOM events.
+It also has a versatile application-level event model (see Observer Pattern).
+In addition, Jo has a simple event-driven layer for asynchronous data
+storage and retrieval using extensions of joDataSource.
+
+As a matter of convenience, all children of joControl (which includes most
+list or widget-driven UI elements) can be easily tied to data.
+
+The most convenient for most purposes is joRecord. This class wraps a property
+list, which can be used to save or load using whatever your application
+requires. In addition, this class allows you to link a UI control to the data
+in one quick action.
+
+For more on this, check out the joRecord docs which include an example or two.

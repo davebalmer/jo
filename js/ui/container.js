@@ -7,10 +7,10 @@
 	controls at once, and is a very powerful UI component in jo.
 	
 	Use
-	-----
+	---
 	
 		// plain container
-		var x = new joContainer(data);
+		var x = new joContainer();
 		
 		// HTML or plain text
 		var y = new joContainer("Some HTML");
@@ -32,6 +32,9 @@
 			]),
 			new joButton("Done")
 		]);
+		
+		// set an optional title string, used with joNavbar
+		z.setTitle("About");
 	
 	Extends
 	-------
@@ -55,6 +58,12 @@
 	
 	  Same support as `setData()`, but places the new content at the end of the
 	  existing content.
+	
+	- `setTitle(string)`
+	- `getTitle(string)`
+	
+	  Titles are optional, but used with joStack & joStackScroller to update a
+	  joNavbar control automagically.
 
 */
 joContainer = function(data) {

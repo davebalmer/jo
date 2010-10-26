@@ -1,3 +1,37 @@
+/**
+	joNavbar
+	========
+	
+	Floating navigation control. Usually tied to a joStack or joStackScroller.
+	Will handle display of a "back" button (controllable in CSS) and show the
+	title string of the current view in a stack (if it exists).
+
+	Use
+	---
+	
+		// make a stack
+		var stack = new joStackScroller();
+		
+		// new navbar
+		var x = new joNavbar();
+		
+		// link to a stack
+		x.setStack(stack);
+		
+	Methods
+	-------
+	
+	- `back()`
+	
+	  Signals the associated stack to move back in its stack (i.e. calls
+	  the stack's `pop()` method).
+	
+	- `setStack(joStack or joStackScroller)`
+	
+	  Links this control to a stack.
+	
+*/
+
 joNavbar = function(title) {
 	if (title)
 		this.firstTitle = title;
@@ -65,6 +99,22 @@ joNavbar.extend(joContainer, {
 	}
 });
 
+
+/**
+	joBackButton
+	============
+	
+	A "back" button, which can be made to be shown only in appropriate
+	platforms (e.g. iOS, Safari, Chrome) through CSS styling.
+	
+	See joNavbar for more information.
+	
+	Extends
+	-------
+	
+	- joButton
+	
+*/
 joBackButton = function() {
 	joButton.apply(this, arguments);
 };

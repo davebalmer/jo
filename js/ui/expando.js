@@ -10,12 +10,25 @@
 	Use
 	---
 	
+	This is a typical pattern:
+	
+		// normal look & feel
 		var x = new joExpando([
 			new joExpandoTitle("Options"),
-			new joContainer([
+			new joExpandoContent([
 				new joLabel("Label"),
 				new joInput("sample field")
 			])
+		]);
+	
+	Note that joExpando doesn't care what sort of controls you tell it
+	to use. In this example, we have a joButton that hides and shows a
+	DOM element:
+		
+		// you can use other things though
+		var y = new joExpando([
+			new joButton("More..."),
+			joDOM.get("someelementid")
 		]);
 	
 	Extends
@@ -84,7 +97,8 @@ joExpando.extend(joContainer, {
 	joExpandoContent
 	================
 	
-	New widget to contain expando contents, used by joExpando.
+	New widget to contain expando contents. This is normally used with
+	joExpando, but not required.
 	
 	Extends
 	-------

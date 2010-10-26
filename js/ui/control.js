@@ -25,12 +25,14 @@
 	- `focus()`
 	- `blur()`
 	- `setDataSource(joDataSource)`
+	- `setValueSource(joDataSource)`
 	- `setEvents()`
+
+	See Also
+	--------
 	
-	CSS
-	---
-	
-	`div.control`
+	- joRecord and joProperty are specialized joDataSource classes which
+	  make it simple to bind control values to a data structure.
 
 */
 joControl = function(data, value) {

@@ -107,9 +107,10 @@ joList.extend(joControl, {
 		var html = "";
 		var length = 0;
 
-		if ((typeof this.data === 'undefined' || !this.data.length)
-		&& this.defaultMessage) {
-			this.container.innerHTML = this.defaultMessage;
+		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
+			if (this.defaultMessage)
+				this.container.innerHTML = this.defaultMessage;
+
 			return;
 		}
 

@@ -2,23 +2,8 @@
 	joTable
 	=======
 	
-	Table control.
-	
-	Extends
-	-------
-	
-	- joList
-	
-	Methods
-	-------
-	
-	- setCell(row, column)
-	
-	  Sets the active cell for the table, also makes it editiable and sets focus.
-	
-	- getRow(), getCol()
-	
-	  Return the current row or column
+	Table control, purely visual representation of tabular data (usually
+	an array of arrays).
 	
 	Use
 	---
@@ -33,6 +18,22 @@
 		s.selectEvent.subscribe(function(cell) {
 			joLog("Table cell clicked:", cell.row, cell.col);
 		});
+
+	Extends
+	-------
+
+	- joList
+
+	Methods
+	-------
+
+	- setCell(row, column)
+
+	  Sets the active cell for the table, also makes it editiable and sets focus.
+
+	- getRow(), getCol()
+
+	  Return the current row or column
 */
 
 joTable = function(data) {
