@@ -49,10 +49,6 @@ joDataSource.prototype = {
 		return this;
 	},
 	
-	getQuery: function() {
-		return this.query;
-	},
-	
 	setData: function(data) {
 		var last = this.data;
 		this.data = data;
@@ -101,6 +97,12 @@ joDataSource.prototype = {
 		return this.pageSize;
 	},
 	
-	load: function(){
+	load: function(data) {
+		this.data = data;
+		this.changeEvent.fire(data);
+	},
+	
+	error: function(msg) {
+		this.errorEvent.fire(msg);
 	}
 };
