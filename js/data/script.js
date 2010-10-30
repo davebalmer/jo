@@ -34,6 +34,9 @@
 function joScript(url, call, context) {
 	var node = joDOM.create('script');
 
+	if (!node)
+		return;
+
 	node.onload = onload;
 	node.onerror = onerror;
 	node.src = url;
