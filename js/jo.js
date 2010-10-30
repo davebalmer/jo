@@ -232,6 +232,16 @@ jo = {
 					node.jotop = y;
 			};
 		}
+		else if (typeof document.body.style.msTransform !== "undefined") {
+			alert("ie9");
+			// IE9 with transitions
+			s.transitionEnd = "transitionend";
+			s.setTop = function(y) {
+					var node = this.container.firstChild;
+					node.style.msTransform = y ? ("translateY(" + y + "px)") : "";
+					node.jotop = y;
+			};
+		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
 			s.transitionEnd = "otransitionend";
@@ -1180,10 +1190,6 @@ joDataSource.prototype = {
 		return this;
 	},
 	
-	getQuery: function() {
-		return this.query;
-	},
-	
 	setData: function(data) {
 		var last = this.data;
 		this.data = data;
@@ -1770,7 +1776,7 @@ joYQL.extend(joDataSource, {
 	exec: function() {
 		var get = this.baseurl + "q=" + encodeURIComponent(this.query) + "&format=" + this.format + "&callback=" + joDepot(this.load, this);
 		console.log(get);
-		var s = new joScript(get, this.callBack, this);
+		joScript(get, this.callBack, this);
 	},
 	
 	load: function(data) {

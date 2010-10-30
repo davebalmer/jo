@@ -202,12 +202,17 @@ joexpandotitle joicon {
 	-o-transform-origin: 16px 16px 0;
 	-o-transform: rotate(0);
 	-o-transition: -o-transform .2s ease-out;
+
+	-ms-transform-origin: 16px 16px 0;
+	-ms-transform: rotate(0);
+	-ms-transition: -ms-transform .2s ease-out;
 }
 
 joexpando.open > joexpandotitle joicon {
 	-webkit-transform: rotateZ(90deg);
 	-moz-transform: rotate(90deg);
 	-o-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
 }
 
 
@@ -233,6 +238,12 @@ joexpando > *:last-child {
 	-o-transform-origin: 0 0 0;
 	-o-transform: scaleY(1);
 	-o-transition: -o-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
+
+	-ms-transform-style: preserve-3d;
+	-ms-transform: rotateX(-45deg);
+	-ms-transform-origin: 0 0 0;
+	-ms-transform: scaleY(1);
+	-ms-transition: -o-transform .2s ease-out, opacity .2s ease-out, height .2s ease-out, overflow .2s ease-out;
 }
 
 joexpando.open > *:last-child {
@@ -243,6 +254,7 @@ joexpando.open > *:last-child {
 	-webkit-transform: rotateX(0);
 	-moz-transform: rotateX(0);
 	-o-transform: rotateX(0);
+	-ms-transform: rotateX(0);
 }
 
 joexpando > *:first-child {
@@ -326,10 +338,13 @@ jotoggle {
 		padding: 10px 0;
 		width: 60px;
 		-webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, .2);
-		
+		-moz-box-shadow: 2px 0 2px rgba(0, 0, 0, .2);
+		box-shadow: 2px 0 2px rgba(0, 0, 0, .2);
+
 		-webkit-transition: -webkit-transform .1s ease, background-color .1s ease;
 		-moz-transition: -moz-transform .1s ease, background-color .1s ease;
 		-o-transition: -o-transform .1s ease, background-color .1s ease;
+		-ms-transition: -ms-transform .1s ease, background-color .1s ease;
 	}
 }
 
@@ -343,6 +358,7 @@ jotoggle.on {
 		-webkit-transform: translateX(28px);
 		-moz-transform: translateX(26px);
 		-o-transform: translateX(26px);
+		-ms-transform: translateX(26px);
 	}
 }
 

@@ -199,6 +199,15 @@ jo = {
 					node.jotop = y;
 			};
 		}
+		else if (typeof document.body.style.msTransform !== "undefined") {
+			// IE9 with transitions
+			s.transitionEnd = "transitionend";
+			s.setTop = function(y) {
+					var node = this.container.firstChild;
+					node.style.msTransform = y ? ("translateY(" + y + "px)") : "";
+					node.jotop = y;
+			};
+		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
 			s.transitionEnd = "otransitionend";
