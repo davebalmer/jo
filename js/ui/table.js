@@ -8,6 +8,7 @@
 	Use
 	---
 	
+		// simple table with inline data
 		var x = new joTable([
 			["Nickname", "Phone", "Email"],
 			["Bob", "555-1234", "bob@bobco.not"],
@@ -15,8 +16,13 @@
 			["Jane", "555-6789", "jane@janeco.not"]
 		]);
 		
+		// we can respond to touch events in the table
 		x.selectEvent.subscribe(function(index, table) {
+			// get the current row and column
 			joLog("Table cell clicked:", table.getRow(), table.getCol());
+			
+			// you can also get at the cell HTML element as well
+			joDOM.setStyle(table.getNode(), { fontWeight: "bold" });
 		});
 
 	Extends
