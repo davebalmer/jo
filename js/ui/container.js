@@ -121,7 +121,9 @@ joContainer.extend(joView, {
 	},
 	
 	refresh: function() {
-		this.container.innerHTML = "";
+		if (this.container)
+			this.container.innerHTML = "";
+
 		this.draw();
 		this.changeEvent.fire();
 	},
