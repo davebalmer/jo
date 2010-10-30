@@ -4,4 +4,7 @@
 #cat js/core/*.js js/data/*.js js/ui/*.js > /tmp/jo.js
 #../joDoc/jodoc --template ~/Projects/jodocs/singletemplate.html --title "Jo HTML5 Mobile JavaScript Framework" /tmp/jo.js /tmp/jo.mdown > ~/Projects/jodocs/docs/singlepage.html
 #../joDoc/jodoc --template ~/Projects/jodocs/singletemplate.html --title "Jo HTML5 Mobile JavaScript Framework" /tmp/jo.mdown /tmp/jo.js
+
+# back to single file approach; easier to search and read
+#
 ../joDoc/jodoc --template ~/Projects/jodocs/singletemplate.html --title "Jo HTML5 Mobile App Framework Documentaion" ABOUT.mdown README.mdown docs/*.mdown js/core/*.js js/data/*.js js/ui/*.js LICENSE.mdown > ~/Projects/jodocs/docs/index.html 
