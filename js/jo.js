@@ -233,7 +233,6 @@ jo = {
 			};
 		}
 		else if (typeof document.body.style.msTransform !== "undefined") {
-			alert("ie9");
 			// IE9 with transitions
 			s.transitionEnd = "transitionend";
 			s.setTop = function(y) {
@@ -1614,6 +1613,128 @@ joSQLDataSource.prototype = {
 	}
 };
 /**
+	joFileSource
+	============
+	
+*/
+joFileSource = function(url, timeout) {
+	this.changeEvent = new joSubject(this);
+	this.errorEvent = new joSubject(this);
+	
+	if (timeout)
+		this.setTimeout(timeout);
+		
+	if (url)
+		this.setQuery(url);
+};
+joFileSource.extend(joDataSource, {
+	baseurl: '',
+	query: '',
+	
+	load: function() {
+		var get = this.baseurl + this.query;
+
+		joFile(get, this.callBack, this);
+	},
+	
+	callBack: function(data, error) {
+		if (error)
+			this.errorEvent.fire(error);
+		else
+			this.setData(data);
+	}
+});
+
+/**
+	joFile
+	======
+	
+	A utility method which uses XMLHttpRequest to load a text-like file
+	from either a remote server or a local file.
+	
+	> Note that some browsers and mobile devices will *not* allow you to
+	> load from just any URL, and some will restrict use with local files
+	> especially (I'm looking at you, FireFox).
+	>
+	> If your aim is to load JavaScript-like data (also, JSON), you may want
+	> to look at joScript instead, which uses script tags to accomplish the job.
+	
+	Calling
+	-------
+	
+		joFile(url, call, context, timeout)
+	
+	Where
+	-----
+	
+	- `url` is a well-formed URL, or, in most cases, a relative url to a local
+	  file
+
+	- `call` is a function to call when the operation completes
+
+	- `context` is an optional scope for the function to call (i.e. value of `this`).
+	  You can also ignore this parameter (or pass in `null` and use `Function.bind(this)`
+	  instead.
+
+	- `timeout` is an optional parameter which tells joFile to wait, in seconds,
+	  for a response before throwing an error.
+	
+	Use
+	---
+	
+		// simple call with a global callback
+		var x = joFile("about.html", App.loadAbout);
+		
+		// an inline function
+		var y = joFile("http://joapp.com/index.html", function(data, error) {
+			if (error) {
+				console.log("error loading file");
+				return;
+			}
+			
+			console.log(data);
+		});
+*/
+joFile = function(url, call, context, timeout) {
+	var req = new XMLHttpRequest();
+
+	if (!req)
+		return onerror();
+
+	// 30 second default on requests
+	if (!timeout)
+		var timeout = 60 * SEC;
+		
+	var timer = (timeout > 0) ? setTimeout(onerror, timeout) : null;
+
+	req.open('GET', url, true);
+	req.onreadystatechange = onchange;
+	req.onError = onerror;
+	req.send(null);
+	
+	function onchange(e) {
+		if (timer)
+			timer = clearTimeout(timer);
+
+		if (req.readyState == 4)
+			handler(req.responseText, 0);
+	}
+	
+	function onerror() {
+		handler(null, true);
+	}
+	
+	function handler(data, error) {
+		if (call) {
+			if (context)
+				call.call(context, data, error);
+			else
+				call(error, data, error);
+		}
+	}
+}	
+
+/**
 	joScript
 	========
 	
@@ -1704,10 +1825,17 @@ joPreference = joRecord;
 	A joDataSource geared for YQL RESTful JSON calls. YQL is like SQL, but for cloud
 	services. Pretty amazing stuff:
 	
-	> The Yahoo! Query Language is an expressive SQL-like language that lets you query, filter, and join data across Web services. With YQL, apps run faster with fewer lines of code and a smaller network footprint.
+	> The Yahoo! Query Language is an expressive SQL-like language that lets you query,
+	> filter, and join data across Web services. With YQL, apps run faster with fewer lines of
+	> code and a smaller network footprint.
 	>
-	>Yahoo! and other websites across the Internet make much of their structured data available to developers, primarily through Web services. To access and query these services, developers traditionally endure the pain of locating the right URLs and documentation to access and query each Web service.
-	>With YQL, developers can access and shape data across the Internet through one simple language, eliminating the need to learn how to call different APIs.
+	> Yahoo! and other websites across the Internet make much of their structured data
+	> available to developers, primarily through Web services. To access and query these
+	> services, developers traditionally endure the pain of locating the right URLs and
+	> documentation to access and query each Web service.
+	>
+	> With YQL, developers can access and shape data across the Internet through one
+	> simple language, eliminating the need to learn how to call different APIs.
 
 	[Yahoo! Query Language Home](http://developer.yahoo.com/yql/)
 	
@@ -1763,6 +1891,7 @@ joPreference = joRecord;
 	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20rss%20where%20pubDate%20%3E%20%2208%20Sep%202010%22%20and%20(url%3D'http%3A%2F%2Fdavebalmer.wordpress.com%2Ffeed'%20or%20url%3D'http%3A%2F%2Ffeeds.feedburner.com%2Fextblog%3Fformat%3Dxml'%20or%20url%3D'http%3A%2F%2Fdeveloper.palm.com%2Fblog%2Ffeed%2F')%20limit%2020%20%7C%20sort(field%3D%22pubDate%22)&format=json&callback=joResponse[17].setData
 
 */
+
 joYQL = function(query) {
 	joDataSource.call(this);
 
@@ -1774,8 +1903,9 @@ joYQL.extend(joDataSource, {
 	query: '',
 	
 	exec: function() {
-		var get = this.baseurl + "q=" + encodeURIComponent(this.query) + "&format=" + this.format + "&callback=" + joDepot(this.load, this);
-		console.log(get);
+		var get = this.baseurl + "q=" + encodeURIComponent(this.query)
+			+ "&format=" + this.format + "&callback=" + joDepot(this.load, this);
+
 		joScript(get, this.callBack, this);
 	},
 	
@@ -1791,13 +1921,17 @@ joYQL.extend(joDataSource, {
 	},
 	
 	callBack: function(error) {
-		if (error) {
+		if (error)
 			this.errorEvent.fire();
-			console.log("error");
-		}
 	}
 });
 
+
+/*
+	Used by joYQL for RESTful calls, may be abstracted into
+	a restful superclass, but that will be dependant on a
+	callback paramter as well.
+*/
 joDepotCall = [];
 joDepot = function(call, context) {
 	joDepotCall.push(handler);
