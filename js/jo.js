@@ -1115,6 +1115,8 @@ joChain.prototype = {
 	  supports selections, `cut()` will automatically remove the selection after
 	  copying its contents. Otherwise, `cut()` will work the same as `copy()`.
 	
+	> Note: this is not working yet, steer clear (or contribute some working code!)
+	
 */
 joClipboard = {
 	data: "",
@@ -3409,11 +3411,19 @@ joStack.extend(joContainer, {
 	  Scrolls to the position or the view or element. If you
 	  specify an element or view, make sure that element is a
 	  child node, or you'll get interesting results.
-
-	> Note that joScroller at this time only handles vertical scrolling.
-	> At some point, it will either be expanded to handle both directions,
-	> or more likely extended to make a horizontal scroller and a free
-	> scroller.
+	
+	- `setScroll(horizontal, vertical)`
+	
+	  Tells this scroller to allow scrolling the vertical, horizontal, both or none.
+	
+		// free scroller
+		z.setScroll(true, true);
+		
+		// horizontal
+		z.setScroll(true, false);
+		
+		// no scrolling
+		z.setScroll(false, false);
 	
 */
 
@@ -3433,6 +3443,7 @@ joScroller.extend(joContainer, {
 	bump: 50,
 	top: 0,
 	mousemove: null,
+	mouseup: null,
 	transitionEnd: "webkitTransitionEnd",
 	horizontal: 0,
 	vertical: 1,
@@ -3440,7 +3451,7 @@ joScroller.extend(joContainer, {
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
-		joEvent.on(this.container, "mouseup", this.onUp, this);
+/*		joEvent.on(this.container, "mouseup", this.onUp, this); */
 /*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
@@ -3471,8 +3482,10 @@ joScroller.extend(joContainer, {
 		this.points.unshift(this.start);
 		this.inMotion = true;
 
-		if (!this.mousemove)
-			this.mousemove = joEvent.on(this.container, "mousemove", this.onMove, this);
+		if (!this.mousemove) {
+			this.mousemove = joEvent.on(document.body, "mousemove", this.onMove, this);
+			this.mouseup = joEvent.on(document.body, "mouseup", this.onUp, this);
+		}
 	},
 	
 	reset: function() {
@@ -3540,7 +3553,8 @@ joScroller.extend(joContainer, {
 		if (!this.inMotion)
 			return;
 
-		joEvent.remove(this.container, "mousemove", this.mousemove);
+		joEvent.remove(document.body, "mousemove", this.mousemove);
+		joEvent.remove(document.body, "mouseup", this.mouseup);
 
 		this.mousemove = null;
 		this.inMotion = false;
