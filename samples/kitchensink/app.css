@@ -7,6 +7,23 @@
 	display: none;
 }
 
+.iconz {
+	display: block;
+	height: 80px;
+}
+
+.iconz joflexrow {
+	height: 80px;
+}
+
+.iconz joflexrow > * {
+	height: 80px;
+	width: 120px;
+	background: #ff0;
+	margin-right: 5px;
+	-webkit-box-flex: 0;
+}
+
 jocard {
 	padding-bottom: 35px;
 }

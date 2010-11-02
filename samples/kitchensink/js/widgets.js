@@ -43,6 +43,12 @@ joCache.set("widgets", function() {
 				new joFlexrow(new joInput("Hello again, Jo!"))
 			])
 		]),
+		new joLabel("Horizontal Scroller"),
+		new joScroller([
+			new joFlexrow([
+				"HI", "HELLO", "HOLA", "SUP", "CHEERS", "DUDE", "YO"
+			])
+		]).setHorizontal(true).setVertical(false).setStyle('iconz'),
 		new joDivider(),
 		new joButton("joButton").selectEvent.subscribe(function() {
 			App.scn.alert("You pressed a button!");
