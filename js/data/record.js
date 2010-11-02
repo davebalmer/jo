@@ -120,7 +120,7 @@ joRecord.extend(joDataSource, {
 	},
 	
 	getProperty: function(p) {
-		console.log(p + "=" + this.data[p]);
+//		console.log(p + "=" + this.data[p]);
 		return this.data[p];
 	},
 	
