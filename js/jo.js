@@ -226,28 +226,22 @@ jo = {
 		else if (typeof document.body.style.MozTransition !== "undefined") {
 			// mozilla with transitions
 			s.transitionEnd = "transitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.MozTransform = y ? ("translateY(" + y + "px)") : "";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				node.style.MozTransform = "translate(" + x + "px," + y + "px)";
 			};
 		}
 		else if (typeof document.body.style.msTransform !== "undefined") {
 			// IE9 with transitions
 			s.transitionEnd = "transitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.msTransform = y ? ("translateY(" + y + "px)") : "";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				node.style.msTransform = "translate(" + x + "px," + y + "px)";
 			};
 		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
 			s.transitionEnd = "otransitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.OTransform = y ? ("translateY(" + y + "px)") : "";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				node.style.OTransform = "translate(" + x + "px," + y + "px)";
 			};
 		}
 		else {
@@ -255,10 +249,12 @@ jo = {
 			s.velocity = 0;
 			s.bump = 0;
 			s.transitionEnd = "transitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.top = y ? (y + "px") : "0";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				if (this.vertical)
+					node.style.top = y + "px";
+				
+				if (this.horizontal)
+					node.style.left = x + "px";
 			};
 		}
 
@@ -1368,7 +1364,7 @@ joRecord.extend(joDataSource, {
 	},
 	
 	getProperty: function(p) {
-		console.log(p + "=" + this.data[p]);
+//		console.log(p + "=" + this.data[p]);
 		return this.data[p];
 	},
 	
@@ -2581,7 +2577,7 @@ joControl.extend(joView, {
 		this.dataSource = source;
 		source.changeEvent.subscribe(this.setData, this);
 		this.setData(source.getData() || null);
-//		this.changeEvent.subscribe(source.setData, source);
+		this.changeEvent.subscribe(source.setData, source);
 		
 		return this;
 	},
@@ -3438,6 +3434,8 @@ joScroller.extend(joContainer, {
 	top: 0,
 	mousemove: null,
 	transitionEnd: "webkitTransitionEnd",
+	horizontal: 0,
+	vertical: 1,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
@@ -3494,9 +3492,10 @@ joScroller.extend(joContainer, {
 		var point = this.getMouse(e);
 		
 		var y = point.y - this.points[0].y;
+		var x = point.x - this.points[0].x;
 
-		if (y == 0)
-			return;
+//		if (y == 0)
+//			return;
 		
 		this.points.unshift(point);
 
@@ -3510,7 +3509,7 @@ joScroller.extend(joContainer, {
 				self.points.pop();
 		}, 100);
 		
-		this.scrollBy(y, true);
+		this.scrollBy(x, y, true);
 
 		if (!this.moved && this.points.length > 3)
 			this.moved = true;
@@ -3542,37 +3541,45 @@ joScroller.extend(joContainer, {
 			return;
 
 		joEvent.remove(this.container, "mousemove", this.mousemove);
-		this.mousemove = null;
 
+		this.mousemove = null;
 		this.inMotion = false;
+
+		joEvent.stop(e);
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
-		var top = this.getTop();
-		
-		joEvent.stop(e);
 
-		var dy = 0;
+		var top = this.getTop();
+		var left = this.getLeft();
 		
-		for (var i = 0; i < this.points.length - 1; i++)
+		var dy = 0;
+		var dx = 0;
+		
+		for (var i = 0; i < this.points.length - 1; i++) {
 			dy += (this.points[i].y - this.points[i + 1].y);
+			dx += (this.points[i].x - this.points[i + 1].x);
+		}
 
 		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
+		var maxx = 0 - node.offsetWidth + this.container.offsetWidth - this.bump;
 		
 		// if the velocity is "high" then it was a flick
-		if (Math.abs(dy) > 4 && !this.quickSnap) {
+		if ((Math.abs(dy) > 4 || Math.abs(dx) > 4) && !this.quickSnap) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
+			var flickx = dx * (this.velocity * (node.offsetWidth / this.container.offsetWidth));
 
 			// we want to move quickly if we're going to land past
 			// the top or bottom
-			if (flick + top < max || flick + top > 0) {
+			if ((flick + top < max || flick + top > 0)
+			|| (flickx + left < maxx || flickx + left > 0)) {
 				joDOM.addCSSClass(node, "flickfast");
 			}
 			else {
 				joDOM.addCSSClass(node, "flick");
 			}
 
-			this.scrollBy(flick, false);
+			this.scrollBy(flickx, flick, false);
 		}
 		else {
 			this.snapBack();
@@ -3580,36 +3587,47 @@ joScroller.extend(joContainer, {
 	},
 	
 	getMouse: function(e) {
-		return { x: e.screenX, y: e.screenY };
+		return { 
+			x: (this.horizontal) ? e.screenX : 0,
+			y: (this.vertical) ? e.screenY : 0
+		};
 	},
 	
-	scrollBy: function(y, test) {
+	scrollBy: function(x, y, test) {
 		var node = this.container.firstChild;
-		var top = this.getTop();
 
-		if (isNaN(top))
-			top = 0;
+		var top = this.getTop();
+		var left = this.getLeft();
 
 		var dy = Math.floor(top + y);
+		var dx = Math.floor(left + x);
 		
-		if (node.offsetHeight <= this.container.offsetHeight)
+		if (this.vertical && (node.offsetHeight <= this.container.offsetHeight))
 			return;
 			
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
+		var maxx = 0 - node.offsetWidth + this.container.offsetWidth;
+
 		var ody = dy;
+		var odx = dx;
 		
 		if (dy > this.bump)
 			dy = this.bump;
 		else if (dy < max - this.bump)
 			dy = max - this.bump;
 
-		if (test)
-			this.quickSnap = (ody != dy);
+		if (dx > this.bump)
+			dx = this.bump;
+		else if (dy < maxx - this.bump)
+			dx = maxx - this.bump;
+
+//		if (test)
+//			this.quickSnap = (ody != dy || odx != dx);
 
 		this.eventset = joEvent.on(node, this.transitionEnd, this.snapBack, this);
 
-		if (this.getTop() != dy)
-			this.setTop(dy);
+		if (top != dx || left != dy)
+			this.moveTo(dx, dy);
 	},
 
 	scrollTo: function(y, instant) {
@@ -3652,7 +3670,7 @@ joScroller.extend(joContainer, {
 			joDOM.removeCSSClass(node, 'flickback');
 		}
 
-		this.setTop(y);
+		this.moveTo(0, y);
 	},
 
 	// called after a flick transition to snap the view
@@ -3660,39 +3678,63 @@ joScroller.extend(joContainer, {
 	snapBack: function() {
 		var node = this.container.firstChild;
 		var top = this.getTop();
+		var left = this.getLeft();
 
 		var dy = top;
+		var dx = left;
+
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
+		var maxx = 0 - node.offsetWidth + this.container.offsetWidth;
 
 		if (this.eventset)
-			joEvent.remove(node, 'webkitTransitionEnd', this.eventset);
+			joEvent.remove(node, this.transitionEnd, this.eventset);
 
 		joDOM.removeCSSClass(node, 'flick');
-		joDOM.addCSSClass(node, 'flickback');
 		
 		if (dy > 0)
-			this.setTop(0);
+			dy = 0;
 		else if (dy < max)
-			this.setTop(max);
+			dy = max;
+
+		if (dx > 0)
+			dx = 0;
+		else if (dx < maxx)
+			dx = maxx;
+
+		if (dx != left || dy != top) {
+			joDOM.addCSSClass(node, 'flickback');
+			this.moveTo(dx, dy);
+		}
+	},
+
+	setScroll: function(x, y) {
+		this.horizontal = x ? 1 : 0;
+		this.vertical = y ? 1 : 0;
+		return this;
 	},
 	
-	setTop: function(y) {
+	moveTo: function(x, y) {
 		var node = this.container.firstChild;
-
-		// compatible
-//		node.style.top = y + "px";
 		
-		// faster
-//		if (y == 0)
-//			node.style.webkitTransform = "";
-//		else
-			node.style.webkitTransform = "translate3d(0, " + y + "px, 0)";
+		if (!node)
+			return;
+		
+		this.setPosition(x * this.horizontal, y * this.vertical, node);
 
 		node.jotop = y;
+		node.joleft = x;
+	},
+	
+	setPosition: function(x, y, node) {
+		node.style.webkitTransform = "translate3d(" + x + "px, " + y + "px, 0)";
 	},
 	
 	getTop: function() {
 		return this.container.firstChild.jotop || 0;
+	},
+
+	getLeft: function() {
+		return this.container.firstChild.joleft || 0;
 	},
 	
 	setData: function(data) {
@@ -5613,23 +5655,6 @@ joToggle.extend(joControl, {
 	tagName: "jotoggle",
 	button: null,
 	labels: ["Off", "On"],
-
-	setData: function(data) {
-		if (!this.container)
-			return;
-			
-		if (typeof data === 'object')
-			this.data = false;
-		else
-			this.data = data;
-
-		this.draw();
-		
-		if (this.data !== data)
-			this.changeEvent.fire(data);
-		
-		return this;
-	},
 
 	setLabels: function(labels) {
 		if (labels instanceof Array)
