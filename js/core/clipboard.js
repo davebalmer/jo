@@ -27,6 +27,8 @@
 	  supports selections, `cut()` will automatically remove the selection after
 	  copying its contents. Otherwise, `cut()` will work the same as `copy()`.
 	
+	> Note: this is not working yet, steer clear (or contribute some working code!)
+	
 */
 joClipboard = {
 	data: "",
