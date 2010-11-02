@@ -39,23 +39,6 @@ joToggle.extend(joControl, {
 	button: null,
 	labels: ["Off", "On"],
 
-	setData: function(data) {
-		if (!this.container)
-			return;
-			
-		if (typeof data === 'object')
-			this.data = false;
-		else
-			this.data = data;
-
-		this.draw();
-		
-		if (this.data !== data)
-			this.changeEvent.fire(data);
-		
-		return this;
-	},
-
 	setLabels: function(labels) {
 		if (labels instanceof Array)
 			this.labels = labels;
