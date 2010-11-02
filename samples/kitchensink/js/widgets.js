@@ -48,7 +48,7 @@ joCache.set("widgets", function() {
 			new joFlexrow([
 				"HI", "HELLO", "HOLA", "SUP", "CHEERS", "DUDE", "YO"
 			])
-		]).setHorizontal(true).setVertical(false).setStyle('iconz'),
+		]).setScroll(true, false).setStyle('iconz'),
 		new joDivider(),
 		new joButton("joButton").selectEvent.subscribe(function() {
 			App.scn.alert("You pressed a button!");
