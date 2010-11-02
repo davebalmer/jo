@@ -193,28 +193,22 @@ jo = {
 		else if (typeof document.body.style.MozTransition !== "undefined") {
 			// mozilla with transitions
 			s.transitionEnd = "transitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.MozTransform = y ? ("translateY(" + y + "px)") : "";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				node.style.MozTransform = "translate(" + x + "px," + y + "px)";
 			};
 		}
 		else if (typeof document.body.style.msTransform !== "undefined") {
 			// IE9 with transitions
 			s.transitionEnd = "transitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.msTransform = y ? ("translateY(" + y + "px)") : "";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				node.style.msTransform = "translate(" + x + "px," + y + "px)";
 			};
 		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
 			s.transitionEnd = "otransitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.OTransform = y ? ("translateY(" + y + "px)") : "";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				node.style.OTransform = "translate(" + x + "px," + y + "px)";
 			};
 		}
 		else {
@@ -222,10 +216,12 @@ jo = {
 			s.velocity = 0;
 			s.bump = 0;
 			s.transitionEnd = "transitionend";
-			s.setTop = function(y) {
-					var node = this.container.firstChild;
-					node.style.top = y ? (y + "px") : "0";
-					node.jotop = y;
+			s.setPosition = function(x, y, node) {
+				if (this.vertical)
+					node.style.top = y + "px";
+				
+				if (this.horizontal)
+					node.style.left = x + "px";
 			};
 		}
 
