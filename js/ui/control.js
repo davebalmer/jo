@@ -137,7 +137,7 @@ joControl.extend(joView, {
 		this.dataSource = source;
 		source.changeEvent.subscribe(this.setData, this);
 		this.setData(source.getData() || null);
-//		this.changeEvent.subscribe(source.setData, source);
+		this.changeEvent.subscribe(source.setData, source);
 		
 		return this;
 	},
