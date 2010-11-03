@@ -94,6 +94,14 @@ joControl.extend(joView, {
 		return this;
 	},
 
+	editable: function() {
+		this.container.remoteAttribute('readonly');
+	},
+
+	readOnly: function() {
+		this.container.setAttribute('readonly', '1');
+	},
+
 	onFocus: function(e) {
 		joEvent.stop(e);
 		joFocus.set(this);
