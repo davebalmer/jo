@@ -96,6 +96,7 @@ joNavbar.extend(joContainer, {
 	setTitle: function(title) {
 		this.titlebar.setData(title);
 		this.firstTitle = title;
+		return this;
 	}
 });
 
