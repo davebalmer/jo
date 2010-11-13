@@ -3390,7 +3390,7 @@ joStack.extend(joContainer, {
 		var x = new joScroller();
 		x.setData(myCard);
 		
-		// define things inline, not always a good idea
+		// or define things inline, not always a good idea
 		var y = new joScroller(new joList(mydata));
 		
 		// you can dump a big hunk of HTML in there, too

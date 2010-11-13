@@ -54,10 +54,11 @@ Data
 
 * joDatabase
 * joDataSource
-	* joFileDataSource
+	* joFileSource
 	* joProperty
 	* joRecord
 	* joSQLDataSource
+	* joYQL
 * joFile
 * joScript
 
