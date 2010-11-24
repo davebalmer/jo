@@ -1885,8 +1885,6 @@ joPreference = joRecord;
 	-------
 	
 	- joDataSource
-		
-	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20rss%20where%20pubDate%20%3E%20%2208%20Sep%202010%22%20and%20(url%3D'http%3A%2F%2Fdavebalmer.wordpress.com%2Ffeed'%20or%20url%3D'http%3A%2F%2Ffeeds.feedburner.com%2Fextblog%3Fformat%3Dxml'%20or%20url%3D'http%3A%2F%2Fdeveloper.palm.com%2Fblog%2Ffeed%2F')%20limit%2020%20%7C%20sort(field%3D%22pubDate%22)&format=json&callback=joResponse[17].setData
 
 */
 
@@ -2534,6 +2532,16 @@ joControl.extend(joView, {
 		this.enabled = false;
 		
 		return this;
+	},
+
+	setReadOnly: function(value) {
+		if ((value == undefined) || (value))
+		{
+			this.container.setAttribute('readonly', '1');
+		}
+		else {
+			this.container.removeAttribute('readonly');
+		}
 	},
 
 	onFocus: function(e) {
@@ -4501,7 +4509,7 @@ joMenu.extend(joList, {
 		if (typeof item === "object") {
 			o.innerHTML = item.title;
 			if (item.icon) {
-				o.style.backgroundImage = "url(" + item.icon + ");";
+				o.style.backgroundImage = "url(" + item.icon + ")";
 				joDOM.addCSSClass(o, "icon");
 			}
 		}
@@ -5473,6 +5481,7 @@ joNavbar.extend(joContainer, {
 	setTitle: function(title) {
 		this.titlebar.setData(title);
 		this.firstTitle = title;
+		return this;
 	}
 });
 
