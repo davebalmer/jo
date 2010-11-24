@@ -84,7 +84,7 @@ joMenu.extend(joList, {
 		if (typeof item === "object") {
 			o.innerHTML = item.title;
 			if (item.icon) {
-				o.style.backgroundImage = "url(" + item.icon + ");";
+				o.style.backgroundImage = "url(" + item.icon + ")";
 				joDOM.addCSSClass(o, "icon");
 			}
 		}
