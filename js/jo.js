@@ -974,6 +974,13 @@ joYield = joDefer;/**
 		// the first call to get() will instantiate
 		// the view, subsequent calls will return the
 		// view that was created the first time
+		
+		// you can pass parameters into your view factory
+		var x = joCache.get("home", "My Title");
+		
+		// note that if you want to use joCache to cache
+		// views which differ based on parameters passed in,
+		// you probably want your own caching mechanism instead.
 
 */
 
@@ -989,7 +996,7 @@ joCache = {
 		var cache = this.cache[key] || null;
 		if (cache) {
 			if (!cache.view)
-				cache.view = cache.call(cache.context, cache.call);
+				cache.view = cache.call.apply(cache.context, arguments);
 				
 			return cache.view;
 		}

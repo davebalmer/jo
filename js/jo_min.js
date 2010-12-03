@@ -72,7 +72,7 @@ o.data=data;this.subscriptions.unshift(o);return this.subject;},release:function
 var delay=100;if(!context)
 var context=this;var timer=window.setTimeout(function(){call.call(context,data);},delay);return timer;};joYield=joDefer;joCache={cache:{},set:function(key,call,context){if(call)
 this.cache[key]={"call":call,"context":context||this};},get:function(key){var cache=this.cache[key]||null;if(cache){if(!cache.view)
-cache.view=cache.call(cache.context,cache.call);return cache.view;}
+cache.view=cache.call.apply(cache.context,arguments);return cache.view;}
 else{return new joView("View not found: "+key);}}};joChain=function(){this.queue=[];this.active=false;this.addEvent=new joSubject("add",this);this.startEvent=new joSubject("start",this);this.stopEvent=new joSubject("stop",this);this.nextEvent=new joSubject("next",this);this.stop();this.delay=100;};joChain.prototype={add:function(call,context,data){if(!context)
 var context=this;if(!data)
 var data="";this.queue.push({"call":call,"context":context,"data":data});if(this.active&&!this.timer)
