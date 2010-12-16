@@ -2542,13 +2542,12 @@ joControl.extend(joView, {
 	},
 
 	setReadOnly: function(value) {
-		if ((value == undefined) || (value))
-		{
+		if (typeof value === 'undefined' || value)
 			this.container.setAttribute('readonly', '1');
-		}
-		else {
+		else 
 			this.container.removeAttribute('readonly');
-		}
+		
+		return this;
 	},
 
 	onFocus: function(e) {
