@@ -104,10 +104,9 @@
 */
 joRecord = function(data) {
 	joDataSource.call(this, data);
+	this.delegate = {};
 };
 joRecord.extend(joDataSource, {
-	delegate: {},
-	
 	link: function(p) {
 		return this.getDelegate(p);
 	},
@@ -120,7 +119,6 @@ joRecord.extend(joDataSource, {
 	},
 	
 	getProperty: function(p) {
-//		console.log(p + "=" + this.data[p]);
 		return this.data[p];
 	},
 	
