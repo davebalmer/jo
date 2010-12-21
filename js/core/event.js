@@ -64,6 +64,8 @@ joEvent = {
 				e.pageY = touches.pageY;
 				e.screenX = touches.screenX;
 				e.screenY = touches.screenY;
+				e.clientX = touches.clientX;
+				e.clientY = touches.clientY;
 			}
 			
 			if (context)
