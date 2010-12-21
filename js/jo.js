@@ -627,6 +627,8 @@ joEvent = {
 				e.pageY = touches.pageY;
 				e.screenX = touches.screenX;
 				e.screenY = touches.screenY;
+				e.clientX = touches.clientX;
+				e.clientY = touches.clientY;
 			}
 			
 			if (context)
@@ -1357,10 +1359,9 @@ joDataSource.prototype = {
 */
 joRecord = function(data) {
 	joDataSource.call(this, data);
+	this.delegate = {};
 };
 joRecord.extend(joDataSource, {
-	delegate: {},
-	
 	link: function(p) {
 		return this.getDelegate(p);
 	},
@@ -1373,7 +1374,6 @@ joRecord.extend(joDataSource, {
 	},
 	
 	getProperty: function(p) {
-//		console.log(p + "=" + this.data[p]);
 		return this.data[p];
 	},
 	
