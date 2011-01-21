@@ -50,6 +50,8 @@
 joStack = function(data) {
 	this.visible = false;
 
+	this.data = [];
+
 	joContainer.apply(this, arguments);
 
 	// yes, nice to have one control, but we need an array
@@ -70,7 +72,9 @@ joStack = function(data) {
 	this.homeEvent = new joSubject(this);
 	this.showEvent = new joSubject(this);
 	this.hideEvent = new joSubject(this);
-	
+	this.backEvent = new joSubject(this);
+	this.forwardEvent = new joSubject(this);
+
 	this.index = 0;
 	this.lastIndex = 0;
 	this.lastNode = null;
@@ -79,7 +83,6 @@ joStack.extend(joContainer, {
 	tagName: "jostack",
 	type: "fixed",
 	eventset: false,
-	data: [],
 	
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -93,6 +96,7 @@ joStack.extend(joContainer, {
 		if (this.index < this.data.length - 1) {
 			this.index++;
 			this.draw();
+			this.forwardEvent.fire();
 		}
 	},
 	
@@ -100,6 +104,7 @@ joStack.extend(joContainer, {
 		if (this.index > 0) {
 			this.index--;
 			this.draw();
+			this.backEvent.fire();
 		}
 	},
 	

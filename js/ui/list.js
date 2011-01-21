@@ -74,11 +74,10 @@ joList = function() {
 	this.setIndex = this.setValue;
 	this.getIndex = this.getValue;
 	
-	joControl.apply(this, arguments);	
+	joControl.apply(this, arguments);
 };
 joList.extend(joControl, {
 	tagName: "jolist",
-	data: null,
 	defaultMessage: "",
 	lastNode: null,
 	value: null,

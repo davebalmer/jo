@@ -38,6 +38,7 @@
 joControl = function(data, value) {
 	this.selectEvent = new joSubject(this);
 	this.enabled = true;
+	this.value = null;
 
 	if (typeof value !== "undefined" && value != null) {
 		if (value instanceof joDataSource)
@@ -57,7 +58,6 @@ joControl = function(data, value) {
 };
 joControl.extend(joView, {
 	tagName: "jocontrol",
-	value: null,
 	
 	setEvents: function() {
 		// not sure what we want to do here, want to use
