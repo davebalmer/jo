@@ -29,7 +29,9 @@ jooption,
 jooptionitem,
 jonavbar,
 jocontainer,
-jotoggle {
+jotoggle,
+joslider,
+josliderthumb {
   display: block;
   margin: 0;
   padding: 0;
@@ -608,6 +610,34 @@ jolabel.left {
 }
 jotoolbar {
   padding: 10px;
+}
+josliderthumb {
+  position: absolute;
+  height: 18px;
+  width: 40px;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #7e82a1;
+  font-weight: normal;
+  cursor: pointer;
+  outline: none;
+  outline-color: transparent;
+  padding: 10px 0;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  background-image: url(shiny.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+joslider {
+  margin: 10px;
+  position: relative;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
 }
 joflexrow {
   display: block;
