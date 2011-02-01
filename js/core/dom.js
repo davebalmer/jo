@@ -214,7 +214,31 @@ joDOM = {
 			document.body.appendChild(css);
 		
 		return css;
-	}		
+	},
+	
+	pageOffsetLeft: function(node) {
+		var l = 0;
+		
+		while (typeof node !== 'undefined' && node && node.parentNode !== window) {
+			if (node.offsetLeft)
+				l += node.offsetLeft;
+
+			node = node.parentNode;
+		}
+
+		return l;
+	},
+	
+	pageOffsetTop: function(node) {
+		var t = 0;
+		
+		while (typeof node !== 'undefined' && node && node.parentNode !== window) {
+			t += node.offsetTop;
+			node = node.parentNode;
+		}
+
+		return t;
+	}
 };
 
 joCSSRule = function(data) {
