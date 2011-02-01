@@ -57,22 +57,23 @@ joScroller = function(data) {
 	this.points = [];
 	this.eventset = false;
 
+	this.horizontal = 0;
+	this.vertical = 1;
+	this.inMotion = false;
+	this.moved = false;
+	this.mousemove = null;
+	this.mouseup = null;
+
 	// Call Super
 	joContainer.apply(this, arguments);
 };
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
-	moved: false,
-	inMotion: false,
 	pacer: 0,
 	velocity: 1.6,
 	bump: 50,
 	top: 0,
-	mousemove: null,
-	mouseup: null,
 	transitionEnd: "webkitTransitionEnd",
-	horizontal: 0,
-	vertical: 1,
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
