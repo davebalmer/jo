@@ -38,6 +38,7 @@ joGesture = {
 		this.closeEvent = new joSubject(this);
 		this.activateEvent = new joSubject(this);
 		this.deactivateEvent = new joSubject(this);
+		this.resizeEvent = new joSubject(this);
 		
 		this.setEvents();
 	},
@@ -50,6 +51,12 @@ joGesture = {
 		joEvent.on(document.body, "unload", this.closeEvent, this);
 		joEvent.on(window, "activate", this.activateEvent, this);
 		joEvent.on(window, "deactivate", this.deactivateEvent, this);
+		
+		joEvent.on(window, "resize", this.resize, this);
+	},
+
+	resize: function() {
+		this.resizeEvent.fire(window);
 	},
 
 	onKeyUp: function(e) {
