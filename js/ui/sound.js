@@ -51,10 +51,12 @@ joSound = function(filename, repeat) {
 };
 joSound.prototype = {
 	play: function() {
-		if (!this.audio)
+		if (!this.audio || this.audio.volume == 0)
 			return;
 
 		this.audio.play();
+		
+		return this;
 	},
 
 	onEnded: function(e) {
@@ -69,6 +71,8 @@ joSound.prototype = {
 	setRepeatCount: function(repeat) {
 		this.repeatCount = repeat;
 		this.repeat = 0;
+
+		return this;
 	},
 	
 	pause: function() {
@@ -76,6 +80,8 @@ joSound.prototype = {
 			return;
 
 		this.audio.pause();
+
+		return this;
 	},
 
 	rewind: function() {
@@ -90,6 +96,8 @@ joSound.prototype = {
 		}
 		
 		this.repeat = 0;
+
+		return this;
 	},
 
 	stop: function() {
@@ -97,6 +105,8 @@ joSound.prototype = {
 		this.rewind();
 		
 		this.repeat = 0;
+
+		return this;
 	},
 	
 	setVolume: function(vol) {
@@ -104,5 +114,7 @@ joSound.prototype = {
 			return;
 
 		this.audio.volume = vol;
+
+		return this;
 	}
 };
