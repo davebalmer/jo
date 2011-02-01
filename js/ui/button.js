@@ -30,6 +30,7 @@
 joButton = function(data, classname) {
 	// call super
 	joControl.apply(this, arguments);
+	this.enabled = true;
 	
 	if (classname)
 		this.container.className = classname;

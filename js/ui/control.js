@@ -105,18 +105,26 @@ joControl.extend(joView, {
 
 	onFocus: function(e) {
 		joEvent.stop(e);
-		joFocus.set(this);
+		
+		if (this.enabled)
+			joFocus.set(this);
 	},
 	
 	onBlur: function(e) {
 		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
 		joEvent.stop(e);
-		this.blur();
 
-		this.changeEvent.fire(this.data);
+		if (this.enabled) {
+			this.blur();
+
+			this.changeEvent.fire(this.data);
+		}
 	},
 	
 	focus: function(e) {
+		if (!this.enabled)
+			return;
+		
 		joDOM.addCSSClass(this.container, 'focus');
 
 		if (!e)
