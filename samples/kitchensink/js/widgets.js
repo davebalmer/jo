@@ -57,8 +57,10 @@ joCache.set("widgets", function() {
 		}),
 		new joButton("Disabled").disable(),
 		new joGroup([
-			new joLabel("joSlider 0 - 9"),
-			new joSlider().setRange(0, 9, 1).changeEvent.subscribe(function(value) {
+			new joLabel("joSlider"),
+			slider = new joSlider(),
+			new joLabel("joSlider range 0 - 9, snap 1"),
+			slider = new joSlider().setRange(0, 9, 1).changeEvent.subscribe(function(value) {
 				console.log("value: " + value);
 			}, this)
 		])
@@ -66,3 +68,5 @@ joCache.set("widgets", function() {
 	
 	return card;
 });
+
+var slider;
