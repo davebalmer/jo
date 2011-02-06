@@ -39,7 +39,7 @@ joEvent = {
 	},
 
 	capture: function(element, event, call, context, data) {
-		this.on(element, event, call, context, data, true);
+		return this.on(element, event, call, context, data, true);
 	},
 
 	on: function(element, event, call, context, data, capture) {
