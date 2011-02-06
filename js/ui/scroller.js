@@ -63,23 +63,19 @@ joScroller = function(data) {
 	this.moved = false;
 	this.mousemove = null;
 	this.mouseup = null;
+	this.bump = 0;
 
 	// Call Super
 	joContainer.apply(this, arguments);
 };
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
-	pacer: 0,
 	velocity: 1.6,
-	bump: 50,
-	top: 0,
 	transitionEnd: "webkitTransitionEnd",
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
-/*		joEvent.on(this.container, "mouseup", this.onUp, this); */
-/*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
 	onFlick: function(e) {
@@ -144,7 +140,7 @@ joScroller.extend(joContainer, {
 		// cleanup points if the user drags slowly to avoid unwanted flicks
 		var self = this;
 		this.timer = window.setTimeout(function() {
-			if (self.points.length > 1)
+			if (self.inMotion && self.points.length > 1)
 				self.points.pop();
 		}, 100);
 		
@@ -154,31 +150,10 @@ joScroller.extend(joContainer, {
 			this.moved = true;
 	},
 
-/*
-	TODO: This needs some work. Since it's mostly for the browser
-	version, not a high priority.
-	
-	onOut: function(e) {
-		// placeholder
-		if (!this.inMotion)
-			return;
-		
-		if (e.clientX >= 0 && e.clientX <= this.container.offsetWidth
-		&& e.clientY >= 0 && e.clientX <= this.container.offsetHeight) {
-			return;
-		}
-		else {
-			joEvent.stop(e);
-			this.onUp(e);
-			this.reset();
-		}
-	},
-*/
-
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
-			
+					
 		joEvent.remove(document.body, "mousemove", this.mousemove);
 		joEvent.remove(document.body, "mouseup", this.mouseup);
 
@@ -202,11 +177,11 @@ joScroller.extend(joContainer, {
 			dx += (this.points[i].x - this.points[i + 1].x);
 		}
 
-		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
-		var maxx = 0 - node.offsetWidth + this.container.offsetWidth - this.bump;
+		var max = 0 - node.offsetHeight + this.container.offsetHeight;
+		var maxx = 0 - node.offsetWidth + this.container.offsetWidth;
 		
 		// if the velocity is "high" then it was a flick
-		if ((Math.abs(dy) > 4 || Math.abs(dx) > 4)) {
+		if ((Math.abs(dy) * this.vertical > 4 || Math.abs(dx) * this.horizontal > 4)) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 			var flickx = dx * (this.velocity * (node.offsetWidth / this.container.offsetWidth));
 
@@ -255,15 +230,17 @@ joScroller.extend(joContainer, {
 		var ody = dy;
 		var odx = dx;
 		
-		if (dy > this.bump)
-			dy = this.bump;
-		else if (dy < max - this.bump)
-			dy = max - this.bump;
+		if (this.bump) {
+			if (dy > this.bump)
+				dy = this.bump;
+			else if (dy < max - this.bump)
+				dy = max - this.bump;
 
-		if (dx > this.bump)
-			dx = this.bump;
-		else if (dy < maxx - this.bump)
-			dx = maxx - this.bump;
+			if (dx > this.bump)
+				dx = this.bump;
+			else if (dy < maxx - this.bump)
+				dx = maxx - this.bump;
+		}
 
 		if (!this.eventset)
 			this.eventset = joEvent.capture(node, this.transitionEnd, this.snapBack, this);
