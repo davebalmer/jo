@@ -24,7 +24,7 @@ jobutton {
 	display: block;
 	text-align: center;
 	.shiny;
-	.border-radius(10px);
+	.border-radius(5px);
 	.focus {
 		background-color: @select-color;
 		.imagebg(url(shade-top.png), 50%);
@@ -97,7 +97,7 @@ joselectlist, joexpandocontent {
 	display: block;
 	border: 1px solid rgba(0, 0, 0, .6);
 	border-top: none;
-	.round-bottom(10px);
+	.round-bottom(5px);
 	background-color: rgba(255, 255, 255, .6);
 }
 
@@ -117,12 +117,12 @@ joexpandocontent {
 
 joselectlist > *:last-child {
 	border-bottom: none;
-	.round-bottom(10px);
+	.round-bottom(5px);
 }
 
 joselectlist > *:last-child.select {
 	border-bottom: none;
-	.round-bottom(10px);
+	.round-bottom(5px);
 }
 
 joselectlist > *.first-child {
@@ -269,7 +269,7 @@ joexpandotitle {
 	position: relative;
 	
 	.shiny;
-	.border-radius(10px);
+	.border-radius(5px);
 	padding: 10px;
 	cursor: pointer;
 	text-align: left;
@@ -278,7 +278,7 @@ joexpandotitle {
 joexpando.open > *:first-child {
 	background-color: @select-color;
 	.box-inset(3px);
-	.round-top(10px);
+	.round-top(5px);
 }
 
 joexpando > *:last-child {
@@ -318,7 +318,7 @@ jotoggle {
 	cursor: pointer;
 	display: block;
 	margin: 10px 10px 0 10px;
-	.border-radius(10px);
+	.border-radius(5px);
 	border: 1px solid rgba(0, 0, 0, .6);
 	background-color: inherit;
 	.imagebg(url(shade-top.png), 50%);
@@ -334,7 +334,7 @@ jotoggle {
 		border-color: #000;
 		margin: 0;
 		text-align: center;
-		.border-radius(9px);
+		.border-radius(4px);
 		padding: 10px 0;
 		width: 60px;
 		-webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, .2);
@@ -398,12 +398,14 @@ josliderthumb {
 	height: 18px;
 	width: 40px;
 	.shiny;
-	.border-radius(5px);
+	.border-radius(4px);
 }
 
 joslider {
 	margin: 10px;
 	position: relative;
 	height: 40px;
-	background: rgba(0, 0, 0, .5);
+	.border-radius(5px);
+	.imagebg(url(shade-top.png), 50%);
+	.box-inset(5px);
 }

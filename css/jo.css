@@ -173,9 +173,9 @@ jobutton {
   background-size: 100% 50%;
   -webkit-background-size: 100% 50%;
   -moz-background-size: 100% 50%;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 jobutton .focus {
   background-color: #e98021;
@@ -297,10 +297,10 @@ joselectlist, joexpandocontent {
   border: 1px solid rgba(0, 0, 0, 0.6);
   border-top: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  -moz-border-radius: 0 0 10px 10px;
-  border-radius: 0 0 10px 10px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
   background-color: rgba(255, 255, 255, 0.6);
 }
 joexpando {
@@ -317,18 +317,18 @@ joexpandocontent {
 joselectlist > *:last-child {
   border-bottom: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  -moz-border-radius: 0 0 10px 10px;
-  border-radius: 0 0 10px 10px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
 }
 joselectlist > *:last-child.select {
   border-bottom: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  -moz-border-radius: 0 0 10px 10px;
-  border-radius: 0 0 10px 10px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
 }
 joselectlist > *.first-child {
   border-top: none;
@@ -472,9 +472,9 @@ joexpandotitle {
   background-size: 100% 50%;
   -webkit-background-size: 100% 50%;
   -moz-background-size: 100% 50%;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
   padding: 10px;
   cursor: pointer;
   text-align: left;
@@ -485,10 +485,10 @@ joexpando.open > *:first-child {
   -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
   -o-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
   -webkit-border-radius: 0;
-  -webkit-border-top-right-radius: 10px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 10px 10px 0 0;
-  border-radius: 10px 10px 0 0;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
 }
 jolabel, label {
   margin-bottom: 5px;
@@ -520,9 +520,9 @@ jotoggle {
   cursor: pointer;
   display: block;
   margin: 10px 10px 0 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.6);
   background-color: inherit;
   background-image: url(shade-top.png);
@@ -557,9 +557,9 @@ jotoggle > * {
   border-color: #000;
   margin: 0;
   text-align: center;
-  -webkit-border-radius: 9px;
-  -moz-border-radius: 9px;
-  border-radius: 9px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   padding: 10px 0;
   width: 60px;
   -webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
@@ -629,15 +629,26 @@ josliderthumb {
   background-size: 100% 50%;
   -webkit-background-size: 100% 50%;
   -moz-background-size: 100% 50%;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 joslider {
   margin: 10px;
   position: relative;
   height: 40px;
-  background: rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-image: url(shade-top.png);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  -moz-background-size: 100% 50%;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
+  -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
+  -o-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
 }
 joflexrow {
   display: block;
