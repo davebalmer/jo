@@ -80,15 +80,17 @@ joSlider.extend(joControl, {
 		else
 			this.snap = 0;
 			
+		this.setValue(this.value);
+			
 		return this;
 	},
 	
-	setValue: function(value, update) {
+	setValue: function(value, silent) {
 		var v = this.adjustValue(value);
 		
 		if (v != this.value) {
 			joControl.prototype.setValue.call(this, v);
-			if (update)
+			if (!silent)
 				this.draw();
 		}
 			
@@ -183,7 +185,7 @@ joSlider.extend(joControl, {
 		if (!this.snap)
 			this.moveTo(x);
 
-		this.setValue((x / w) * this.range + this.min, this.snap);
+		this.setValue((x / w) * this.range + this.min, !this.snap);
 	},
 	
 	moveTo: function(x) {
@@ -256,7 +258,7 @@ joSlider.extend(joControl, {
 
 //		this.moveTo(x);
 
-		this.setValue((x / w) * this.range + this.min, true);
+		this.setValue((x / w) * this.range + this.min);
 	},
 	
 	getMouse: function(e) {
