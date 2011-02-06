@@ -54,7 +54,7 @@ joSlider = function(value) {
 	this.moved = false;
 	this.jump = true;
 
-	joControl.apply(this, arguments);
+	joControl.call(this, null, value);
 };
 joSlider.extend(joControl, {
 	tagName: "joslider",
@@ -77,12 +77,22 @@ joSlider.extend(joControl, {
 
 		if (typeof snap !== 'undefined')
 			this.snap = (snap >= 0 && snap <= this.range) ? snap : 0;
+		else
+			this.snap = 0;
 			
 		return this;
 	},
 	
-	setValue: function(value) {
-		return joControl.prototype.setValue.call(this, this.adjustValue(value));
+	setValue: function(value, update) {
+		var v = this.adjustValue(value);
+		
+		if (v != this.value) {
+			joControl.prototype.setValue.call(this, v);
+			if (update)
+				this.draw();
+		}
+			
+		return this;
 	},
 	
 	adjustValue: function(v) {
@@ -170,9 +180,10 @@ joSlider.extend(joControl, {
 		else if (x > w)
 			x = w;
 
-		this.moveTo(x);
+		if (!this.snap)
+			this.moveTo(x);
 
-		this.setValue((x / w) * this.range + this.min);
+		this.setValue((x / w) * this.range + this.min, this.snap);
 	},
 	
 	moveTo: function(x) {
@@ -205,17 +216,13 @@ joSlider.extend(joControl, {
 	},
 	
 	setEvents: function() {
-//		joEvent.on(this.container, "click", this.onClick, this);
+		joEvent.on(this.container, "click", this.onClick, this);
 		joEvent.on(this.thumb, "mousedown", this.onDown, this);
 		
 		// we have to adjust if the window changes size
-		joGesture.resizeEvent.subscribe(this.resize, this);
+		joGesture.resizeEvent.subscribe(this.draw, this);
 		
 		console.log('setevents');
-	},
-	
-	resize: function() {
-		this.initValue(this.value);
 	},
 
 	onClick: function(e) {
@@ -236,16 +243,19 @@ joSlider.extend(joControl, {
 //		console.log(x);
 
 		var t = this.thumb.offsetWidth;
+		
+		x = x - t;
+		
 		var w = this.container.offsetWidth - t;
 
-		if (x < 0)
+		if ((x < t && this.snap) || x < 0)
 			x = 0;
 		else if (x > w)
 			x = w;
 
-		this.moveTo(x);
+//		this.moveTo(x);
 
-		this.setValue((x / w) * this.range + this.min);
+		this.setValue((x / w) * this.range + this.min, true);
 	},
 	
 	getMouse: function(e) {
@@ -253,6 +263,13 @@ joSlider.extend(joControl, {
 			x: (this.horizontal) ? e.screenX : 0,
 			y: (this.vertical) ? e.screenY : 0
 		};
+	},
+	
+	draw: function() {
+		if (!this.container)
+			this.setContainer();
+
+		this.initValue(this.value);
 	}
 });
 
