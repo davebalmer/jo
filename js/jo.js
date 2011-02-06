@@ -156,7 +156,7 @@ if (typeof console === 'undefined' || typeof console.log !== 'function')
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.3.0",
+	version: "0.4.0",
 	
 	useragent: [
 		'ipad',
@@ -626,7 +626,7 @@ joEvent = {
 	},
 
 	capture: function(element, event, call, context, data) {
-		this.on(element, event, call, context, data, true);
+		return this.on(element, event, call, context, data, true);
 	},
 
 	on: function(element, event, call, context, data, capture) {
@@ -3488,23 +3488,19 @@ joScroller = function(data) {
 	this.moved = false;
 	this.mousemove = null;
 	this.mouseup = null;
+	this.bump = 0;
 
 	// Call Super
 	joContainer.apply(this, arguments);
 };
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
-	pacer: 0,
 	velocity: 1.6,
-	bump: 50,
-	top: 0,
 	transitionEnd: "webkitTransitionEnd",
 	
 	setEvents: function() {
 		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
-/*		joEvent.on(this.container, "mouseup", this.onUp, this); */
-/*		joEvent.on(this.container, "mouseout", this.onOut, this); */
 	},
 	
 	onFlick: function(e) {
@@ -3535,14 +3531,13 @@ joScroller.extend(joContainer, {
 		this.inMotion = true;
 
 		if (!this.mousemove) {
-			this.mousemove = joEvent.on(document.body, "mousemove", this.onMove, this);
-			this.mouseup = joEvent.on(document.body, "mouseup", this.onUp, this);
+			this.mousemove = joEvent.capture(document.body, "mousemove", this.onMove, this);
+			this.mouseup = joEvent.capture(document.body, "mouseup", this.onUp, this);
 		}
 	},
 	
 	reset: function() {
 		this.points = [];
-		this.quickSnap = false;
 		this.moved = false;
 		this.inMotion = false;
 	},
@@ -3570,7 +3565,7 @@ joScroller.extend(joContainer, {
 		// cleanup points if the user drags slowly to avoid unwanted flicks
 		var self = this;
 		this.timer = window.setTimeout(function() {
-			if (self.points.length > 1)
+			if (self.inMotion && self.points.length > 1)
 				self.points.pop();
 		}, 100);
 		
@@ -3580,31 +3575,10 @@ joScroller.extend(joContainer, {
 			this.moved = true;
 	},
 
-/*
-	TODO: This needs some work. Since it's mostly for the browser
-	version, not a high priority.
-	
-	onOut: function(e) {
-		// placeholder
-		if (!this.inMotion)
-			return;
-		
-		if (e.clientX >= 0 && e.clientX <= this.container.offsetWidth
-		&& e.clientY >= 0 && e.clientX <= this.container.offsetHeight) {
-			return;
-		}
-		else {
-			joEvent.stop(e);
-			this.onUp(e);
-			this.reset();
-		}
-	},
-*/
-
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
-
+					
 		joEvent.remove(document.body, "mousemove", this.mousemove);
 		joEvent.remove(document.body, "mouseup", this.mouseup);
 
@@ -3612,6 +3586,7 @@ joScroller.extend(joContainer, {
 		this.inMotion = false;
 
 		joEvent.stop(e);
+		joEvent.preventDefault(e);
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
@@ -3627,11 +3602,11 @@ joScroller.extend(joContainer, {
 			dx += (this.points[i].x - this.points[i + 1].x);
 		}
 
-		var max = 0 - node.offsetHeight + this.container.offsetHeight - this.bump;
-		var maxx = 0 - node.offsetWidth + this.container.offsetWidth - this.bump;
+		var max = 0 - node.offsetHeight + this.container.offsetHeight;
+		var maxx = 0 - node.offsetWidth + this.container.offsetWidth;
 		
 		// if the velocity is "high" then it was a flick
-		if ((Math.abs(dy) > 4 || Math.abs(dx) > 4) && !this.quickSnap) {
+		if ((Math.abs(dy) * this.vertical > 4 || Math.abs(dx) * this.horizontal > 4)) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 			var flickx = dx * (this.velocity * (node.offsetWidth / this.container.offsetWidth));
 
@@ -3646,10 +3621,13 @@ joScroller.extend(joContainer, {
 			}
 
 			this.scrollBy(flickx, flick, false);
+
+			joDefer(this.snapBack, this, 3000);
 		}
 		else {
-			this.snapBack();
+			joDefer(this.snapBack, this, 10);
 		}
+
 	},
 	
 	getMouse: function(e) {
@@ -3677,20 +3655,20 @@ joScroller.extend(joContainer, {
 		var ody = dy;
 		var odx = dx;
 		
-		if (dy > this.bump)
-			dy = this.bump;
-		else if (dy < max - this.bump)
-			dy = max - this.bump;
+		if (this.bump) {
+			if (dy > this.bump)
+				dy = this.bump;
+			else if (dy < max - this.bump)
+				dy = max - this.bump;
 
-		if (dx > this.bump)
-			dx = this.bump;
-		else if (dy < maxx - this.bump)
-			dx = maxx - this.bump;
+			if (dx > this.bump)
+				dx = this.bump;
+			else if (dy < maxx - this.bump)
+				dx = maxx - this.bump;
+		}
 
-//		if (test)
-//			this.quickSnap = (ody != dy || odx != dx);
-
-		this.eventset = joEvent.on(node, this.transitionEnd, this.snapBack, this);
+		if (!this.eventset)
+			this.eventset = joEvent.capture(node, this.transitionEnd, this.snapBack, this);
 
 		if (top != dx || left != dy)
 			this.moveTo(dx, dy);
@@ -3754,6 +3732,8 @@ joScroller.extend(joContainer, {
 
 		if (this.eventset)
 			joEvent.remove(node, this.transitionEnd, this.eventset);
+		
+		this.eventset = null;
 
 		joDOM.removeCSSClass(node, 'flick');
 		
@@ -5864,15 +5844,17 @@ joSlider.extend(joControl, {
 		else
 			this.snap = 0;
 			
+		this.setValue(this.value);
+			
 		return this;
 	},
 	
-	setValue: function(value, update) {
+	setValue: function(value, silent) {
 		var v = this.adjustValue(value);
 		
 		if (v != this.value) {
 			joControl.prototype.setValue.call(this, v);
-			if (update)
+			if (!silent)
 				this.draw();
 		}
 			
@@ -5919,7 +5901,7 @@ joSlider.extend(joControl, {
 
 		if (!this.mousemove) {
 			this.mousemove = joEvent.on(document.body, "mousemove", this.onMove, this);
-			this.mouseup = joEvent.on(document.body, "mouseup", this.onUp, this);
+			this.mouseup = joEvent.capture(document.body, "mouseup", this.onUp, this);
 		}
 	},
 
@@ -5967,7 +5949,7 @@ joSlider.extend(joControl, {
 		if (!this.snap)
 			this.moveTo(x);
 
-		this.setValue((x / w) * this.range + this.min, this.snap);
+		this.setValue((x / w) * this.range + this.min, !this.snap);
 	},
 	
 	moveTo: function(x) {
@@ -5991,12 +5973,14 @@ joSlider.extend(joControl, {
 
 		joEvent.remove(document.body, "mousemove", this.mousemove);
 		joEvent.remove(document.body, "mouseup", this.mouseup);
-
 		this.mousemove = null;
-		this.moved = false;
-		this.inMotion = false;
 
 		joEvent.stop(e);
+		joEvent.preventDefault(e);
+		
+		joDefer(function() {
+			this.reset();
+		}, this);
 	},
 	
 	setEvents: function() {
@@ -6013,7 +5997,6 @@ joSlider.extend(joControl, {
 		if (this.inMotion || this.moved)
 			return;
 		
-		this.reset();
 		joEvent.stop(e);
 		joEvent.preventDefault(e);
 		
@@ -6039,7 +6022,7 @@ joSlider.extend(joControl, {
 
 //		this.moveTo(x);
 
-		this.setValue((x / w) * this.range + this.min, true);
+		this.setValue((x / w) * this.range + this.min);
 	},
 	
 	getMouse: function(e) {
