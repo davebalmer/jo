@@ -28,8 +28,8 @@ joCache.set("themes", function() {
 	// yeah, I know -- inline CSS is bad, but this illustrates the point
 	var themecss = [
 		" ",
-		"jobutton, jotitle, joexpandotitle, joselecttitle, jooptionitem, jotoggle > * { background-color: #9cf; } jomenuitem, jolistitem { background-color: #fff } jocard { background-color: #369;} jogroup {background-color: rgba(255, 255, 255, .4);}",
-		"jobutton, jotitle, joexpandotitle, joselecttitle, jooptionitem, jotoggle > * { background-color: #cc3; color: #000; } jomenuitem, jolistitem { background-color: #fff;} jogroup {background-color: #ccc; } jocard { background-color: #888; }"
+		"jobutton, jotitle, joexpandotitle, joselecttitle, josliderthumb, jooptionitem, jotoggle > * { background-color: #9cf; } jomenuitem, jolistitem { background-color: #fff } jocard { background-color: #369;} jogroup {background-color: rgba(255, 255, 255, .4);}",
+		"jobutton, jotitle, joexpandotitle, joselecttitle, josliderthumb, jooptionitem, jotoggle > * { background-color: #cc3; color: #000; } jomenuitem, jolistitem { background-color: #fff;} jogroup {background-color: #ccc; } jocard { background-color: #888; }"
 	];
 	
 	var colorrule = new joCSSRule();
