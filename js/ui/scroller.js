@@ -110,14 +110,13 @@ joScroller.extend(joContainer, {
 		this.inMotion = true;
 
 		if (!this.mousemove) {
-			this.mousemove = joEvent.on(document.body, "mousemove", this.onMove, this);
-			this.mouseup = joEvent.on(document.body, "mouseup", this.onUp, this);
+			this.mousemove = joEvent.capture(document.body, "mousemove", this.onMove, this);
+			this.mouseup = joEvent.capture(document.body, "mouseup", this.onUp, this);
 		}
 	},
 	
 	reset: function() {
 		this.points = [];
-		this.quickSnap = false;
 		this.moved = false;
 		this.inMotion = false;
 	},
@@ -179,7 +178,7 @@ joScroller.extend(joContainer, {
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
-
+			
 		joEvent.remove(document.body, "mousemove", this.mousemove);
 		joEvent.remove(document.body, "mouseup", this.mouseup);
 
@@ -187,6 +186,7 @@ joScroller.extend(joContainer, {
 		this.inMotion = false;
 
 		joEvent.stop(e);
+		joEvent.preventDefault(e);
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
@@ -206,7 +206,7 @@ joScroller.extend(joContainer, {
 		var maxx = 0 - node.offsetWidth + this.container.offsetWidth - this.bump;
 		
 		// if the velocity is "high" then it was a flick
-		if ((Math.abs(dy) > 4 || Math.abs(dx) > 4) && !this.quickSnap) {
+		if ((Math.abs(dy) > 4 || Math.abs(dx) > 4)) {
 			var flick = dy * (this.velocity * (node.offsetHeight / this.container.offsetHeight));
 			var flickx = dx * (this.velocity * (node.offsetWidth / this.container.offsetWidth));
 
@@ -221,10 +221,13 @@ joScroller.extend(joContainer, {
 			}
 
 			this.scrollBy(flickx, flick, false);
+
+			joDefer(this.snapBack, this, 3000);
 		}
 		else {
-			this.snapBack();
+			joDefer(this.snapBack, this, 10);
 		}
+
 	},
 	
 	getMouse: function(e) {
@@ -262,10 +265,8 @@ joScroller.extend(joContainer, {
 		else if (dy < maxx - this.bump)
 			dx = maxx - this.bump;
 
-//		if (test)
-//			this.quickSnap = (ody != dy || odx != dx);
-
-		this.eventset = joEvent.on(node, this.transitionEnd, this.snapBack, this);
+		if (!this.eventset)
+			this.eventset = joEvent.capture(node, this.transitionEnd, this.snapBack, this);
 
 		if (top != dx || left != dy)
 			this.moveTo(dx, dy);
@@ -329,6 +330,8 @@ joScroller.extend(joContainer, {
 
 		if (this.eventset)
 			joEvent.remove(node, this.transitionEnd, this.eventset);
+		
+		this.eventset = null;
 
 		joDOM.removeCSSClass(node, 'flick');
 		
