@@ -56,6 +56,26 @@
 	- `toggleCSSClass(HTMLElement, classname)`
 
 	  Auto add or remove a class from an element.
+	
+	- `pageOffsetLeft(HTMLElement)` and `pageOffsetHeight(HTMLElement)`
+	
+	  Returns the "true" left and top, in pixels, of a given element relative
+	  to the page.
+	
+	- `applyCSS(css, stylenode)`
+	
+	  Applies a `css` string to the app. Useful for quick changes, like backgrounds
+	  and other goodies. Basically creates an inline `<style>` tag. This method
+	  returns a reference to the new `<style>` tag, which you can use with `removeCSS()`
+	  and subsequent calls to `applyCSS()` as the `stylenode` argument.
+	
+	- `loadCSS(filename)`
+	
+	  Works the same as `applyCSS()` but loads the CSS from a file instead of a string.
+	
+	- `removeCSS(stylenode)`
+	
+	  Removes a `<style>` tag created with `applyCSS()` or `loadCSS()`.
 
 */
 joDOM = {

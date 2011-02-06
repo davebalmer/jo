@@ -15,12 +15,27 @@
 	-------
 	
 	- `push(joView | HTMLElement)`	
+	
+	  Pushes a new joView (or HTMLELement) onto the stack.
+	
 	- `pop()`
+	
+	  Pulls the current view off the stack and goes back to the previous view.
+
 	- `home()`
+	
+	  Return to the first view, pop everything else off the stack.
+
 	- `show()`
 	- `hide()`
+
+	  Controls the visibility of the entire stack.
+
 	- `forward()`
 	- `back()`
+	
+	  Much like your browser forward and back buttons, only for the stack.
+	
 	- `setLocked(boolean)`
 	
 	  The `setLocked()` method tells the stack to keep the first view pushed onto the

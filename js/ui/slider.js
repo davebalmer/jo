@@ -13,20 +13,15 @@
 	Methods
 	-------
 	
-	- `setMin(min)`
-	
-	- `setMax(max)`
+	- `setRange(min, max, snap)`
 	
 	Where `min`/`max` is a number, either integer or decimal, doesn't matter. If `max`
 	and `min` are integers, then `snap` defaults to `1`, otherwise it is set to `0` (no
 	snap, which allows free movement).
 	
-	- `setSnap(size)`
-	
-	Override the default snap value with your own. Set to `0` for free-floating, or any
-	other positive number to adjust the granularity of possible values. Any `size` that
-	is less than `0` or greater than the total range of possible values will be
-	ignored.
+	The optional `snap` value adjusts the granularuty of choices. Set to `0` for
+	free-floating, or any other positive number. Any `snap` that is less than `0`
+	or greater than the total range of possible values will be ignored.
 	
 	Use
 	---
@@ -36,10 +31,15 @@
 		var x = new joSlider();
 		
 		// custom range and default value set
-		var y = new joSlider(0).setMin(-10).setMax(10);
+		var y = new joSlider(0).setRange(-10, 10);
 		
 		// percent slider, with 5% snap
-		var z = new joSlider(0).setMax(100).setSnap(5);
+		var z = new joSlider(0).setRange(0, 100, 5);
+		
+		// responding to change events
+		var r = new joSlider().changEvent.subscribe(function(value) {
+			console.log(value);
+		}, this);
 
 */
 

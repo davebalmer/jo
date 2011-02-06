@@ -377,6 +377,26 @@ jo = {
 	- `toggleCSSClass(HTMLElement, classname)`
 
 	  Auto add or remove a class from an element.
+	
+	- `pageOffsetLeft(HTMLElement)` and `pageOffsetHeight(HTMLElement)`
+	
+	  Returns the "true" left and top, in pixels, of a given element relative
+	  to the page.
+	
+	- `applyCSS(css, stylenode)`
+	
+	  Applies a `css` string to the app. Useful for quick changes, like backgrounds
+	  and other goodies. Basically creates an inline `<style>` tag. This method
+	  returns a reference to the new `<style>` tag, which you can use with `removeCSS()`
+	  and subsequent calls to `applyCSS()` as the `stylenode` argument.
+	
+	- `loadCSS(filename)`
+	
+	  Works the same as `applyCSS()` but loads the CSS from a file instead of a string.
+	
+	- `removeCSS(stylenode)`
+	
+	  Removes a `<style>` tag created with `applyCSS()` or `loadCSS()`.
 
 */
 joDOM = {
@@ -597,11 +617,32 @@ joCSSRule.prototype = {
 	- `on(HTMLElement, event, Function, context, data)`
 	
 	  Set a DOM event listener for an HTMLElement which calls a given Function
-	  with an optional context for `this` and optional static data.
+	  with an optional context for `this` and optional static data. Returns a
+	  reference to the handler function, which is required if you need to `remove()`
+	  later.
+	
+	- `capture(HTMLElement, event, function, context, data)`
+	
+	  This is the same os `on()`, but captures the event at the node before its
+	  children. If in doubt, use `on()` instead.
+	
+	- `remove(HTMLElement, event, handler)`
+	
+	  Removes a previously declared DOM event. Note that `handler` is the return
+	  value of the `on()` and `capture()` methods.
 	
 	- `stop(event)`
 	
-	  Prevent default and stop event propogation.
+	   Stop event propogation.
+	
+	- `preventDefault(event)`
+	
+	  Prevent default action for this event.
+	
+	- `block(event)`
+	
+	  Useful for preventing dragging the window around in some browsers, also highlighting
+	  text in a desktop browser.
 	
 	- `getTarget(event)`
 	
@@ -1645,6 +1686,14 @@ joSQLDataSource.prototype = {
 	joFileSource
 	============
 	
+	A special joDataSource which loads and handles a file. This class
+	wraps joFile.
+	
+	Extends
+	-------
+	
+	- `joDataSource`
+	
 */
 joFileSource = function(url, timeout) {
 	this.changeEvent = new joSubject(this);
@@ -2234,8 +2283,12 @@ joCollect = {
 	- `getContainer()`
 	- `clear()`
 	- `refresh()`
+
 	- `attach(HTMLElement or joView)`
 	- `detach(HTMLElement or joView)`
+	
+	  Convenience methods which allow you to append a view or DOM node to the
+	  current view (or detach it).
 	
 */
 joView = function(data) {
@@ -2491,14 +2544,36 @@ joContainer.extend(joView, {
 	Methods
 	-------
 	
+	- `setValue(value)`
+	
+	  Many controls have a *value* in addition to their *data*. This is
+	  particularly useful for `joList`, `joMenu`, `joOption` and other controls
+	  which has a list of possibilities (the data) and a current seletion from those
+	  (the value).
+	
 	- `enable()`
 	- `disable()`
+	
+	  Enable or disable the control, pretty much does what you'd expect.
+	
 	- `focus()`
 	- `blur()`
+	
+	  Manually control focus for this control.
+	
 	- `setDataSource(joDataSource)`
+	
+	  Tells this control to bind its data to any `joDataSource` or subclass.
+	
 	- `setValueSource(joDataSource)`
-	- `setEvents()`
-
+	
+	  Tells this control to bind its *value* to any `joDataSource` type.
+	
+	- `setReadOnly(state)`
+	
+	  Certain controls can have their interaction turned off. State is either `true`
+	  or `false`.
+	
 	See Also
 	--------
 	
@@ -3130,12 +3205,27 @@ joCard.extend(joContainer, {
 	-------
 	
 	- `push(joView | HTMLElement)`	
+	
+	  Pushes a new joView (or HTMLELement) onto the stack.
+	
 	- `pop()`
+	
+	  Pulls the current view off the stack and goes back to the previous view.
+
 	- `home()`
+	
+	  Return to the first view, pop everything else off the stack.
+
 	- `show()`
 	- `hide()`
+
+	  Controls the visibility of the entire stack.
+
 	- `forward()`
 	- `back()`
+	
+	  Much like your browser forward and back buttons, only for the stack.
+	
 	- `setLocked(boolean)`
 	
 	  The `setLocked()` method tells the stack to keep the first view pushed onto the
@@ -4945,11 +5035,18 @@ joShim.extend(joContainer, {
 	- `play()`
 	- `pause()`
 	- `rewind()`
-	- `load()`
+	- `stop()`
+	
+	  Basic sound controls.
+	
 	- `setLoop(n)`
 	
 	  Tell the joSound to automatically loop `n` times. Set to `-1` to loop
 	  continuously until `pause()`.
+	
+	- `setVolume(level)`
+	
+	  Level is a decimal value from `0` to `1`. So, half volume would be `0.5`.
 	
 	Events
 	------
@@ -5240,11 +5337,11 @@ joTabBar.extend(joList, {
 	Methods
 	-------
 
-	- setCell(row, column)
+	- `setCell(row, column)`
 
 	  Sets the active cell for the table, also makes it editiable and sets focus.
 
-	- getRow(), getCol()
+	- `getRow()`, `getCol()`
 
 	  Return the current row or column
 */
@@ -5777,20 +5874,15 @@ joToggle.extend(joControl, {
 	Methods
 	-------
 	
-	- `setMin(min)`
-	
-	- `setMax(max)`
+	- `setRange(min, max, snap)`
 	
 	Where `min`/`max` is a number, either integer or decimal, doesn't matter. If `max`
 	and `min` are integers, then `snap` defaults to `1`, otherwise it is set to `0` (no
 	snap, which allows free movement).
 	
-	- `setSnap(size)`
-	
-	Override the default snap value with your own. Set to `0` for free-floating, or any
-	other positive number to adjust the granularity of possible values. Any `size` that
-	is less than `0` or greater than the total range of possible values will be
-	ignored.
+	The optional `snap` value adjusts the granularuty of choices. Set to `0` for
+	free-floating, or any other positive number. Any `snap` that is less than `0`
+	or greater than the total range of possible values will be ignored.
 	
 	Use
 	---
@@ -5800,10 +5892,15 @@ joToggle.extend(joControl, {
 		var x = new joSlider();
 		
 		// custom range and default value set
-		var y = new joSlider(0).setMin(-10).setMax(10);
+		var y = new joSlider(0).setRange(-10, 10);
 		
 		// percent slider, with 5% snap
-		var z = new joSlider(0).setMax(100).setSnap(5);
+		var z = new joSlider(0).setRange(0, 100, 5);
+		
+		// responding to change events
+		var r = new joSlider().changEvent.subscribe(function(value) {
+			console.log(value);
+		}, this);
 
 */
 

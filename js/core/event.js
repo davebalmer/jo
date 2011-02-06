@@ -10,11 +10,32 @@
 	- `on(HTMLElement, event, Function, context, data)`
 	
 	  Set a DOM event listener for an HTMLElement which calls a given Function
-	  with an optional context for `this` and optional static data.
+	  with an optional context for `this` and optional static data. Returns a
+	  reference to the handler function, which is required if you need to `remove()`
+	  later.
+	
+	- `capture(HTMLElement, event, function, context, data)`
+	
+	  This is the same os `on()`, but captures the event at the node before its
+	  children. If in doubt, use `on()` instead.
+	
+	- `remove(HTMLElement, event, handler)`
+	
+	  Removes a previously declared DOM event. Note that `handler` is the return
+	  value of the `on()` and `capture()` methods.
 	
 	- `stop(event)`
 	
-	  Prevent default and stop event propogation.
+	   Stop event propogation.
+	
+	- `preventDefault(event)`
+	
+	  Prevent default action for this event.
+	
+	- `block(event)`
+	
+	  Useful for preventing dragging the window around in some browsers, also highlighting
+	  text in a desktop browser.
 	
 	- `getTarget(event)`
 	

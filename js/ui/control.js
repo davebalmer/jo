@@ -20,14 +20,36 @@
 	Methods
 	-------
 	
+	- `setValue(value)`
+	
+	  Many controls have a *value* in addition to their *data*. This is
+	  particularly useful for `joList`, `joMenu`, `joOption` and other controls
+	  which has a list of possibilities (the data) and a current seletion from those
+	  (the value).
+	
 	- `enable()`
 	- `disable()`
+	
+	  Enable or disable the control, pretty much does what you'd expect.
+	
 	- `focus()`
 	- `blur()`
+	
+	  Manually control focus for this control.
+	
 	- `setDataSource(joDataSource)`
+	
+	  Tells this control to bind its data to any `joDataSource` or subclass.
+	
 	- `setValueSource(joDataSource)`
-	- `setEvents()`
-
+	
+	  Tells this control to bind its *value* to any `joDataSource` type.
+	
+	- `setReadOnly(state)`
+	
+	  Certain controls can have their interaction turned off. State is either `true`
+	  or `false`.
+	
 	See Also
 	--------
 	

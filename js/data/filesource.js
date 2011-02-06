@@ -2,6 +2,14 @@
 	joFileSource
 	============
 	
+	A special joDataSource which loads and handles a file. This class
+	wraps joFile.
+	
+	Extends
+	-------
+	
+	- `joDataSource`
+	
 */
 joFileSource = function(url, timeout) {
 	this.changeEvent = new joSubject(this);

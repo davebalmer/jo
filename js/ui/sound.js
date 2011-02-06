@@ -11,11 +11,18 @@
 	- `play()`
 	- `pause()`
 	- `rewind()`
-	- `load()`
+	- `stop()`
+	
+	  Basic sound controls.
+	
 	- `setLoop(n)`
 	
 	  Tell the joSound to automatically loop `n` times. Set to `-1` to loop
 	  continuously until `pause()`.
+	
+	- `setVolume(level)`
+	
+	  Level is a decimal value from `0` to `1`. So, half volume would be `0.5`.
 	
 	Events
 	------

@@ -33,11 +33,11 @@
 	Methods
 	-------
 
-	- setCell(row, column)
+	- `setCell(row, column)`
 
 	  Sets the active cell for the table, also makes it editiable and sets focus.
 
-	- getRow(), getCol()
+	- `getRow()`, `getCol()`
 
 	  Return the current row or column
 */

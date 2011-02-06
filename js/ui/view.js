@@ -22,8 +22,12 @@
 	- `getContainer()`
 	- `clear()`
 	- `refresh()`
+
 	- `attach(HTMLElement or joView)`
 	- `detach(HTMLElement or joView)`
+	
+	  Convenience methods which allow you to append a view or DOM node to the
+	  current view (or detach it).
 	
 */
 joView = function(data) {
