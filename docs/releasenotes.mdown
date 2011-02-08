@@ -1,0 +1,37 @@
+Release Notes
+=============
+
+Jo 0.4.0
+--------
+
+- Added new joSlider control and corresponding josliderthumb to CSS
+- Added css/browser.css for cases where you want to allow the browser to handle scrolling purely with overflow:scroll
+- Tweaked joScroller, including removed the 50px fixed "bump" size (you can add it back if you want)
+- Tweaked default CSS, made some controls less "roundy", thinned border on joToggle
+- Changed readOnly and editable methods to setReadOnly()
+- Fixed some broken method chaining in joSound, joNavbar and a few other places
+- Important fixes in joDataSource, joRecord, joProperty and joList relating to the data property
+- Fixed background image bug in joMenu
+- Fixed enable/disable methods for joButton and joControl
+- Fixed joEvent capture method to properly return event handler reference
+- Added resizeEvent to joGesture
+- Added clientX/clientY to joEvent
+- Added optional parameter passing for joCache get() method
+- Added pageOffsetTop and pageOffsetLeft methods to joDOM
+- Updated docs for joDOM, joEvent, joFileSource, jo, joControl, joSlider, joSound, joStack, joTable and joView
+
+Jo 0.3.0
+--------
+
+- New data methods: joFile, joFileSource, joRecord, joYQL
+- New widgets: joToggle, joExpando, joSelect, joOption, joNavbar
+- Even more improved joScroller performance, and the beginnings of horizontal and free scroll support
+- Better "downgraded" scroller experience for less fancy browsers
+- Changed default tags for input fields to input, etc.
+- New samples for file loading, YQL and a "kitchen sink" sample (which is more of a bathroom sink; look for -  more in the samples/test.html for now)
+- New CSS default theme (built with Less CSS for those who are using our git repo)
+- Added joInterface, a method which will slurp HTML into Jo objects (experimental, read the docs please)
+- Definitely check out the docs for joRecord as it's even easier to bind UI controls to a data object
+- joPreference has been deprecated for now; see joRecord
+- joYield has been renamed to joDefer
+
