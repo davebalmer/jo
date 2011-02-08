@@ -60,7 +60,7 @@ joCache.set("widgets", function() {
 			new joLabel("joSlider"),
 			slider = new joSlider(),
 			new joLabel("joSlider range 0 - 9, snap 1"),
-			slider = new joSlider().setRange(0, 9, 1).changeEvent.subscribe(function(value) {
+			slider = new joSlider(4).setRange(0, 9, 1).changeEvent.subscribe(function(value) {
 				console.log("value: " + value);
 			}, this)
 		])
