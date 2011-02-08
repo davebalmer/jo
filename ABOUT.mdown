@@ -5,7 +5,7 @@
 About
 =====
 
-jo is a lightweight JavaScript framework designed for HTML5 apps.
+Jo is a lightweight JavaScript framework designed for HTML5 apps.
 
 jo does
 --------
@@ -37,6 +37,9 @@ or email [dbalmerjr@gmail.com](mailto:dbalmerjr@gmail.com)
 
 Downloads
 ---------
+
+Version 0.4.0 is the latest stable release, check the Release Notes for
+details.
 
 Available from GitHub as a 
 [git repo](http://github.com/davebalmer/Jo) or a
