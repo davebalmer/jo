@@ -153,9 +153,9 @@ joScroller.extend(joContainer, {
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
-					
-		joEvent.remove(document.body, "mousemove", this.mousemove);
-		joEvent.remove(document.body, "mouseup", this.mouseup);
+
+		joEvent.remove(document.body, "mousemove", this.mousemove, true);
+		joEvent.remove(document.body, "mouseup", this.mouseup, true);
 
 		this.mousemove = null;
 		this.inMotion = false;

@@ -713,8 +713,15 @@ joEvent = {
 		return wrappercall;
 	},
 	
-	remove: function(element, event, wrappercall) {
-		element.removeEventListener(event, wrappercall, wrappercall.capture);
+	remove: function(element, event, call, capture) {
+		if (this.touchy) {
+			if (this.eventMap[event]) {
+				event = this.eventMap[event];
+			}
+		}
+
+		if (typeof element.removeEventListener !== 'undefined')
+			element.removeEventListener(event, call, capture || false);
 	},
 		
 	stop: function(e) {
@@ -3668,9 +3675,9 @@ joScroller.extend(joContainer, {
 	onUp: function (e) {
 		if (!this.inMotion)
 			return;
-					
-		joEvent.remove(document.body, "mousemove", this.mousemove);
-		joEvent.remove(document.body, "mouseup", this.mouseup);
+
+		joEvent.remove(document.body, "mousemove", this.mousemove, true);
+		joEvent.remove(document.body, "mouseup", this.mouseup, true);
 
 		this.mousemove = null;
 		this.inMotion = false;
