@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+Jo 0.4.1
+--------
+
+- Emergency fix for joScroller on iOS, was affecting performance and tapability on controls.
+
 Jo 0.4.0
 --------
 
