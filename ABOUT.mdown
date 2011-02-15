@@ -1,7 +1,3 @@
-<cite>Jo<cite>JavaScript Framework for HTML5</cite></cite>
-
-<img src="jodog.png" align="right">
-
 About
 =====
 
@@ -38,7 +34,7 @@ or email [dbalmerjr@gmail.com](mailto:dbalmerjr@gmail.com)
 Downloads
 ---------
 
-Version 0.4.0 is the latest stable release, check the Release Notes for
+Version 0.4.1 is the latest stable release, check the Release Notes for
 details.
 
 Available from GitHub as a 

@@ -1,0 +1,59 @@
+Supported Platforms
+===================
+
+Jo is built on HTML5, so anything with decent support for these
+emerging standards should work with Jo. The list of devices and
+platforms you can distribute your apps on is growing, but here's
+a list of 
+
+Mobile Apps
+-----------
+
+Most require PhoneGap to create a native app "shell". webOS doesn't
+require PhoneGap, but it is useful for some things.
+
+- iOS 3+ for iPhone, iPad, iPod Touch
+- Android 2.1+
+- webOS 1.4+
+- Symbian ^ 3
+
+It's been reported that Jo works great with newer releases of Blackberry,
+but I haven't done any testing with it yet.
+
+Mobile Browsers
+---------------
+
+All the mobile app platforms supported by Jo will work, but note that
+in most cases you'll be fighting against the browser scroller (Android and
+webOS, I'm looking at you), and in some cases event and rendering bugs
+will make life interesting and might require some CSS fiddling.
+
+Desktop Apps
+------------
+
+HTML5 is making its way into desktop applications. Both native Mac OSX
+and Windows require special builds of PhoneGap.
+
+- ChromeOS
+- Windows
+- Mac OSX 10.5+
+- Mac OSX DashBoard Widgets
+
+It's been reported that Jo will work with Adobe AIR, but I haven't done
+any testing with it.
+
+Desktop Browsers
+----------------
+
+In general, all modern browsers which have decent HTML5 support will work
+well with Jo and its CSS3. Note that Internet Explorer and FireFox 3.x
+can work, but you will have to play with the CSS to get things going.
+
+- Safari 5+
+- Chrome 9+
+- Opera 10+
+- FireFox 4+
+- Internet Explorer 8+
+
+For browsers, you will want to include `css/browser.css` in your project
+to revert joScroller and joStackScroller to use native scrollbars.
