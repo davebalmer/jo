@@ -2706,7 +2706,9 @@ joControl.extend(joView, {
 	setDataSource: function(source) {
 		this.dataSource = source;
 		source.changeEvent.subscribe(this.setData, this);
-		this.setData(source.getData() || null);
+
+		var data = source.getData();
+		this.setData((data !== 'undefined') ? data : null);
 		this.changeEvent.subscribe(source.setData, source);
 		
 		return this;
@@ -2715,7 +2717,9 @@ joControl.extend(joView, {
 	setValueSource: function(source) {
 		this.valueSource = source;
 		source.changeEvent.subscribe(this.setValue, this);
-		this.setValue(source.getData() || null);
+		
+		var value = source.getData();
+		this.setValue((value !== 'undefined') ? value : null);
 		this.selectEvent.subscribe(source.setData, source);
 		
 		return this;
