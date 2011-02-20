@@ -711,26 +711,36 @@ jostack {
   -moz-perspective: 400px;
   -o-perspective: 400px;
   -ms-perspective: 400px;
-}
-jostack {
   -webkit-transition: opacity 0.3s ease-out;
   -moz-transition: opacity 0.3s ease-out;
   -o-transition: opacity 0.3s ease-out;
   -ms-transition: opacity 0.3s ease-out;
 }
 jostack > * {
+  -webkit-animation-fill-mode: forwards;
   -webkit-transform-origin: 50% 100% 0;
-  -webkit-transform: rotatez(0) translatez(0);
+  -webkit-transform: rotatez(0) translatez(0) translatex(0) translatey(0);
   -webkit-transition: -webkit-transform 0.3s ease-out, z-index 0.3s ease-out, height 0s ease, overflow 0s ease;
   -moz-transform-origin: 50% 100% 0;
   -moz-transform: rotatez(0) translatez(0);
   -moz-transition: -moz-transform 0.3s ease-out, z-index 0.3s ease-out, height 0s ease, overflow 0s ease;
+  z-index: 0;
   -o-transform-origin: 50% 100% 0;
   -o-transform: rotatez(0);
   -o-transition: -o-transform 0.3s ease-out;
   -ms-transform-origin: 50% 100% 0;
   -ms-transform: rotatez(0);
   -ms-transition: -ms-transform 0.3s ease-out;
+  position: absolute;
+  /*
+	display: block;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+*/
+
 }
 jostack > .next {
   z-index: -1;

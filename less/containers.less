@@ -46,9 +46,6 @@ jostack {
 	-moz-perspective: 400px;
 	-o-perspective: 400px;
 	-ms-perspective: 400px;
-}
-
-jostack {
 	-webkit-transition: opacity .3s ease-out;
 	-moz-transition: opacity .3s ease-out;
 	-o-transition: opacity .3s ease-out;
@@ -56,13 +53,17 @@ jostack {
 }
 
 jostack > * {
+	-webkit-animation-fill-mode: forwards;
+
 	-webkit-transform-origin: 50% 100% 0;
-	-webkit-transform: rotateZ(0) translateZ(0);
+	-webkit-transform: rotateZ(0) translateZ(0) translateX(0) translateY(0);
 	-webkit-transition: -webkit-transform .3s ease-out, z-index .3s ease-out, height 0s ease, overflow 0s ease;
 
 	-moz-transform-origin: 50% 100% 0;
 	-moz-transform: rotateZ(0) translateZ(0);
 	-moz-transition: -moz-transform .3s ease-out, z-index .3s ease-out, height 0s ease, overflow 0s ease;
+	
+	z-index: 0;
 
 	-o-transform-origin: 50% 100% 0;
 	-o-transform: rotateZ(0);
@@ -71,6 +72,17 @@ jostack > * {
 	-ms-transform-origin: 50% 100% 0;
 	-ms-transform: rotateZ(0);
 	-ms-transition: -ms-transform .3s ease-out;
+	
+	
+	position: absolute;
+/*
+	display: block;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+*/
 }
 
 jostack > .next {
@@ -151,10 +163,13 @@ joscroller > * {
 	top: 0;
 	-webkit-animation-fill-mode: forwards;
 	-webkit-transition: -webkit-transform 0s ease;
+	
 	-moz-animation-fill-mode: forwards;
 	-moz-transition: -moz-transform 0s ease;
+	
 	-o-animation-fill-mode: forwards;
 	-o-transition: -o-transform 0s ease;
+	
 	-ms-animation-fill-mode: forwards;
 	-ms-transition: -ms-transform 0s ease;
 }
@@ -397,16 +412,8 @@ jopopup > jobutton {
 jocontainer {
 }
 
-jostack {
-}
-
 joflexcol {
 	height: 100%;
 	width: 100%;
 }
 
-jotoolbar {
-}
-
-jocard {
-}
