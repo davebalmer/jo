@@ -132,7 +132,17 @@ joPreference=joRecord;joYQL=function(query){joDataSource.call(this);this.setQuer
 this.errorEvent.fire(data);else{this.data=results;this.changeEvent.fire(results);}},callBack:function(error){if(error)
 this.errorEvent.fire();}});joDepotCall=[];joDepot=function(call,context){joDepotCall.push(handler);function handler(data){if(context)
 call.call(context,data);else
-call(data);};return"joDepotCall["+(joDepotCall.length-1)+"]";};joInterface=function(parent){jo.initTagMap();return this.get(parent);};joInterface.prototype={get:function(parent){parent=joDOM.get(parent);if(!parent)
+call(data);};return"joDepotCall["+(joDepotCall.length-1)+"]";};joDispatch=function(handler){this.handlers=[];this.loadEvent=new joSubject(this);this.errorEvent=new joSubject(this);};joDispatch.prototype={load:function(url){var h=this.getHandler(url);if(!h){joLog("joDispatch: no handler for URL",url);this.errorEvent.fire(url);}
+else{var p=url.substr(h.url.length);if(h.context)
+this.loadEvent.fire(h.call.call(h.context,p,url));else
+this.loadEvent.fire(h.call(p,url));}
+return this;},addHandler:function(url,call,context){if(typeof url==='undefined')
+return;var handler={url:url.toLowerCase(),call:call,context:(typeof context!==undefined)?context:null};this.handlers.push(handler);this.handlers=this.handlers.sort(compare);function compare(a,b){if(a.url<b.url)
+return 1;else if(a.url==b.url)
+return 0;else return-1;}
+return this;},getHandler:function(url){var h=this.handlers;var url=url.toLowerCase();for(var i=0,l=h.length;i<l;i++){console.log(h[i].url);if(url.indexOf(h[i].url,0)===0)
+return h[i];}
+return null;}};joInterface=function(parent){jo.initTagMap();return this.get(parent);};joInterface.prototype={get:function(parent){parent=joDOM.get(parent);if(!parent)
 parent=document.body;var ui={};var setContainer=joView.setContainer;var draw=joView.draw;parse(parent);joView.setContainer=setContainer;joView.draw=draw;function parse(node){if(!node)
 return;var args="";if(node.childNodes&&node.firstChild){var kids=node.childNodes;args=[];for(var i=0,l=kids.length;i<l;i++){var p=parse(kids[i]);if(p)
 args.push(p);}}

@@ -9,7 +9,7 @@ cd js\core
 copy log.js + _jo.js + dom.js + event.js + subject.js + time.js + yield.js + cache.js + chain.js + clipboard.js + local.js ..\jo_core.js
 
 cd ..\data
-copy datasource.js + record.js + database.js + filesource.js + sqldatasource.js + script.js + preference.js + yql.js ..\jo_data.js
+copy datasource.js + record.js + database.js + filesource.js + sqldatasource.js + script.js + preference.js + yql.js + dispatch.js ..\jo_data.js
 
 cd ..\ui
 copy collect.js + interface.js + view.js + container.js + control.js + button.js + busy.js + list.js + busy.js + caption.js + card.js + stack.js + scroller.js + divider.js + expando.js + expandotitle.js + flexrow.js + focus.js + footer.js + gesture.js + group.js + html.js + input.js + label.js + menu.js + option.js + passwordinput.js + popup.js + screen.js + shim.js + sound.js + stackscroller.js + tabbar.js + table.js + textarea.js + title.js + toolbar.js + form.js + dialog.js + selectlist.js + navbar.js + select.js + toggle.js + slider.js ..\jo_ui.js

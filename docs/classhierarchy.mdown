@@ -59,6 +59,7 @@ Data
 	* joRecord
 	* joSQLDataSource
 	* joYQL
+* joDispatch
 * joFile
 * joScript
 
