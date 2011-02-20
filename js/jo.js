@@ -3298,7 +3298,6 @@ joStack = function(data) {
 joStack.extend(joContainer, {
 	tagName: "jostack",
 	type: "fixed",
-	eventset: false,
 	
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -3385,10 +3384,12 @@ joStack.extend(joContainer, {
 		}
 		
 		function cleanup() {
+			console.log("cleanup");
+			
 			if (oldchild) {
-				self.removeChild(oldchild);
 				joDOM.removeCSSClass(oldchild, "next");
 				joDOM.removeCSSClass(oldchild, "prev");
+				self.removeChild(oldchild);
 			}
 
 			if (newchild) {
