@@ -3384,8 +3384,6 @@ joStack.extend(joContainer, {
 		}
 		
 		function cleanup() {
-			console.log("cleanup");
-			
 			if (oldchild) {
 				joDOM.removeCSSClass(oldchild, "next");
 				joDOM.removeCSSClass(oldchild, "prev");

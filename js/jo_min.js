@@ -221,7 +221,7 @@ transitionevent=joEvent.on(newchild,"webkitTransitionEnd",cleanup,self);else
 joDefer(cleanup,this,200);if(newclass&&newchild)
 joDOM.removeCSSClass(newchild,newclass);if(oldclass&&oldchild)
 joDOM.addCSSClass(oldchild,oldclass);}
-function cleanup(){console.log("cleanup");if(oldchild){joDOM.removeCSSClass(oldchild,"next");joDOM.removeCSSClass(oldchild,"prev");self.removeChild(oldchild);}
+function cleanup(){if(oldchild){joDOM.removeCSSClass(oldchild,"next");joDOM.removeCSSClass(oldchild,"prev");self.removeChild(oldchild);}
 if(newchild){if(transitionevent)
 joEvent.remove(newchild,"webkitTransitionEnd",transitionevent);joDOM.removeCSSClass(newchild,"next");joDOM.removeCSSClass(newchild,"prev");}}
 if(typeof this.data[this.index].activate!=="undefined")
