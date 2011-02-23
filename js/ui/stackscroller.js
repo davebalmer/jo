@@ -44,10 +44,14 @@ joStackScroller.extend(joStack, {
 	
 	scrollTo: function(something) {
 		this.scroller.scrollTo(something);
+		
+		return this;
 	},
 	
 	scrollBy: function(y) {
 		this.scroller.scrollBy(y);
+		
+		return this;
 	},
 
 	getChildStyleContainer: function() {
@@ -73,6 +77,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 			
 		joStack.prototype.forward.call(this);
+		
+		return this;
 	},
 	
 	back: function() {
@@ -80,6 +86,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 
 		joStack.prototype.forward.call(this);
+		
+		return this;
 	},
 
 	home: function() {
@@ -87,6 +95,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 			joStack.prototype.home.call(this);
 		}
+		
+		return this;
 	},
 		
 	push: function(o) {
@@ -103,6 +113,8 @@ joStackScroller.extend(joStack, {
 		this.scroller.scrollTo(0, true);
 
 		joStack.prototype.push.call(this, o);
+		
+		return this;
 	},
 	
 	pop: function() {
@@ -110,6 +122,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 
 		joStack.prototype.pop.call(this);
+		
+		return this;
 	}
 });
 

@@ -39,24 +39,29 @@ joSQLDataSource = function(db, query, args) {
 joSQLDataSource.prototype = {
 	setDatabase: function(db) {
 		this.db = db;
+		return this;
 	},
 	
 	setQuery: function(query) {
 		this.query = query;
+		return this;
 	},
 
 	setData: function(data) {
 		this.data = data;
 		this.changeEvent.fire();
+		return this;
 	},
 
 	clear: function() {
 		this.data = [];
 		this.changeEvent.fire();
+		return this;
 	},
 
 	setParameters: function(args) {
 		this.args = args;
+		return this;
 	},
 
 	execute: function(query, args) {
@@ -65,13 +70,15 @@ joSQLDataSource.prototype = {
 		
 		if (this.query)
 			this.refresh();
+			
+		return this;
 	},
 	
 	refresh: function() {
 		if (!this.db) {
 			this.errorEvent.fire();
 //			joLog("query error: no db!");
-			return;
+			return this;
 		}
 		
 		var self = this;
@@ -107,5 +114,7 @@ joSQLDataSource.prototype = {
 		this.db.db.transaction(function(t) {
 			t.executeSql(query, args, success, error);
 		});
+		
+		return this;
 	}
 };

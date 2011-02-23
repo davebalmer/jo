@@ -218,7 +218,7 @@ joList.extend(joControl, {
 		if (this.autoSort)
 			this.sort();
 
-		joControl.prototype.refresh.apply(this);
+		return joControl.prototype.refresh.apply(this);
 	},
 
 	getNodeData: function(index) {
@@ -269,10 +269,14 @@ joList.extend(joControl, {
 	next: function() {
 		if (this.getValue() < this.getLength() - 1)
 			this.setValue(this.value + 1);
+		
+		return this;
 	},
 	
 	prev: function() {
 		if (this.getValue() > 0)
 			this.setValue(this.value - 1);
+			
+		return this;
 	}
 });

@@ -85,6 +85,8 @@ joYQL.extend(joDataSource, {
 			+ "&format=" + this.format + "&callback=" + joDepot(this.load, this);
 
 		joScript(get, this.callBack, this);
+		
+		return this;
 	},
 	
 	load: function(data) {
@@ -96,6 +98,8 @@ joYQL.extend(joDataSource, {
 			this.data = results;
 			this.changeEvent.fire(results);
 		}
+		
+		return this;
 	},
 	
 	callBack: function(error) {

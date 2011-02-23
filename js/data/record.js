@@ -102,6 +102,7 @@
 	in JavaScript.
 
 */
+
 joRecord = function(data) {
 	joDataSource.call(this, data);
 	this.delegate = {};

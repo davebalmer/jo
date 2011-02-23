@@ -222,7 +222,7 @@ joScroller.extend(joContainer, {
 		var dx = Math.floor(left + x);
 		
 		if (this.vertical && (node.offsetHeight <= this.container.offsetHeight))
-			return;
+			return this;
 			
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
 		var maxx = 0 - node.offsetWidth + this.container.offsetWidth;
@@ -247,15 +247,17 @@ joScroller.extend(joContainer, {
 
 		if (top != dx || left != dy)
 			this.moveTo(dx, dy);
+			
+		return this;
 	},
 
 	scrollTo: function(y, instant) {
 		var node = this.container.firstChild;
 		
 		if (!node)
-			return;
+			return this;
 
-		if (typeof y == 'object') {
+		if (typeof y === 'object') {
 			if (y instanceof HTMLElement)
 				var e = y;
 			else if (y instanceof joView)
@@ -290,6 +292,8 @@ joScroller.extend(joContainer, {
 		}
 
 		this.moveTo(0, y);
+		
+		return this;
 	},
 
 	// called after a flick transition to snap the view
@@ -331,6 +335,7 @@ joScroller.extend(joContainer, {
 	setScroll: function(x, y) {
 		this.horizontal = x ? 1 : 0;
 		this.vertical = y ? 1 : 0;
+		
 		return this;
 	},
 	
@@ -338,7 +343,7 @@ joScroller.extend(joContainer, {
 		var node = this.container.firstChild;
 		
 		if (!node)
-			return;
+			return this;
 		
 		this.setPosition(x * this.horizontal, y * this.vertical, node);
 
@@ -348,6 +353,8 @@ joScroller.extend(joContainer, {
 	
 	setPosition: function(x, y, node) {
 		node.style.webkitTransform = "translate3d(" + x + "px, " + y + "px, 0)";
+		
+		return this;
 	},
 	
 	getTop: function() {
@@ -359,6 +366,6 @@ joScroller.extend(joContainer, {
 	},
 	
 	setData: function(data) {
-		joContainer.prototype.setData.apply(this, arguments);
+		return joContainer.prototype.setData.apply(this, arguments);
 	}
 });

@@ -104,11 +104,15 @@ joScreen.extend(joContainer, {
 //		this.shim.showEvent.subscribe(this.popup.show, this);
 		this.shim.show();
 		this.popup.show();
+		
+		return this;
 	},
 	
 	hidePopup: function() {
 		if (this.shim)
 			this.shim.hide();
+			
+		return this;
 	},
 	
 	// shortcut to a simple alert dialog, not the most efficient
@@ -175,6 +179,8 @@ joScreen.extend(joContainer, {
 					callback();
 			}
 		}
+		
+		return this;
 	}
 });
 

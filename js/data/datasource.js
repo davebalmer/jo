@@ -42,10 +42,13 @@ joDataSource.prototype = {
 	
 	setQuery: function(query) {
 		this.query = query;
+		
+		return this;
 	},
 	
 	setAutoSave: function(state) {
 		this.autoSave = state;
+		
 		return this;
 	},
 	
@@ -55,6 +58,8 @@ joDataSource.prototype = {
 
 		if (data !== last)
 			this.changeEvent.fire(data);
+			
+		return this;
 	},
 	
 	getData: function() {
@@ -91,6 +96,8 @@ joDataSource.prototype = {
 	
 	setPageSize: function(length) {
 		this.pageSize = length;
+		
+		return this;
 	},
 	
 	getPageSze: function() {
@@ -100,6 +107,8 @@ joDataSource.prototype = {
 	load: function(data) {
 		this.data = data;
 		this.changeEvent.fire(data);
+		
+		return this;
 	},
 	
 	error: function(msg) {

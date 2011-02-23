@@ -42,11 +42,15 @@ joDatabase.prototype = {
 			joLog("DataBase Error", this.db);
 			this.errorEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	close: function() {
 		this.db.close();
 		this.closeEvent.fire();
+		
+		return this;
 	},
 	
 	now: function(offset) {

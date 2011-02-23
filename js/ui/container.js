@@ -114,6 +114,8 @@ joContainer.extend(joView, {
 			o.innerHTML = data;
 			this.container.appendChild(o);
 		}
+		
+		return this;
 	},
 	
 	getTitle: function() {
@@ -126,6 +128,8 @@ joContainer.extend(joView, {
 
 		this.draw();
 		this.changeEvent.fire();
+		
+		return this;
 	},
 	
 	draw: function() {

@@ -112,6 +112,8 @@ joStack.extend(joContainer, {
 			this.draw();
 			this.forwardEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	back: function() {
@@ -120,6 +122,8 @@ joStack.extend(joContainer, {
 			this.draw();
 			this.backEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	draw: function() {
@@ -203,6 +207,8 @@ joStack.extend(joContainer, {
 		
 		this.lastIndex = this.index;
 		this.lastNode = newchild;
+		
+		return this;
 	},
 
 	appendChild: function(child) {
@@ -242,11 +248,15 @@ joStack.extend(joContainer, {
 		this.index = this.data.length - 1;
 		this.draw();
 		this.pushEvent.fire(o);
+		
+		return this;
 	},
 
 	// lock the stack so the first pushed view stays put
 	setLocked: function(state) {
 		this.locked = (state) ? 1 : 0;
+		
+		return this;
 	},
 	
 	pop: function() {
@@ -265,6 +275,8 @@ joStack.extend(joContainer, {
 
 		if (this.data.length > 0)
 			this.popEvent.fire();
+			
+		return this;
 	},
 	
 	home: function() {
@@ -273,7 +285,7 @@ joStack.extend(joContainer, {
 			var c = this.data[this.index];
 			
 			if (o === c)
-				return;
+				return this;
 			
 			this.data = [o];
 			this.lastIndex = 1;
@@ -284,6 +296,8 @@ joStack.extend(joContainer, {
 			this.popEvent.fire();
 			this.homeEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	showHome: function() {
@@ -294,6 +308,8 @@ joStack.extend(joContainer, {
 			joDOM.addCSSClass(this.container, "show");
 			this.showEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	getTitle: function() {
@@ -311,6 +327,8 @@ joStack.extend(joContainer, {
 
 			joDefer(this.showEvent.fire, this.showEvent, 500);
 		}
+		
+		return this;
 	},
 	
 	hide: function() {
@@ -320,5 +338,7 @@ joStack.extend(joContainer, {
 
 			joDefer(this.hideEvent.fire, this.hideEvent, 500);
 		}
+		
+		return this;
 	}
 });

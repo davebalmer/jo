@@ -50,6 +50,8 @@ joNavbar.extend(joContainer, {
 	back: function() {
 		if (this.stack)
 			this.stack.pop();
+
+		return this;
 	},
 	
 	setStack: function(stack) {
@@ -60,7 +62,7 @@ joNavbar.extend(joContainer, {
 		
 		if (!stack) {
 			this.stack = null;
-			return;
+			return this;
 		}
 		
 		this.stack = stack;
@@ -69,11 +71,13 @@ joNavbar.extend(joContainer, {
 		stack.popEvent.subscribe(this.update, this);
 
 		this.refresh();
+		
+		return this;
 	},
 
 	update: function() {
 		if (!this.stack)
-			return;
+			return this;
 		
 		joDOM.removeCSSClass(this.back, 'selected');
 		joDOM.removeCSSClass(this.back, 'focus');
@@ -91,11 +95,14 @@ joNavbar.extend(joContainer, {
 			this.titlebar.setData(title);
 		else
 			this.titlebar.setData(this.firstTitle);
+			
+		return this;
 	},
 	
 	setTitle: function(title) {
 		this.titlebar.setData(title);
 		this.firstTitle = title;
+		
 		return this;
 	}
 });

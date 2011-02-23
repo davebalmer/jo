@@ -70,6 +70,8 @@ joView.prototype = {
 			this.container.innerHTML = "";
 
 		this.changeEvent.fire();
+		
+		return this;
 	},
 
 	setData: function(data) {
@@ -91,6 +93,8 @@ joView.prototype = {
 		this.draw();
 
 		this.changeEvent.fire(this.data);
+		
+		return this;
 	},
 
 	draw: function() {

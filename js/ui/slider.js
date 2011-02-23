@@ -190,6 +190,8 @@ joSlider.extend(joControl, {
 	
 	moveTo: function(x) {
 		this.thumb.style.left = x + "px";
+		
+		return this;
 	},
 
 	initValue: function(value) {

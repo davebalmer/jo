@@ -60,6 +60,8 @@ joInput.extend(joControl, {
 
 			this.changeEvent.fire(this.data);
 		}
+		
+		return this;
 	},
 	
 	getData: function() {
@@ -71,12 +73,12 @@ joInput.extend(joControl, {
 	
 	enable: function() {
 		this.container.setAttribute("tabindex", "1");
-		joControl.prototype.enable.call(this);
+		return joControl.prototype.enable.call(this);
 	},
 	
 	disable: function() {
 		this.container.removeAttribute("tabindex");
-		joControl.prototype.disable.call(this);
+		return joControl.prototype.disable.call(this);
 	},	
 	
 	createContainer: function() {

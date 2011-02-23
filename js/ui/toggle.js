@@ -55,6 +55,8 @@ joToggle.extend(joControl, {
 			joEvent.stop(e);
 
 		this.setData((this.data) ? false : true);
+		
+		return this;
 	},
 
 	onBlur: function(e) {

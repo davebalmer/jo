@@ -47,6 +47,8 @@ joShim.extend(joContainer, {
 	hide: function() {
 		this.container.className = '';
 		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
+		
+		return this;
 	},
 	
 	show: function() {
@@ -58,6 +60,8 @@ joShim.extend(joContainer, {
 		// default parent to the document body
 		if (!this.lastParent)
 			this.lastParent = document.body;
+		
+		return this;
 	},
 	
 	onShow: function() {

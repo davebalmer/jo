@@ -36,6 +36,8 @@ joBusy.extend(joContainer, {
 	
 	setMessage: function(msg) {
 		this.message = msg || "";
+		
+		return this;
 	},
 	
 	setEvents: function() {

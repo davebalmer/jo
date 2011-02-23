@@ -47,6 +47,8 @@ joPopup.extend(joContainer, {
 	hide: function() {
 		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
 		this.container.className = 'hide';
+		
+		return this;
 	},
 	
 	onHide: function() {
@@ -56,5 +58,7 @@ joPopup.extend(joContainer, {
 	show: function() {
 		this.container.className = 'show';
 		this.showEvent.fire();
+		
+		return this;
 	}
 });

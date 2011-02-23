@@ -98,6 +98,8 @@ joControl.extend(joView, {
 			joEvent.stop(e);
 
 		this.selectEvent.fire(this.data);
+		
+		return this;
 	},
 	
 	enable: function() {

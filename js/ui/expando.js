@@ -76,19 +76,23 @@ joExpando.extend(joContainer, {
 	
 	toggle: function() {
 		if (this.container.className.indexOf("open") >= 0)
-			this.close();
+			return this.close();
 		else
-			this.open();
+			return this.open();
 	},
 	
 	open: function() {
 		joDOM.addCSSClass(this.container, "open");
 		this.openEvent.fire();
+		
+		return this;
 	},
 	
 	close: function() {
 		joDOM.removeCSSClass(this.container, "open");
 		this.closeEvent.fire();
+		
+		return this;
 	}
 });
 

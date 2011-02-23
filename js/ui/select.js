@@ -84,6 +84,8 @@ joSelect.extend(joExpando, {
 		else {
 			this.field.setData(value);
 		}
+		
+		return this;
 	},
 	
 	getValue: function() {
@@ -120,6 +122,8 @@ joSelectTitle.extend(joExpandoTitle, {
 
 	setList: function(list) {
 		this.list = list;
+		
+		return this;
 	},
 	
 	setData: function(value) {
@@ -127,5 +131,7 @@ joSelectTitle.extend(joExpandoTitle, {
 			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value) || "Select...");
 		else
 			joExpandoTitle.prototype.setData.call(this, value);
+		
+		return this;
 	}
 });

@@ -29,6 +29,8 @@ joFileSource.extend(joDataSource, {
 		var get = this.baseurl + this.query;
 
 		joFile(get, this.callBack, this);
+		
+		return this;
 	},
 	
 	callBack: function(data, error) {

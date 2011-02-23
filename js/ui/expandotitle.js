@@ -26,6 +26,8 @@ joExpandoTitle.extend(joControl, {
 	setData: function() {
 		joView.prototype.setData.apply(this, arguments);
 		this.draw();
+		
+		return this;
 	},
 	
 	draw: function() {
