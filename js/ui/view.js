@@ -34,6 +34,8 @@ joView = function(data) {
 	this.changeEvent = new joSubject(this);
 
 	this.setContainer();
+	
+	this.data = null;
 
 	if (data)
 		this.setData(data);
@@ -42,7 +44,6 @@ joView.prototype = {
 	tagName: "joview",
 	busyNode: null,
 	container: null,
-	data: null,
 	
 	getContainer: function() {
 		return this.container;
