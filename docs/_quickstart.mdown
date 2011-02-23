@@ -5,30 +5,27 @@ Quick Start
 index.html
 ----------
 
-The complete jo library is small, so in most cases you'll just want to pull it all in,
-like this:
+Jo needs at least a simple HTML file to operate in. Here is a bare-bones example:
 
+	<!DOCTYPE html>
 	<html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/aluminum.css">
-		<link rel="stylesheet" type="text/css" href="css/webkit.css">
-		<!-- <link rel="stylesheet" type="text/css" href="css/webos.css"> -->
-		<!-- <link rel="stylesheet" type="text/css" href="css/chrome.css"> -->
+		<link rel="stylesheet" type="text/css" href="css/jo.css">
 	</head>
 	<body>
 
-	<!-- any static page content goes here -->
+		<!-- any static page content goes here -->
 
-	<!-- load jo library -->
-	<script src="jo_min.js"></script>
+		<!-- load jo library -->
+		<script src="jo_min.js"></script>
 
-	<!-- any application JavaScript files go here -->
-	<script src="hello.js"></script>
+		<!-- any application JavaScript files go here -->
+		<script src="hello.js"></script>
 
 	</body>
 	</html>
 
-If you're using jo to create all the UI for your application, you won't need *any* content
+If you're using Jo to create all the UI for your application, you won't need *any* content
 or tags in your `index.html` file.
 
 Since the framework is highly dependent on CSS, your mileage may vary across platforms. In
@@ -38,14 +35,14 @@ transitions.
 You can also completely skin your app with your own CSS, or augment the basic jo CSS to suit
 your purposes.
 
-Since jo is geared for HTML5 applications, I recommend you develop and test
+Since Jo is geared for HTML5 applications, I recommend you develop and test
 your apps with Safari or Chrome before moving to mobile devices. In fact, this
 makes the code/test/debug cycle go very quickly.
 
 hello.js
 --------
 
-jo has some initialization which should only be done when your browser is ready to have its
+Jo has some initialization which should only be done when your browser is ready to have its
 DOM fiddled with, so you may want to wrap your code in a function that's called when your
 page loads, or your device signals that your app is ready to go.
 
@@ -65,11 +62,7 @@ Something more interesting would look like:
 	// initialize jo
 	jo.load();
 	
-	// setup a stack and screen
-	var stack = new joStackScroller();
-	var scn = new joScreen(stack);
-		
-	// create our view card
+	// create our view card, notice we're nesting widgets inline
 	var card = new joCard([
 		new joTitle("Hello"),
 		new joCaption("Hello World!"),
@@ -79,13 +72,42 @@ Something more interesting would look like:
 		})
 	]);
 	
+	// setup our stack and screen
+	var stack = new joStack();
+	var screen = new joScreen(stack);
+	
 	// put the card on our view stack
 	stack.push(card);
 
-Notice above that jo supports "chaining", meaning you can make successive calls
+Note above that Jo supports "chaining", meaning you can make successive calls
 inline to a given object (see the joButton line above for an example).
+You can go a little crazy with the chaining if you prefer:
 
-Of course, it is recommended you use more robust OOP coding patterns to make a proper
+	var screen, stack, card;
+
+	// initialize jo
+	jo.load();
+
+	// create our UI
+	screen = new joScreen(
+		stack = new joStack().push(
+			card = new joCard([
+				new joTitle("Hello"),
+				new joCaption("Hello World!"),
+				new joDivider(),
+				new joButton("OK").selectEvent.subscribe(function() {
+					stack.hide();
+				})
+			])
+		)
+	);
+
+Notice we're only saving references to widgets that our app needs for later, and this
+nested layout conveys your app's UI tree nicely. See joContainer, joCache, and joStack
+for some more interesting examples. And of course, check out the samples directory
+in your Jo folder or in the git repo.
+
+It is recommended you use more robust OOP coding patterns to make a proper
 application. While there's nothing illegal about putting everything in global space
 in a single JavaScript file, but if you're looking to build something big or more easy
 to maintain, I recommend you check out "JavaScript: the Good Parts" by Doug Crockford
