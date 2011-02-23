@@ -65,15 +65,13 @@
 joStack = function(data) {
 	this.visible = false;
 
-	joContainer.call(this, data || []);
+	if (data) {
+		if (!(data instanceof Array))
+			data = [ data ];
+		else if (data.length > 1)
+			data = [ data[0] ];
+	}
 
-	// yes, nice to have one control, but we need an array
-	if (this.data && !(this.data instanceof Array))
-		this.data = [ this.data ];
-	else if (this.data.length > 1)
-		this.data = [ this.data[0] ];
-		
-	// we need to clear inlined stuff out for this to work
 	if (this.container && this.container.firstChild)
 		this.container.innerHTML = "";
 
@@ -87,6 +85,8 @@ joStack = function(data) {
 	this.hideEvent = new joSubject(this);
 	this.backEvent = new joSubject(this);
 	this.forwardEvent = new joSubject(this);
+
+	joContainer.call(this, data || []);
 
 	this.index = 0;
 	this.lastIndex = 0;
@@ -156,9 +156,6 @@ joStack.extend(joContainer, {
 			var oldclass = "next";
 			var newclass = "prev";
 			joDOM.addCSSClass(newchild, newclass);
-		}
-		else {
-//			this.getContentContainer().innerHTML = "";
 		}
 
 		this.appendChild(newnode);
@@ -240,7 +237,7 @@ joStack.extend(joContainer, {
 			
 		// don't push the same view we already have
 		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
-			return;
+			return this;
 			
 		this.data.push(o);
 		this.index = this.data.length - 1;
