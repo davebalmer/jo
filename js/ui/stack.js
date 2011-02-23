@@ -65,9 +65,7 @@
 joStack = function(data) {
 	this.visible = false;
 
-	this.data = [];
-
-	joContainer.apply(this, arguments);
+	joContainer.call(this, data || []);
 
 	// yes, nice to have one control, but we need an array
 	if (this.data && !(this.data instanceof Array))

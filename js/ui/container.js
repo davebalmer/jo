@@ -68,10 +68,10 @@
 */
 joContainer = function(data) {
 	joView.apply(this, arguments);
+	this.title = null;
 };
 joContainer.extend(joView, {
 	tagName: "jocontainer",
-	title: null,
 	
 	getContent: function() {
 		return this.container.childNodes;
@@ -84,8 +84,7 @@ joContainer.extend(joView, {
 	
 	setData: function(data) {
 		this.data = data;
-		this.refresh();
-		return this;
+		return this.refresh();
 	},
 	
 	activate: function() {},
@@ -108,7 +107,7 @@ joContainer.extend(joView, {
 				this.container.appendChild(data);
 			}
 		}
-		else {
+		else if (typeof data === 'string') {
 			// shoving html directly in does work
 			var o = document.createElement("div");
 			o.innerHTML = data;

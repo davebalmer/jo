@@ -114,13 +114,12 @@ joSlider.extend(joControl, {
 	createContainer: function() {
 		var o = joDOM.create(this.tagName);
 
-		if (o) {
+		if (o)
 			o.setAttribute("tabindex", "1");
 			
-			var t = joDOM.create("josliderthumb");
-			o.appendChild(t);
-			this.thumb = t;
-		}
+		var t = joDOM.create("josliderthumb");
+		o.appendChild(t);
+		this.thumb = t;
 		
 		return o;
 	},
@@ -195,6 +194,11 @@ joSlider.extend(joControl, {
 	},
 
 	initValue: function(value) {
+		console.log(this.container);
+		
+		if (!this.container)
+			return this;
+		
 		var t = this.container.firstChild.offsetWidth;
 		var w = this.container.offsetWidth - t;
 
@@ -227,8 +231,6 @@ joSlider.extend(joControl, {
 		
 		// we have to adjust if the window changes size
 		joGesture.resizeEvent.subscribe(this.draw, this);
-		
-		console.log('setevents');
 	},
 
 	onClick: function(e) {
@@ -239,14 +241,7 @@ joSlider.extend(joControl, {
 		joEvent.preventDefault(e);
 		
 		var point = this.getMouse(e);
-		
-		var l = joDOM.pageOffsetLeft(this.container);
-//		console.log(l);
-		
-		var x = Math.floor((point.x - l) - this.thumb.offsetWidth * 1.5);
-		
-//		console.log(x);
-
+		var x = Math.floor(point.x);
 		var t = this.thumb.offsetWidth;
 		
 		x = x - t;
@@ -257,8 +252,6 @@ joSlider.extend(joControl, {
 			x = 0;
 		else if (x > w)
 			x = w;
-
-//		this.moveTo(x);
 
 		this.setValue((x / w) * this.range + this.min);
 	},
@@ -272,8 +265,8 @@ joSlider.extend(joControl, {
 	
 	draw: function() {
 		if (!this.container)
-			this.setContainer();
-
+			return;
+			
 		this.initValue(this.value);
 	}
 });

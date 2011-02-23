@@ -69,7 +69,7 @@ joControl = function(data, value) {
 			this.value = value;
 	}
 
-	if (data instanceof joDataSource) {
+	if (typeof data !== "undefined" && data instanceof joDataSource) {
 		// we want to bind directly to some data
 		joView.call(this);
 		this.setDataSource(data);

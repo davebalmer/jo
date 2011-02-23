@@ -33,17 +33,16 @@
 joView = function(data) {
 	this.changeEvent = new joSubject(this);
 
+	this.container = null;
 	this.setContainer();
-	
-	this.data = null;
 
 	if (data)
 		this.setData(data);
+	else
+		this.data = null;
 };
 joView.prototype = {
 	tagName: "joview",
-	busyNode: null,
-	container: null,
 	
 	getContainer: function() {
 		return this.container;
@@ -87,8 +86,8 @@ joView.prototype = {
 	},
 
 	refresh: function() {
-		if (!this.container || typeof this.data == "undefined")
-			return 0;
+		if (!this.container || typeof this.data === "undefined")
+			return this;
 
 		this.container.innerHTML = "";
 		this.draw();

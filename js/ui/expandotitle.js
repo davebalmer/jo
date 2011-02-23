@@ -31,6 +31,7 @@ joExpandoTitle.extend(joControl, {
 	},
 	
 	draw: function() {
-		this.container.innerHTML = this.data + "<joicon></joicon>";
+		if (this.data && this.container)
+			this.container.innerHTML = this.data + "<joicon></joicon>";
 	}
 });
