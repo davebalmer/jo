@@ -1064,6 +1064,8 @@ joCache = {
 	set: function(key, call, context) {
 		if (call)
 			this.cache[key] = { "call": call, "context": context || this };
+			
+		return this;
 	},
 	
 	get: function(key) {
@@ -1261,10 +1263,13 @@ joDataSource.prototype = {
 	
 	setQuery: function(query) {
 		this.query = query;
+		
+		return this;
 	},
 	
 	setAutoSave: function(state) {
 		this.autoSave = state;
+		
 		return this;
 	},
 	
@@ -1274,6 +1279,8 @@ joDataSource.prototype = {
 
 		if (data !== last)
 			this.changeEvent.fire(data);
+			
+		return this;
 	},
 	
 	getData: function() {
@@ -1310,6 +1317,8 @@ joDataSource.prototype = {
 	
 	setPageSize: function(length) {
 		this.pageSize = length;
+		
+		return this;
 	},
 	
 	getPageSze: function() {
@@ -1319,6 +1328,8 @@ joDataSource.prototype = {
 	load: function(data) {
 		this.data = data;
 		this.changeEvent.fire(data);
+		
+		return this;
 	},
 	
 	error: function(msg) {
@@ -1429,6 +1440,7 @@ joDataSource.prototype = {
 	in JavaScript.
 
 */
+
 joRecord = function(data) {
 	joDataSource.call(this, data);
 	this.delegate = {};
@@ -1562,11 +1574,15 @@ joDatabase.prototype = {
 			joLog("DataBase Error", this.db);
 			this.errorEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	close: function() {
 		this.db.close();
 		this.closeEvent.fire();
+		
+		return this;
 	},
 	
 	now: function(offset) {
@@ -1619,24 +1635,29 @@ joSQLDataSource = function(db, query, args) {
 joSQLDataSource.prototype = {
 	setDatabase: function(db) {
 		this.db = db;
+		return this;
 	},
 	
 	setQuery: function(query) {
 		this.query = query;
+		return this;
 	},
 
 	setData: function(data) {
 		this.data = data;
 		this.changeEvent.fire();
+		return this;
 	},
 
 	clear: function() {
 		this.data = [];
 		this.changeEvent.fire();
+		return this;
 	},
 
 	setParameters: function(args) {
 		this.args = args;
+		return this;
 	},
 
 	execute: function(query, args) {
@@ -1645,13 +1666,15 @@ joSQLDataSource.prototype = {
 		
 		if (this.query)
 			this.refresh();
+			
+		return this;
 	},
 	
 	refresh: function() {
 		if (!this.db) {
 			this.errorEvent.fire();
 //			joLog("query error: no db!");
-			return;
+			return this;
 		}
 		
 		var self = this;
@@ -1687,6 +1710,8 @@ joSQLDataSource.prototype = {
 		this.db.db.transaction(function(t) {
 			t.executeSql(query, args, success, error);
 		});
+		
+		return this;
 	}
 };
 /**
@@ -1720,6 +1745,8 @@ joFileSource.extend(joDataSource, {
 		var get = this.baseurl + this.query;
 
 		joFile(get, this.callBack, this);
+		
+		return this;
 	},
 	
 	callBack: function(data, error) {
@@ -1990,6 +2017,8 @@ joYQL.extend(joDataSource, {
 			+ "&format=" + this.format + "&callback=" + joDepot(this.load, this);
 
 		joScript(get, this.callBack, this);
+		
+		return this;
 	},
 	
 	load: function(data) {
@@ -2001,6 +2030,8 @@ joYQL.extend(joDataSource, {
 			this.data = results;
 			this.changeEvent.fire(results);
 		}
+		
+		return this;
 	},
 	
 	callBack: function(error) {
@@ -2403,16 +2434,16 @@ joCollect = {
 joView = function(data) {
 	this.changeEvent = new joSubject(this);
 
+	this.container = null;
 	this.setContainer();
 
 	if (data)
 		this.setData(data);
+	else
+		this.data = null;
 };
 joView.prototype = {
 	tagName: "joview",
-	busyNode: null,
-	container: null,
-	data: null,
 	
 	getContainer: function() {
 		return this.container;
@@ -2440,6 +2471,8 @@ joView.prototype = {
 			this.container.innerHTML = "";
 
 		this.changeEvent.fire();
+		
+		return this;
 	},
 
 	setData: function(data) {
@@ -2454,13 +2487,15 @@ joView.prototype = {
 	},
 
 	refresh: function() {
-		if (!this.container || typeof this.data == "undefined")
-			return 0;
+		if (!this.container || typeof this.data === "undefined")
+			return this;
 
 		this.container.innerHTML = "";
 		this.draw();
 
 		this.changeEvent.fire(this.data);
+		
+		return this;
 	},
 
 	draw: function() {
@@ -2567,10 +2602,10 @@ joView.prototype = {
 */
 joContainer = function(data) {
 	joView.apply(this, arguments);
+	this.title = null;
 };
 joContainer.extend(joView, {
 	tagName: "jocontainer",
-	title: null,
 	
 	getContent: function() {
 		return this.container.childNodes;
@@ -2583,8 +2618,7 @@ joContainer.extend(joView, {
 	
 	setData: function(data) {
 		this.data = data;
-		this.refresh();
-		return this;
+		return this.refresh();
 	},
 	
 	activate: function() {},
@@ -2607,12 +2641,14 @@ joContainer.extend(joView, {
 				this.container.appendChild(data);
 			}
 		}
-		else {
+		else if (typeof data === 'string') {
 			// shoving html directly in does work
 			var o = document.createElement("div");
 			o.innerHTML = data;
 			this.container.appendChild(o);
 		}
+		
+		return this;
 	},
 	
 	getTitle: function() {
@@ -2625,6 +2661,8 @@ joContainer.extend(joView, {
 
 		this.draw();
 		this.changeEvent.fire();
+		
+		return this;
 	},
 	
 	draw: function() {
@@ -2702,7 +2740,7 @@ joControl = function(data, value) {
 			this.value = value;
 	}
 
-	if (data instanceof joDataSource) {
+	if (typeof data !== "undefined" && data instanceof joDataSource) {
 		// we want to bind directly to some data
 		joView.call(this);
 		this.setDataSource(data);
@@ -2731,6 +2769,8 @@ joControl.extend(joView, {
 			joEvent.stop(e);
 
 		this.selectEvent.fire(this.data);
+		
+		return this;
 	},
 	
 	enable: function() {
@@ -2925,6 +2965,8 @@ joBusy.extend(joContainer, {
 	
 	setMessage: function(msg) {
 		this.message = msg || "";
+		
+		return this;
 	},
 	
 	setEvents: function() {
@@ -3151,7 +3193,7 @@ joList.extend(joControl, {
 		if (this.autoSort)
 			this.sort();
 
-		joControl.prototype.refresh.apply(this);
+		return joControl.prototype.refresh.apply(this);
 	},
 
 	getNodeData: function(index) {
@@ -3202,11 +3244,15 @@ joList.extend(joControl, {
 	next: function() {
 		if (this.getValue() < this.getLength() - 1)
 			this.setValue(this.value + 1);
+		
+		return this;
 	},
 	
 	prev: function() {
 		if (this.getValue() > 0)
 			this.setValue(this.value - 1);
+			
+		return this;
 	}
 });
 /**
@@ -3247,6 +3293,8 @@ joBusy.extend(joContainer, {
 	
 	setMessage: function(msg) {
 		this.message = msg || "";
+		
+		return this;
 	},
 	
 	setEvents: function() {
@@ -3368,9 +3416,7 @@ joCard.extend(joContainer, {
 joStack = function(data) {
 	this.visible = false;
 
-	this.data = [];
-
-	joContainer.apply(this, arguments);
+	joContainer.call(this, data || []);
 
 	// yes, nice to have one control, but we need an array
 	if (this.data && !(this.data instanceof Array))
@@ -3415,6 +3461,8 @@ joStack.extend(joContainer, {
 			this.draw();
 			this.forwardEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	back: function() {
@@ -3423,6 +3471,8 @@ joStack.extend(joContainer, {
 			this.draw();
 			this.backEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	draw: function() {
@@ -3506,6 +3556,8 @@ joStack.extend(joContainer, {
 		
 		this.lastIndex = this.index;
 		this.lastNode = newchild;
+		
+		return this;
 	},
 
 	appendChild: function(child) {
@@ -3545,11 +3597,15 @@ joStack.extend(joContainer, {
 		this.index = this.data.length - 1;
 		this.draw();
 		this.pushEvent.fire(o);
+		
+		return this;
 	},
 
 	// lock the stack so the first pushed view stays put
 	setLocked: function(state) {
 		this.locked = (state) ? 1 : 0;
+		
+		return this;
 	},
 	
 	pop: function() {
@@ -3568,6 +3624,8 @@ joStack.extend(joContainer, {
 
 		if (this.data.length > 0)
 			this.popEvent.fire();
+			
+		return this;
 	},
 	
 	home: function() {
@@ -3576,7 +3634,7 @@ joStack.extend(joContainer, {
 			var c = this.data[this.index];
 			
 			if (o === c)
-				return;
+				return this;
 			
 			this.data = [o];
 			this.lastIndex = 1;
@@ -3587,6 +3645,8 @@ joStack.extend(joContainer, {
 			this.popEvent.fire();
 			this.homeEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	showHome: function() {
@@ -3597,6 +3657,8 @@ joStack.extend(joContainer, {
 			joDOM.addCSSClass(this.container, "show");
 			this.showEvent.fire();
 		}
+		
+		return this;
 	},
 	
 	getTitle: function() {
@@ -3614,6 +3676,8 @@ joStack.extend(joContainer, {
 
 			joDefer(this.showEvent.fire, this.showEvent, 500);
 		}
+		
+		return this;
 	},
 	
 	hide: function() {
@@ -3623,6 +3687,8 @@ joStack.extend(joContainer, {
 
 			joDefer(this.hideEvent.fire, this.hideEvent, 500);
 		}
+		
+		return this;
 	}
 });
 /**
@@ -3849,7 +3915,7 @@ joScroller.extend(joContainer, {
 		var dx = Math.floor(left + x);
 		
 		if (this.vertical && (node.offsetHeight <= this.container.offsetHeight))
-			return;
+			return this;
 			
 		var max = 0 - node.offsetHeight + this.container.offsetHeight;
 		var maxx = 0 - node.offsetWidth + this.container.offsetWidth;
@@ -3874,15 +3940,17 @@ joScroller.extend(joContainer, {
 
 		if (top != dx || left != dy)
 			this.moveTo(dx, dy);
+			
+		return this;
 	},
 
 	scrollTo: function(y, instant) {
 		var node = this.container.firstChild;
 		
 		if (!node)
-			return;
+			return this;
 
-		if (typeof y == 'object') {
+		if (typeof y === 'object') {
 			if (y instanceof HTMLElement)
 				var e = y;
 			else if (y instanceof joView)
@@ -3917,6 +3985,8 @@ joScroller.extend(joContainer, {
 		}
 
 		this.moveTo(0, y);
+		
+		return this;
 	},
 
 	// called after a flick transition to snap the view
@@ -3958,6 +4028,7 @@ joScroller.extend(joContainer, {
 	setScroll: function(x, y) {
 		this.horizontal = x ? 1 : 0;
 		this.vertical = y ? 1 : 0;
+		
 		return this;
 	},
 	
@@ -3965,7 +4036,7 @@ joScroller.extend(joContainer, {
 		var node = this.container.firstChild;
 		
 		if (!node)
-			return;
+			return this;
 		
 		this.setPosition(x * this.horizontal, y * this.vertical, node);
 
@@ -3975,6 +4046,8 @@ joScroller.extend(joContainer, {
 	
 	setPosition: function(x, y, node) {
 		node.style.webkitTransform = "translate3d(" + x + "px, " + y + "px, 0)";
+		
+		return this;
 	},
 	
 	getTop: function() {
@@ -3986,7 +4059,7 @@ joScroller.extend(joContainer, {
 	},
 	
 	setData: function(data) {
-		joContainer.prototype.setData.apply(this, arguments);
+		return joContainer.prototype.setData.apply(this, arguments);
 	}
 });
 /**
@@ -4070,7 +4143,7 @@ joExpando.extend(joContainer, {
 	tagName: "joexpando",
 	
 	draw: function() {
-		if (!this.data)
+		if (!this.data || !this.container)
 			return;
 		
 		joContainer.prototype.draw.apply(this, arguments);
@@ -4086,19 +4159,23 @@ joExpando.extend(joContainer, {
 	
 	toggle: function() {
 		if (this.container.className.indexOf("open") >= 0)
-			this.close();
+			return this.close();
 		else
-			this.open();
+			return this.open();
 	},
 	
 	open: function() {
 		joDOM.addCSSClass(this.container, "open");
 		this.openEvent.fire();
+		
+		return this;
 	},
 	
 	close: function() {
 		joDOM.removeCSSClass(this.container, "open");
 		this.closeEvent.fire();
+		
+		return this;
 	}
 });
 
@@ -4150,10 +4227,13 @@ joExpandoTitle.extend(joControl, {
 	setData: function() {
 		joView.prototype.setData.apply(this, arguments);
 		this.draw();
+		
+		return this;
 	},
 	
 	draw: function() {
-		this.container.innerHTML = this.data + "<joicon></joicon>";
+		if (this.data && this.container)
+			this.container.innerHTML = this.data + "<joicon></joicon>";
 	}
 });
 /**
@@ -4572,6 +4652,8 @@ joInput.extend(joControl, {
 
 			this.changeEvent.fire(this.data);
 		}
+		
+		return this;
 	},
 	
 	getData: function() {
@@ -4583,12 +4665,12 @@ joInput.extend(joControl, {
 	
 	enable: function() {
 		this.container.setAttribute("tabindex", "1");
-		joControl.prototype.enable.call(this);
+		return joControl.prototype.enable.call(this);
 	},
 	
 	disable: function() {
 		this.container.removeAttribute("tabindex");
-		joControl.prototype.disable.call(this);
+		return joControl.prototype.disable.call(this);
 	},	
 	
 	createContainer: function() {
@@ -4872,6 +4954,8 @@ joPopup.extend(joContainer, {
 	hide: function() {
 		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
 		this.container.className = 'hide';
+		
+		return this;
 	},
 	
 	onHide: function() {
@@ -4881,6 +4965,8 @@ joPopup.extend(joContainer, {
 	show: function() {
 		this.container.className = 'show';
 		this.showEvent.fire();
+		
+		return this;
 	}
 });
 /**
@@ -4989,11 +5075,15 @@ joScreen.extend(joContainer, {
 //		this.shim.showEvent.subscribe(this.popup.show, this);
 		this.shim.show();
 		this.popup.show();
+		
+		return this;
 	},
 	
 	hidePopup: function() {
 		if (this.shim)
 			this.shim.hide();
+			
+		return this;
 	},
 	
 	// shortcut to a simple alert dialog, not the most efficient
@@ -5060,6 +5150,8 @@ joScreen.extend(joContainer, {
 					callback();
 			}
 		}
+		
+		return this;
 	}
 });
 
@@ -5112,6 +5204,8 @@ joShim.extend(joContainer, {
 	hide: function() {
 		this.container.className = '';
 		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
+		
+		return this;
 	},
 	
 	show: function() {
@@ -5123,6 +5217,8 @@ joShim.extend(joContainer, {
 		// default parent to the document body
 		if (!this.lastParent)
 			this.lastParent = document.body;
+		
+		return this;
 	},
 	
 	onShow: function() {
@@ -5307,10 +5403,14 @@ joStackScroller.extend(joStack, {
 	
 	scrollTo: function(something) {
 		this.scroller.scrollTo(something);
+		
+		return this;
 	},
 	
 	scrollBy: function(y) {
 		this.scroller.scrollBy(y);
+		
+		return this;
 	},
 
 	getChildStyleContainer: function() {
@@ -5336,6 +5436,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 			
 		joStack.prototype.forward.call(this);
+		
+		return this;
 	},
 	
 	back: function() {
@@ -5343,6 +5445,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 
 		joStack.prototype.forward.call(this);
+		
+		return this;
 	},
 
 	home: function() {
@@ -5350,6 +5454,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 			joStack.prototype.home.call(this);
 		}
+		
+		return this;
 	},
 		
 	push: function(o) {
@@ -5366,6 +5472,8 @@ joStackScroller.extend(joStack, {
 		this.scroller.scrollTo(0, true);
 
 		joStack.prototype.push.call(this, o);
+		
+		return this;
 	},
 	
 	pop: function() {
@@ -5373,6 +5481,8 @@ joStackScroller.extend(joStack, {
 			this.switchScroller();
 
 		joStack.prototype.pop.call(this);
+		
+		return this;
 	}
 });
 
@@ -5687,6 +5797,8 @@ joNavbar.extend(joContainer, {
 	back: function() {
 		if (this.stack)
 			this.stack.pop();
+
+		return this;
 	},
 	
 	setStack: function(stack) {
@@ -5697,7 +5809,7 @@ joNavbar.extend(joContainer, {
 		
 		if (!stack) {
 			this.stack = null;
-			return;
+			return this;
 		}
 		
 		this.stack = stack;
@@ -5706,11 +5818,13 @@ joNavbar.extend(joContainer, {
 		stack.popEvent.subscribe(this.update, this);
 
 		this.refresh();
+		
+		return this;
 	},
 
 	update: function() {
 		if (!this.stack)
-			return;
+			return this;
 		
 		joDOM.removeCSSClass(this.back, 'selected');
 		joDOM.removeCSSClass(this.back, 'focus');
@@ -5728,11 +5842,14 @@ joNavbar.extend(joContainer, {
 			this.titlebar.setData(title);
 		else
 			this.titlebar.setData(this.firstTitle);
+			
+		return this;
 	},
 	
 	setTitle: function(title) {
 		this.titlebar.setData(title);
 		this.firstTitle = title;
+		
 		return this;
 	}
 });
@@ -5845,6 +5962,8 @@ joSelect.extend(joExpando, {
 		else {
 			this.field.setData(value);
 		}
+		
+		return this;
 	},
 	
 	getValue: function() {
@@ -5881,6 +6000,8 @@ joSelectTitle.extend(joExpandoTitle, {
 
 	setList: function(list) {
 		this.list = list;
+		
+		return this;
 	},
 	
 	setData: function(value) {
@@ -5888,6 +6009,8 @@ joSelectTitle.extend(joExpandoTitle, {
 			joExpandoTitle.prototype.setData.call(this, this.list.getNodeData(value) || "Select...");
 		else
 			joExpandoTitle.prototype.setData.call(this, value);
+		
+		return this;
 	}
 });
 /**
@@ -5947,6 +6070,8 @@ joToggle.extend(joControl, {
 			joEvent.stop(e);
 
 		this.setData((this.data) ? false : true);
+		
+		return this;
 	},
 
 	onBlur: function(e) {
@@ -6087,13 +6212,12 @@ joSlider.extend(joControl, {
 	createContainer: function() {
 		var o = joDOM.create(this.tagName);
 
-		if (o) {
+		if (o)
 			o.setAttribute("tabindex", "1");
 			
-			var t = joDOM.create("josliderthumb");
-			o.appendChild(t);
-			this.thumb = t;
-		}
+		var t = joDOM.create("josliderthumb");
+		o.appendChild(t);
+		this.thumb = t;
 		
 		return o;
 	},
@@ -6163,9 +6287,16 @@ joSlider.extend(joControl, {
 	
 	moveTo: function(x) {
 		this.thumb.style.left = x + "px";
+		
+		return this;
 	},
 
 	initValue: function(value) {
+		console.log(this.container);
+		
+		if (!this.container)
+			return this;
+		
 		var t = this.container.firstChild.offsetWidth;
 		var w = this.container.offsetWidth - t;
 
@@ -6198,8 +6329,6 @@ joSlider.extend(joControl, {
 		
 		// we have to adjust if the window changes size
 		joGesture.resizeEvent.subscribe(this.draw, this);
-		
-		console.log('setevents');
 	},
 
 	onClick: function(e) {
@@ -6210,14 +6339,7 @@ joSlider.extend(joControl, {
 		joEvent.preventDefault(e);
 		
 		var point = this.getMouse(e);
-		
-		var l = joDOM.pageOffsetLeft(this.container);
-//		console.log(l);
-		
-		var x = Math.floor((point.x - l) - this.thumb.offsetWidth * 1.5);
-		
-//		console.log(x);
-
+		var x = Math.floor(point.x);
 		var t = this.thumb.offsetWidth;
 		
 		x = x - t;
@@ -6228,8 +6350,6 @@ joSlider.extend(joControl, {
 			x = 0;
 		else if (x > w)
 			x = w;
-
-//		this.moveTo(x);
 
 		this.setValue((x / w) * this.range + this.min);
 	},
@@ -6243,8 +6363,8 @@ joSlider.extend(joControl, {
 	
 	draw: function() {
 		if (!this.container)
-			this.setContainer();
-
+			return;
+			
 		this.initValue(this.value);
 	}
 });
