@@ -70,7 +70,9 @@ joScroller = function(data) {
 };
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
-	velocity: 1.6,
+	velocity: 1.2,
+	bumpratio: .5,
+	interval: 50,
 	transitionEnd: "webkitTransitionEnd",
 	
 	setEvents: function() {
@@ -94,6 +96,7 @@ joScroller.extend(joContainer, {
 		joEvent.stop(e);
 
 		this.reset();
+		this.bump = this.bumpratio * this.container.offsetHeight;
 
 		var node = this.container.firstChild;
 		
@@ -139,10 +142,16 @@ joScroller.extend(joContainer, {
 
 		// cleanup points if the user drags slowly to avoid unwanted flicks
 		var self = this;
+		
+		if (this.timer)
+			window.clearTimeout(this.timer);
+		
 		this.timer = window.setTimeout(function() {
 			if (self.inMotion && self.points.length > 1)
 				self.points.pop();
-		}, 100);
+			
+			self.timer = null;
+		}, this.interval);
 		
 		this.scrollBy(x, y, true);
 
