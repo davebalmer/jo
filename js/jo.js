@@ -3762,7 +3762,7 @@ joScroller = function(data) {
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
 	velocity: 1.2,
-	bumpratio: .5,
+	bumpRatio: .5,
 	interval: 50,
 	transitionEnd: "webkitTransitionEnd",
 	
@@ -3787,8 +3787,8 @@ joScroller.extend(joContainer, {
 		joEvent.stop(e);
 
 		this.reset();
-		this.bumpHeight = this.bumpratio * this.container.offsetHeight;
-		this.bumpWidth = this.bumpratio * this.container.offsetWidth;
+		this.bumpHeight = this.bumpRatio * this.container.offsetHeight;
+		this.bumpWidth = this.bumpRatio * this.container.offsetWidth;
 
 		var node = this.container.firstChild;
 		
@@ -3802,7 +3802,7 @@ joScroller.extend(joContainer, {
 
 		if (!this.mousemove) {
 			this.mousemove = joEvent.capture(document.body, "mousemove", this.onMove, this);
-			this.mouseup = joEvent.capture(document.body, "mouseup", this.onUp, this);
+			this.mouseup = joEvent.on(document.body, "mouseup", this.onUp, this);
 		}
 	},
 	
@@ -3931,12 +3931,14 @@ joScroller.extend(joContainer, {
 		var ody = dy;
 		var odx = dx;
 		
-		if (this.bump) {
+		if (this.bumpHeight) {
 			if (dy > this.bumpHeight)
 				dy = this.bumpHeight;
 			else if (dy < max - this.bumpHeight)
 				dy = max - this.bumpHeight;
-
+		}
+		
+		if (this.bumpWidth) {
 			if (dx > this.bumpWidth)
 				dx = this.bumpWidth;
 			else if (dy < maxx - this.bumpWidth)
