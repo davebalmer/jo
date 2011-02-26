@@ -3753,7 +3753,8 @@ joScroller = function(data) {
 	this.moved = false;
 	this.mousemove = null;
 	this.mouseup = null;
-	this.bump = 0;
+	this.bumpHeight = 0;
+	this.bumpWidth = 0;
 
 	// Call Super
 	joContainer.apply(this, arguments);
@@ -3786,7 +3787,8 @@ joScroller.extend(joContainer, {
 		joEvent.stop(e);
 
 		this.reset();
-		this.bump = this.bumpratio * this.container.offsetHeight;
+		this.bumpHeight = this.bumpratio * this.container.offsetHeight;
+		this.bumpWidth = this.bumpratio * this.container.offsetWidth;
 
 		var node = this.container.firstChild;
 		
@@ -3930,15 +3932,15 @@ joScroller.extend(joContainer, {
 		var odx = dx;
 		
 		if (this.bump) {
-			if (dy > this.bump)
-				dy = this.bump;
-			else if (dy < max - this.bump)
-				dy = max - this.bump;
+			if (dy > this.bumpHeight)
+				dy = this.bumpHeight;
+			else if (dy < max - this.bumpHeight)
+				dy = max - this.bumpHeight;
 
-			if (dx > this.bump)
-				dx = this.bump;
-			else if (dy < maxx - this.bump)
-				dx = maxx - this.bump;
+			if (dx > this.bumpWidth)
+				dx = this.bumpWidth;
+			else if (dy < maxx - this.bumpWidth)
+				dx = maxx - this.bumpWidth;
 		}
 
 		if (!this.eventset)
