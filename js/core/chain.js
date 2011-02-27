@@ -33,11 +33,11 @@ joChain = function() {
 joChain.prototype = {
 	add: function(call, context, data) {
 		if (!context)
-			var context = this;
+			context = this;
 		
 		if (!data)
-			var data = "";
-			
+			data = "";
+		
 		this.queue.push({
 			"call":call,
 			"context": context,
@@ -50,16 +50,14 @@ joChain.prototype = {
 	
 	start: function() {
 		this.active = true;
-		
 		this.startEvent.fire();
-		
 		this.next();
 	},
 	
 	stop: function() {
 		this.active = false;
 
-		if (this.timer != null)
+		if (this.timer)
 			window.clearTimeout(this.timer);
 
 		this.timer = null;

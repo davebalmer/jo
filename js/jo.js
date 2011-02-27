@@ -30,7 +30,7 @@ joLog = function() {
 	
 	// spit out our line
 	console.log(strings.join(" "));
-}
+};
 /**
 	- - -
 
@@ -415,9 +415,8 @@ joDOM = {
 	},
 	
 	remove: function(node) {
-		if (node.parentNode) {
+		if (node.parentNode)
 			node.parentNode.removeChild(node);
-		}
 	},
 
 	enable: function() {
@@ -433,7 +432,8 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
-		var node = joDOM.get(node);
+		node = joDOM.get(node);
+
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
@@ -441,6 +441,7 @@ joDOM = {
 				if (n[i] == classname)
 					return;
 			}
+
 			n.push(classname);
 			node.className = n.join(" ");
 		}
@@ -450,18 +451,21 @@ joDOM = {
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
-		var node = joDOM.get(node);
+		node = joDOM.get(node);
+
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
 			for (var i = 0, l = n.length; i < l; i++) {
 				if (n[i] == classname) {
-					if (l == 1)
+					if (l == 1) {
 						node.className = "";
+					}
 					else {
 						n.splice(i, i);
 						node.className = n.join(" ");
 					}
+
 					return;
 				}
 			}
@@ -484,15 +488,17 @@ joDOM = {
 		if (!this.enabled)
 			return null;
 
+		var o;
+		
 		if (typeof tag === "object" && typeof tag.tagName === "string") {
 			// being used to create a container for a joView
-			var o = document.createElement(tag.tagName);
+			o = document.createElement(tag.tagName);
 
 			if (tag.className)
 				this.setStyle(o, tag.className);
 		}
 		else {
-			var o = document.createElement(tag);
+			o = document.createElement(tag);
 
 			if (style)
 				this.setStyle(o, style);
@@ -542,11 +548,8 @@ joDOM = {
 	loadCSS: function(filename, oldnode) {
 		// you can just replace the source for a given
 		// link if one is passed in
-		if (oldnode)
-			var css = oldnode;
-		else
-			var css = joDOM.create('link');
-		
+		var css = (oldnode) ? oldnode : joDOM.create('link');
+
 		css.rel = 'stylesheet';
 		css.type = 'text/css';
 		css.href = filename + (jo.debug ? ("?" + joTime.timestamp()) : "");
@@ -661,7 +664,7 @@ joEvent = {
 	
 	getTarget: function(e) {
 		if (!e)
-			var e = window.event;
+			e = window.event;
 		
 		return e.target ? e.target : e.srcElement;
 	},
@@ -679,9 +682,8 @@ joEvent = {
 				event = this.eventMap[event];
 		}
 
-		var element = joDOM.get(element);
-		var call = call;
-		var data = data || "";
+		element = joDOM.get(element);
+//		data = data || "";
 
 		function wrappercall(e) {
 			// support touchy platforms,
@@ -700,7 +702,7 @@ joEvent = {
 				call.call(context, e, data);
 			else
 				call(e, data);
-		};
+		}
 		
 		// annoying kludge for Mozilla
 		wrappercall.capture = capture || false;
@@ -737,7 +739,7 @@ joEvent = {
 	
 	block: function(e) {
 		if (window.event)
-			var e = window.event;
+			e = window.event;
 
 		if (typeof e.target == 'undefined')
 			e.target = e.srcElement;
@@ -746,7 +748,6 @@ joEvent = {
 		case 'input':
 		case 'textarea':
 			return true;
-			break;
 		default:
 			return false;
 		}
@@ -991,17 +992,18 @@ joTime = {
 */
 function joDefer(call, context, delay, data) {
 	if (!delay)
-		var delay = 100;
+		delay = 100;
 
 	if (!context)
-		var context = this;
+		context = this;
 		
 	var timer = window.setTimeout(function() {
 		call.call(context, data);
 	}, delay);
 	
 	return timer;
-};
+}
+
 joYield = joDefer;/**
 	joCache
 	=======
@@ -1117,11 +1119,11 @@ joChain = function() {
 joChain.prototype = {
 	add: function(call, context, data) {
 		if (!context)
-			var context = this;
+			context = this;
 		
 		if (!data)
-			var data = "";
-			
+			data = "";
+		
 		this.queue.push({
 			"call":call,
 			"context": context,
@@ -1134,16 +1136,14 @@ joChain.prototype = {
 	
 	start: function() {
 		this.active = true;
-		
 		this.startEvent.fire();
-		
 		this.next();
 	},
 	
 	stop: function() {
 		this.active = false;
 
-		if (this.timer != null)
+		if (this.timer)
 			window.clearTimeout(this.timer);
 
 		this.timer = null;
@@ -1678,14 +1678,15 @@ joSQLDataSource.prototype = {
 		}
 		
 		var self = this;
+		var args;
 
 		if (arguments.length) {
-			var args = [];
+			args = [];
 			for (var i = 0; i < arguments.length; i++)
 				args.push(arguments[i]);
 		}
 		else {
-			var args = this.args;
+			args = this.args;
 		}
 		
 		var query = this.query;
@@ -1815,7 +1816,7 @@ joFile = function(url, call, context, timeout) {
 
 	// 30 second default on requests
 	if (!timeout)
-		var timeout = 60 * SEC;
+		timeout = 60 * SEC;
 		
 	var timer = (timeout > 0) ? setTimeout(onerror, timeout) : null;
 
@@ -1844,7 +1845,7 @@ joFile = function(url, call, context, timeout) {
 				call(error, data, error);
 		}
 	}
-}	
+};
 
 /**
 	joScript
@@ -2055,7 +2056,7 @@ joDepot = function(call, context) {
 			call.call(context, data);
 		else
 			call(data);
-	};
+	}
 	
 	return "joDepotCall[" + (joDepotCall.length - 1) + "]";
 };
@@ -2134,7 +2135,6 @@ joDispatch.prototype = {
 		var handler = { url: url.toLowerCase(), call: call, context: (typeof context !== undefined) ? context : null };
 		
 		this.handlers.push(handler);
-		
 		this.handlers = this.handlers.sort(compare);
 		
 		function compare(a, b) {
@@ -2150,10 +2150,10 @@ joDispatch.prototype = {
 
 	getHandler: function(url) {
 		var h = this.handlers;
-		var url = url.toLowerCase();
+		url = url.toLowerCase();
 
 		for (var i = 0, l = h.length; i < l; i++) {
-			console.log(h[i].url);
+//			console.log(h[i].url);
 			if (url.indexOf(h[i].url, 0) === 0)
 				return h[i];
 		}
@@ -2358,16 +2358,18 @@ joInterface.prototype = {
 					return this;
 				};
 				
+				var o;
+				
 				if (typeof jo.tagMap[tag] === "function") {
-					var o = jo.tagMap[tag];
+					o = jo.tagMap[tag];
 				}
 				else {
 					var t = node.type || node.getAttribute("type");
-					var o = jo.tagMap[tag][t];
+					o = jo.tagMap[tag][t];
 				}
 				
 				if (typeof o === "function")
-					var view = new o(args);
+					view = new o(args);
 				else
 					joLog("joInterface can't process ", tag, "'type' attribute?");
 			}
@@ -2733,7 +2735,7 @@ joControl = function(data, value) {
 	this.enabled = true;
 	this.value = null;
 
-	if (typeof value !== "undefined" && value != null) {
+	if (typeof value !== "undefined" && value !== null) {
 		if (value instanceof joDataSource)
 			this.setValueSource(value);
 		else
@@ -3091,7 +3093,7 @@ joList.extend(joControl, {
 		for (var i = 0, l = this.data.length; i < l; i++) {
 			var element = this.formatItem(this.data[i], i, length);
 
-			if (element == null)
+			if (!element)
 				continue;
 			
 			if (typeof element === "string")
@@ -3133,7 +3135,7 @@ joList.extend(joControl, {
 	setValue: function(index, silent) {
 		this.value = index;
 
-		if (index == null)
+		if (index === null)
 			return;
 
 		if (typeof this.container === 'undefined'
@@ -3213,8 +3215,8 @@ joList.extend(joControl, {
 	
 	getNodeIndex: function(element) {
 		var index = element.getAttribute('index');
-		if (typeof index !== "undefined" && index != null)
-		 	return parseInt(index)
+		if (typeof index !== "undefined" && index !== null)
+			return parseInt(index);
 		else
 			return -1;
 	},
@@ -3353,7 +3355,7 @@ joCard.extend(joContainer, {
 	joStack
 	========
 	
- 	A UI container which keeps an array of views which can be pushed and popped.
+	A UI container which keeps an array of views which can be pushed and popped.
 	The DOM elements for a given view are removed from the DOM tree when popped
 	so we keep the render tree clean.
 
@@ -3498,14 +3500,16 @@ joStack.extend(joContainer, {
 		if (!newchild)
 			return;
 		
+		var oldclass, newclass;
+		
 		if (this.index > this.lastIndex) {
-			var oldclass = "prev";
-			var newclass = "next";
+			oldclass = "prev";
+			newclass = "next";
 			joDOM.addCSSClass(newchild, newclass);
 		}
 		else if (this.index < this.lastIndex) {
-			var oldclass = "next";
-			var newclass = "prev";
+			oldclass = "next";
+			newclass = "prev";
 			joDOM.addCSSClass(newchild, newclass);
 		}
 
@@ -3762,7 +3766,7 @@ joScroller = function(data) {
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
 	velocity: 1.2,
-	bumpRatio: .5,
+	bumpRatio: 0.5,
 	interval: 50,
 	transitionEnd: "webkitTransitionEnd",
 	
@@ -3856,7 +3860,7 @@ joScroller.extend(joContainer, {
 			return;
 
 		joEvent.remove(document.body, "mousemove", this.mousemove, true);
-		joEvent.remove(document.body, "mouseup", this.mouseup, true);
+		joEvent.remove(document.body, "mouseup", this.mouseup, false);
 
 		this.mousemove = null;
 		this.inMotion = false;
@@ -3961,18 +3965,18 @@ joScroller.extend(joContainer, {
 			return this;
 
 		if (typeof y === 'object') {
+			var e;
 			if (y instanceof HTMLElement)
-				var e = y;
+				e = y;
 			else if (y instanceof joView)
-				var e = y.container;
+				e = y.container;
 				
 			var t = 0 - e.offsetTop;
 			var h = e.offsetHeight + 80;
 
-			var y = top;
-
 			var top = this.getTop();
 			var bottom = top - this.container.offsetHeight;
+			y = top;
 
 			if (t - h < bottom)
 				y = (t - h) + this.container.offsetHeight;
@@ -4441,7 +4445,7 @@ joGesture = {
 
 	onKeyUp: function(e) {
 		if (!e)
-			var e = window.event;
+			e = window.event;
 	
 		if (e.keyCode == 18) {
 			this.altkey = false;
@@ -4488,7 +4492,7 @@ joGesture = {
 	
 	onKeyDown: function(e) {
 		if (!e)
-			var e = window.event;
+			e = window.event;
 			
 		if (e.keyCode == 27) {
 			joEvent.stop(e);
@@ -5103,7 +5107,7 @@ joScreen.extend(joContainer, {
 		var buttons = [];
 		var callback;
 		
-		var context = (typeof context === 'object') ? context : null;
+		context = (typeof context === 'object') ? context : null;
 		
 		if (typeof options === 'object') {
 			if (options instanceof Array) {
@@ -5136,7 +5140,7 @@ joScreen.extend(joContainer, {
 		
 		function addbutton(options) {
 			if (!options)
-				var options = { label: 'OK' };
+				options = { label: 'OK' };
 
 			var button = new joButton(options.label);
 			button.selectEvent.subscribe(
@@ -5300,7 +5304,7 @@ joSound = function(filename, repeat) {
 };
 joSound.prototype = {
 	play: function() {
-		if (!this.audio || this.audio.volume == 0)
+		if (!this.audio || this.audio.volume === 0)
 			return;
 
 		this.audio.play();
@@ -5609,18 +5613,20 @@ joTable.extend(joList, {
 	},
 	
 	getRow: function(index) {
-		if (typeof index == "undefined")
-			var index = this.getIndex();
+		if (typeof index === "undefined")
+			index = this.getIndex();
 			
 		var rowsize = this.data[0].length;
+
 		return Math.floor(index / rowsize);
 	},
 
 	getCol: function(index) {
-		if (typeof index == "undefined")
-			var index = this.getIndex();
-			
+		if (typeof index === "undefined")
+			index = this.getIndex();
+		
 		var rowsize = this.data[0].length;
+
 		return index % rowsize;
 	}	
 });
@@ -6275,8 +6281,8 @@ joSlider.extend(joControl, {
 			this.oy = this.thumb.offsetTop;
 		}		
 
-		var x = (x - this.firstX) + this.ox;
-		var y = (y - this.firstY) + this.oy;
+		x = (x - this.firstX) + this.ox;
+		y = (y - this.firstY) + this.oy;
 		
 		if (x > 4 || y > 4)
 			this.moved = true;

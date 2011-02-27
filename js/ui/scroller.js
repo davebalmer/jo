@@ -72,7 +72,7 @@ joScroller = function(data) {
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
 	velocity: 1.2,
-	bumpRatio: .5,
+	bumpRatio: 0.5,
 	interval: 50,
 	transitionEnd: "webkitTransitionEnd",
 	
@@ -166,7 +166,7 @@ joScroller.extend(joContainer, {
 			return;
 
 		joEvent.remove(document.body, "mousemove", this.mousemove, true);
-		joEvent.remove(document.body, "mouseup", this.mouseup, true);
+		joEvent.remove(document.body, "mouseup", this.mouseup, false);
 
 		this.mousemove = null;
 		this.inMotion = false;
@@ -271,18 +271,18 @@ joScroller.extend(joContainer, {
 			return this;
 
 		if (typeof y === 'object') {
+			var e;
 			if (y instanceof HTMLElement)
-				var e = y;
+				e = y;
 			else if (y instanceof joView)
-				var e = y.container;
+				e = y.container;
 				
 			var t = 0 - e.offsetTop;
 			var h = e.offsetHeight + 80;
 
-			var y = top;
-
 			var top = this.getTop();
 			var bottom = top - this.container.offsetHeight;
+			y = top;
 
 			if (t - h < bottom)
 				y = (t - h) + this.container.offsetHeight;

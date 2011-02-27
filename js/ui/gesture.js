@@ -61,7 +61,7 @@ joGesture = {
 
 	onKeyUp: function(e) {
 		if (!e)
-			var e = window.event;
+			e = window.event;
 	
 		if (e.keyCode == 18) {
 			this.altkey = false;
@@ -108,7 +108,7 @@ joGesture = {
 	
 	onKeyDown: function(e) {
 		if (!e)
-			var e = window.event;
+			e = window.event;
 			
 		if (e.keyCode == 27) {
 			joEvent.stop(e);

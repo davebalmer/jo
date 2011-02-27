@@ -20,15 +20,16 @@
 */
 function joDefer(call, context, delay, data) {
 	if (!delay)
-		var delay = 100;
+		delay = 100;
 
 	if (!context)
-		var context = this;
+		context = this;
 		
 	var timer = window.setTimeout(function() {
 		call.call(context, data);
 	}, delay);
 	
 	return timer;
-};
+}
+
 joYield = joDefer;

@@ -116,7 +116,7 @@ joList.extend(joControl, {
 		for (var i = 0, l = this.data.length; i < l; i++) {
 			var element = this.formatItem(this.data[i], i, length);
 
-			if (element == null)
+			if (!element)
 				continue;
 			
 			if (typeof element === "string")
@@ -158,7 +158,7 @@ joList.extend(joControl, {
 	setValue: function(index, silent) {
 		this.value = index;
 
-		if (index == null)
+		if (index === null)
 			return;
 
 		if (typeof this.container === 'undefined'
@@ -238,8 +238,8 @@ joList.extend(joControl, {
 	
 	getNodeIndex: function(element) {
 		var index = element.getAttribute('index');
-		if (typeof index !== "undefined" && index != null)
-		 	return parseInt(index)
+		if (typeof index !== "undefined" && index !== null)
+			return parseInt(index);
 		else
 			return -1;
 	},

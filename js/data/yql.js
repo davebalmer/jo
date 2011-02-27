@@ -123,7 +123,7 @@ joDepot = function(call, context) {
 			call.call(context, data);
 		else
 			call(data);
-	};
+	}
 	
 	return "joDepotCall[" + (joDepotCall.length - 1) + "]";
 };

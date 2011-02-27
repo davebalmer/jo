@@ -3,7 +3,7 @@ App = {
 		jo.load();
 
 		// create a new file source
-		var file = new joFileSource("sometext.html");
+		var file = new joFileSource("sometext.html").load();
 
 		// we're going to bind our data source to the contents of this control
 		var html = new joHTML(file);

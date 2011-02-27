@@ -82,14 +82,15 @@ joSQLDataSource.prototype = {
 		}
 		
 		var self = this;
+		var args;
 
 		if (arguments.length) {
-			var args = [];
+			args = [];
 			for (var i = 0; i < arguments.length; i++)
 				args.push(arguments[i]);
 		}
 		else {
-			var args = this.args;
+			args = this.args;
 		}
 		
 		var query = this.query;

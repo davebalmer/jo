@@ -94,9 +94,8 @@ joDOM = {
 	},
 	
 	remove: function(node) {
-		if (node.parentNode) {
+		if (node.parentNode)
 			node.parentNode.removeChild(node);
-		}
 	},
 
 	enable: function() {
@@ -112,7 +111,8 @@ joDOM = {
 	},
 
 	addCSSClass: function(node, classname) {
-		var node = joDOM.get(node);
+		node = joDOM.get(node);
+
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
@@ -120,6 +120,7 @@ joDOM = {
 				if (n[i] == classname)
 					return;
 			}
+
 			n.push(classname);
 			node.className = n.join(" ");
 		}
@@ -129,18 +130,21 @@ joDOM = {
 	},
 
 	removeCSSClass: function(node, classname, toggle) {
-		var node = joDOM.get(node);
+		node = joDOM.get(node);
+
 		if (typeof node.className !== "undefined") {
 			var n = node.className.split(/\s+/);
 
 			for (var i = 0, l = n.length; i < l; i++) {
 				if (n[i] == classname) {
-					if (l == 1)
+					if (l == 1) {
 						node.className = "";
+					}
 					else {
 						n.splice(i, i);
 						node.className = n.join(" ");
 					}
+
 					return;
 				}
 			}
@@ -163,15 +167,17 @@ joDOM = {
 		if (!this.enabled)
 			return null;
 
+		var o;
+		
 		if (typeof tag === "object" && typeof tag.tagName === "string") {
 			// being used to create a container for a joView
-			var o = document.createElement(tag.tagName);
+			o = document.createElement(tag.tagName);
 
 			if (tag.className)
 				this.setStyle(o, tag.className);
 		}
 		else {
-			var o = document.createElement(tag);
+			o = document.createElement(tag);
 
 			if (style)
 				this.setStyle(o, style);
@@ -221,11 +227,8 @@ joDOM = {
 	loadCSS: function(filename, oldnode) {
 		// you can just replace the source for a given
 		// link if one is passed in
-		if (oldnode)
-			var css = oldnode;
-		else
-			var css = joDOM.create('link');
-		
+		var css = (oldnode) ? oldnode : joDOM.create('link');
+
 		css.rel = 'stylesheet';
 		css.type = 'text/css';
 		css.href = filename + (jo.debug ? ("?" + joTime.timestamp()) : "");

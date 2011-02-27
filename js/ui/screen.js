@@ -122,7 +122,7 @@ joScreen.extend(joContainer, {
 		var buttons = [];
 		var callback;
 		
-		var context = (typeof context === 'object') ? context : null;
+		context = (typeof context === 'object') ? context : null;
 		
 		if (typeof options === 'object') {
 			if (options instanceof Array) {
@@ -155,7 +155,7 @@ joScreen.extend(joContainer, {
 		
 		function addbutton(options) {
 			if (!options)
-				var options = { label: 'OK' };
+				options = { label: 'OK' };
 
 			var button = new joButton(options.label);
 			button.selectEvent.subscribe(

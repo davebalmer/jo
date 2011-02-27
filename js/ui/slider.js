@@ -167,8 +167,8 @@ joSlider.extend(joControl, {
 			this.oy = this.thumb.offsetTop;
 		}		
 
-		var x = (x - this.firstX) + this.ox;
-		var y = (y - this.firstY) + this.oy;
+		x = (x - this.firstX) + this.ox;
+		y = (y - this.firstY) + this.oy;
 		
 		if (x > 4 || y > 4)
 			this.moved = true;

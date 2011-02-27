@@ -73,18 +73,20 @@ joTable.extend(joList, {
 	},
 	
 	getRow: function(index) {
-		if (typeof index == "undefined")
-			var index = this.getIndex();
+		if (typeof index === "undefined")
+			index = this.getIndex();
 			
 		var rowsize = this.data[0].length;
+
 		return Math.floor(index / rowsize);
 	},
 
 	getCol: function(index) {
-		if (typeof index == "undefined")
-			var index = this.getIndex();
-			
+		if (typeof index === "undefined")
+			index = this.getIndex();
+		
 		var rowsize = this.data[0].length;
+
 		return index % rowsize;
 	}	
 });

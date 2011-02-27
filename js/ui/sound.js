@@ -58,7 +58,7 @@ joSound = function(filename, repeat) {
 };
 joSound.prototype = {
 	play: function() {
-		if (!this.audio || this.audio.volume == 0)
+		if (!this.audio || this.audio.volume === 0)
 			return;
 
 		this.audio.play();

@@ -62,7 +62,7 @@ joControl = function(data, value) {
 	this.enabled = true;
 	this.value = null;
 
-	if (typeof value !== "undefined" && value != null) {
+	if (typeof value !== "undefined" && value !== null) {
 		if (value instanceof joDataSource)
 			this.setValueSource(value);
 		else

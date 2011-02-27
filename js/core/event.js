@@ -54,7 +54,7 @@ joEvent = {
 	
 	getTarget: function(e) {
 		if (!e)
-			var e = window.event;
+			e = window.event;
 		
 		return e.target ? e.target : e.srcElement;
 	},
@@ -72,9 +72,8 @@ joEvent = {
 				event = this.eventMap[event];
 		}
 
-		var element = joDOM.get(element);
-		var call = call;
-		var data = data || "";
+		element = joDOM.get(element);
+//		data = data || "";
 
 		function wrappercall(e) {
 			// support touchy platforms,
@@ -93,7 +92,7 @@ joEvent = {
 				call.call(context, e, data);
 			else
 				call(e, data);
-		};
+		}
 		
 		// annoying kludge for Mozilla
 		wrappercall.capture = capture || false;
@@ -130,7 +129,7 @@ joEvent = {
 	
 	block: function(e) {
 		if (window.event)
-			var e = window.event;
+			e = window.event;
 
 		if (typeof e.target == 'undefined')
 			e.target = e.srcElement;
@@ -139,7 +138,6 @@ joEvent = {
 		case 'input':
 		case 'textarea':
 			return true;
-			break;
 		default:
 			return false;
 		}

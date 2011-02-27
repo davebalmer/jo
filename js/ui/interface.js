@@ -195,16 +195,18 @@ joInterface.prototype = {
 					return this;
 				};
 				
+				var o;
+				
 				if (typeof jo.tagMap[tag] === "function") {
-					var o = jo.tagMap[tag];
+					o = jo.tagMap[tag];
 				}
 				else {
 					var t = node.type || node.getAttribute("type");
-					var o = jo.tagMap[tag][t];
+					o = jo.tagMap[tag][t];
 				}
 				
 				if (typeof o === "function")
-					var view = new o(args);
+					view = new o(args);
 				else
 					joLog("joInterface can't process ", tag, "'type' attribute?");
 			}

@@ -2,7 +2,7 @@
 	joStack
 	========
 	
- 	A UI container which keeps an array of views which can be pushed and popped.
+	A UI container which keeps an array of views which can be pushed and popped.
 	The DOM elements for a given view are removed from the DOM tree when popped
 	so we keep the render tree clean.
 
@@ -147,14 +147,16 @@ joStack.extend(joContainer, {
 		if (!newchild)
 			return;
 		
+		var oldclass, newclass;
+		
 		if (this.index > this.lastIndex) {
-			var oldclass = "prev";
-			var newclass = "next";
+			oldclass = "prev";
+			newclass = "next";
 			joDOM.addCSSClass(newchild, newclass);
 		}
 		else if (this.index < this.lastIndex) {
-			var oldclass = "next";
-			var newclass = "prev";
+			oldclass = "next";
+			newclass = "prev";
 			joDOM.addCSSClass(newchild, newclass);
 		}
 

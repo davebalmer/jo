@@ -30,4 +30,4 @@ joLog = function() {
 	
 	// spit out our line
 	console.log(strings.join(" "));
-}
+};

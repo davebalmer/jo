@@ -99,7 +99,7 @@ joFile = function(url, call, context, timeout) {
 
 	// 30 second default on requests
 	if (!timeout)
-		var timeout = 60 * SEC;
+		timeout = 60 * SEC;
 		
 	var timer = (timeout > 0) ? setTimeout(onerror, timeout) : null;
 
@@ -128,5 +128,5 @@ joFile = function(url, call, context, timeout) {
 				call(error, data, error);
 		}
 	}
-}	
+};
 

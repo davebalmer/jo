@@ -73,7 +73,6 @@ joDispatch.prototype = {
 		var handler = { url: url.toLowerCase(), call: call, context: (typeof context !== undefined) ? context : null };
 		
 		this.handlers.push(handler);
-		
 		this.handlers = this.handlers.sort(compare);
 		
 		function compare(a, b) {
@@ -89,10 +88,10 @@ joDispatch.prototype = {
 
 	getHandler: function(url) {
 		var h = this.handlers;
-		var url = url.toLowerCase();
+		url = url.toLowerCase();
 
 		for (var i = 0, l = h.length; i < l; i++) {
-			console.log(h[i].url);
+//			console.log(h[i].url);
 			if (url.indexOf(h[i].url, 0) === 0)
 				return h[i];
 		}
