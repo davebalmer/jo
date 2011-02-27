@@ -205,7 +205,7 @@ return this;},setValue:function(index,silent){this.value=index;if(index===null)
 return;if(typeof this.container==='undefined'||!this.container||!this.container.firstChild){return this;}
 var node=this.getNode(this.value);if(node){if(this.lastNode)
 joDOM.removeCSSClass(this.lastNode,"selected");joDOM.addCSSClass(node,"selected");this.lastNode=node;}
-if(index>=0&&!silent){this.fireSelect(index);this.changeEvent.fire(index);}
+if(index>=0&&!silent){this.fireSelect(index);}
 return this;},getNode:function(index){return this.container.childNodes[index];},fireSelect:function(index){this.selectEvent.fire(index);},getValue:function(){return this.value;},onMouseDown:function(e){joEvent.stop(e);var node=joEvent.getTarget(e);var index=-1;while(index==-1&&node!==this.container){index=node.getAttribute("index")||-1;node=node.parentNode;}
 if(index>=0)
 this.setValue(index);},refresh:function(){if(this.autoSort)

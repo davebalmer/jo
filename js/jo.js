@@ -3155,7 +3155,7 @@ joList.extend(joControl, {
 		
 		if (index >= 0 && !silent) {
 			this.fireSelect(index);
-			this.changeEvent.fire(index);
+//			this.changeEvent.fire(index);
 		}
 			
 		return this;
