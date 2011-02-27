@@ -10,6 +10,10 @@ jocard {
 	padding-bottom: 35px;
 }
 
+body > jocontainer {
+	position: static;
+}
+
 jotoolbar {
 	padding: 10px;
 	background: rgba(0, 0, 0, .8);
