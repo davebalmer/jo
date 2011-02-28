@@ -71,13 +71,13 @@ joScroller = function(data) {
 };
 joScroller.extend(joContainer, {
 	tagName: "joscroller",
-	velocity: 1.2,
+	velocity: 1.6,
 	bumpRatio: 0.5,
-	interval: 50,
+	interval: 100,
 	transitionEnd: "webkitTransitionEnd",
 	
 	setEvents: function() {
-		joEvent.capture(this.container, "click", this.onClick, this);
+//		joEvent.capture(this.container, "click", this.onClick, this);
 		joEvent.on(this.container, "mousedown", this.onDown, this);
 	},
 	
@@ -94,7 +94,7 @@ joScroller.extend(joContainer, {
 	},
 	
 	onDown: function(e) {
-		joEvent.stop(e);
+//		joEvent.stop(e);
 
 		this.reset();
 		this.bumpHeight = this.bumpRatio * this.container.offsetHeight;
@@ -155,7 +155,8 @@ joScroller.extend(joContainer, {
 			self.timer = null;
 		}, this.interval);
 		
-		this.scrollBy(x, y, true);
+		if (this.moved)
+			this.scrollBy(x, y, true);
 
 		if (!this.moved && this.points.length > 3)
 			this.moved = true;
@@ -171,8 +172,8 @@ joScroller.extend(joContainer, {
 		this.mousemove = null;
 		this.inMotion = false;
 
-		joEvent.stop(e);
-		joEvent.preventDefault(e);
+//		joEvent.stop(e);
+//		joEvent.preventDefault(e);
 
 		var end = this.getMouse(e);
 		var node = this.container.firstChild;
