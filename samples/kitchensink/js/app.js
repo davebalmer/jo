@@ -4,6 +4,11 @@ App = {
 		
 		// grab the HTML for our about box
 		var about = joDOM.get("about").innerHTML;
+	
+		document.body.addEventListener('touchmove', function(e) {
+		    e.preventDefault();
+			joEvent.stop(e);
+		}, false);
 		
 		// this is a more complex UI with a nav bar and a toolbar
 		this.scn = new joScreen(
