@@ -123,7 +123,7 @@ if (typeof console === 'undefined' || typeof console.log !== 'function')
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.4.1",
+	version: "0.4.2",
 	
 	useragent: [
 		'ipad',
