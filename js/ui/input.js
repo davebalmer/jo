@@ -95,8 +95,18 @@ joInput.extend(joControl, {
 	},
 
 	setEvents: function() {
+		if (!this.container)
+			return;
+		
 		joControl.prototype.setEvents.call(this);
 		joEvent.on(this.container, "keydown", this.onKeyDown, this);
+
+/*
+		this.container.addEventListener('touchmove', function(e) {
+		    e.preventDefault();
+			joEvent.stop(e);
+		}, false);
+*/
 	},
 	
 	onKeyDown: function(e) {
