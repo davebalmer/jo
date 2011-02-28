@@ -84,7 +84,7 @@ joControl.extend(joView, {
 	setEvents: function() {
 		// not sure what we want to do here, want to use
 		// gesture system, but that's not defined
-		joEvent.on(this.container, "click", this.onMouseDown, this);
+		joEvent.capture(this.container, "click", this.onMouseDown, this);
 		joEvent.on(this.container, "blur", this.onBlur, this);
 		joEvent.on(this.container, "focus", this.onFocus, this);
 	},
