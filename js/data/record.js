@@ -104,7 +104,7 @@
 */
 
 joRecord = function(data) {
-	joDataSource.call(this, data);
+	joDataSource.call(this, data || {});
 	this.delegate = {};
 };
 joRecord.extend(joDataSource, {
@@ -124,7 +124,7 @@ joRecord.extend(joDataSource, {
 	},
 	
 	setProperty: function(p, data) {
-		if (this.data[p] === data)
+		if (typeof this.data[p] !== 'undefined' && this.data[p] === data)
 			return;
 		
 		this.data[p] = data;
