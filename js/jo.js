@@ -1451,6 +1451,9 @@ joRecord.extend(joDataSource, {
 	},
 	
 	getDelegate: function(p) {
+		if (typeof this.data[p] === "undefined")
+			this.data[p] === null;
+		
 		if (!this.delegate[p])
 			this.delegate[p] = new joProperty(this, p);
 			
