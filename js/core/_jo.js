@@ -128,6 +128,7 @@ jo = {
 	useragent: [
 		'ipad',
 		'iphone',
+		'playbook',
 		'webos',
 		'bada',
 		'android',
