@@ -15,6 +15,7 @@ require PhoneGap, but it is useful for some things.
 - iOS 3+ for iPhone, iPad, iPod Touch
 - Android 2.1+
 - webOS 1.4+
+- Blackberry PlayBook using their Web SDK
 - Symbian ^ 3
 
 It's been reported that Jo works great with newer releases of Blackberry,
