@@ -4396,12 +4396,24 @@ joFooter.extend(joContainer, {
 	Events
 	------
 	
+	- `defaultEvent`
+	
+	  Fired when `return` or `enter` key is pressed.
+	
+	- `backEvent`
+
+	  Fired when `ESC` key is pressed (on webOS, the back gesture fires an `ESC` key)
+	
+	- `resizeEvent`
+	
+	  Fired on window resize.
+
+	- `forwardEvent`
 	- `upEvent`
 	- `downEvent`
 	- `leftEvent`
 	- `rightEvent`
-	- `backEvent`
-	- `forwardEvent`
+
 	- `homeEvent`
 	- `closeEvent`
 	- `activateEvent`
@@ -4420,6 +4432,7 @@ joGesture = {
 		this.leftEvent = new joSubject(this);
 		this.rightEvent = new joSubject(this);
 		this.forwardEvent = new joSubject(this);
+		this.defaultEvent = new joSubject(this);
 		this.backEvent = new joSubject(this);
 		this.homeEvent = new joSubject(this);
 		this.closeEvent = new joSubject(this);
@@ -4466,6 +4479,15 @@ joGesture = {
 			return;
 		}
 
+		if (e.keyCode == 13) {
+			joEvent.stop(e);
+			joEvent.preventDefault(e);
+
+			this.defaultEvent.fire("default");
+			return;
+		}
+
+		// from here on, these are for simulating device events on a browser
 		if (!this.altkey)
 			return;
 		
