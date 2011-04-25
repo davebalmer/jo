@@ -131,7 +131,7 @@ joRecord.extend(joDataSource, {
 			return;
 		
 		this.data[p] = data;
-		this.changeEvent.fire(this);
+		this.changeEvent.fire(p);
 		
 		if (this.autoSave)
 			this.save();
