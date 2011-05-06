@@ -94,12 +94,12 @@ em, i, b, span, u, a, button, input {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
 }
 .matte {
   color: rgba(255, 255, 255, 0.9);
@@ -138,12 +138,12 @@ em, i, b, span, u, a, button, input {
 }
 .selected {
   background-color: #e98021;
-  background-image: url(shade-top.png);
+  background-image: url(shade-top-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
 }
 .focus {
   background-color: #fff;
@@ -167,24 +167,24 @@ jobutton {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
 jobutton .focus {
   background-color: #e98021;
-  background-image: url(shade-top.png);
+  background-image: url(shade-top-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
 }
 jooption {
   display: block;
@@ -207,12 +207,12 @@ jooptionitem {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
@@ -466,12 +466,12 @@ joexpandotitle {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -526,12 +526,12 @@ jotoggle {
   /*	border: 1px solid rgba(0, 0, 0, .6); */
 
   background-color: inherit;
-  background-image: url(shade-top.png);
+  background-image: url(shade-top-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
   -o-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
@@ -549,12 +549,12 @@ jotoggle > * {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   border-color: #000;
   margin: 0;
   text-align: center;
@@ -573,12 +573,12 @@ jotoggle > * {
 }
 jotoggle.on {
   background-color: inherit;
-  background-image: url(shade-top.png);
+  background-image: url(shade-top-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
 }
 jotoggle.on > * {
   -webkit-box-shadow: -2px 0 2px rgba(0, 0, 0, 0.2);
@@ -624,12 +624,12 @@ josliderthumb {
   outline-color: transparent;
   padding: 10px 0;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -641,12 +641,12 @@ joslider {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
-  background-image: url(shade-top.png);
+  background-image: url(shade-top-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
   -o-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
@@ -991,12 +991,12 @@ jopopup > joscroller {
   width: 100%;
 }
 jonavbar {
-  background-image: url(shiny.png);
+  background-image: url(shiny-split.png);
   background-repeat: repeat-x;
   background-position: top left;
-  background-size: 100% 50%;
-  -webkit-background-size: 100% 50%;
-  -moz-background-size: 100% 50%;
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
   display: block;
   position: relative;
   margin: 0;
