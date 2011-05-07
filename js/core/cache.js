@@ -59,7 +59,7 @@ joCache = {
 	
 	set: function(key, call, context) {
 		if (call)
-			this.cache[key] = { "call": call, "context": context || this };
+			this.cache[key] = { call: call, context: context || this };
 			
 		return this;
 	},

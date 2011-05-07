@@ -844,7 +844,7 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 		
-		var o = { "call": call };
+		var o = { call: call };
 
 		if (observer)
 			o.observer = observer;
@@ -912,7 +912,7 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 
-		var o = { "call": call, capture: true };
+		var o = { call: call, capture: true };
 
 		if (observer)
 			o.observer = observer;
@@ -1066,7 +1066,7 @@ joCache = {
 	
 	set: function(key, call, context) {
 		if (call)
-			this.cache[key] = { "call": call, "context": context || this };
+			this.cache[key] = { call: call, context: context || this };
 			
 		return this;
 	},
@@ -1126,9 +1126,9 @@ joChain.prototype = {
 			data = "";
 		
 		this.queue.push({
-			"call":call,
-			"context": context,
-			"data": data
+			call: call,
+			context: context,
+			data: data
 		});
 		
 		if (this.active && !this.timer)

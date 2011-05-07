@@ -39,9 +39,9 @@ joChain.prototype = {
 			data = "";
 		
 		this.queue.push({
-			"call":call,
-			"context": context,
-			"data": data
+			call: call,
+			context: context,
+			data: data
 		});
 		
 		if (this.active && !this.timer)

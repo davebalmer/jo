@@ -88,7 +88,7 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 		
-		var o = { "call": call };
+		var o = { call: call };
 
 		if (observer)
 			o.observer = observer;
@@ -156,7 +156,7 @@ joSubject.prototype = {
 		if (!call)
 			return false;
 
-		var o = { "call": call, capture: true };
+		var o = { call: call, capture: true };
 
 		if (observer)
 			o.observer = observer;
