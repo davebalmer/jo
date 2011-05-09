@@ -65,6 +65,7 @@ jotoolbar jobutton:last-child {
   to {-webkit-transform: rotate(0deg);}
 }
 
+/*
 jotitle {
 	text-align: left;
 	padding: 10px 10px;
@@ -78,6 +79,7 @@ jotitle {
 	font-weight: bold;
 	color: #000;
 }
+*/
 
 .about img {
 	display: block;
@@ -99,10 +101,13 @@ jotoolbar jobutton.focus, jotoolbar jobutton.selected {
 	background-color: rgba(0, 0, 0, .8);
 }
 
+/*
 input, textarea {
 	font-size: 15px;
 }
+*/
 
+/*
 jopopup {
 	background-image: url(../../css/subtle-shiny.png);
 	background-color: #224;
@@ -120,3 +125,4 @@ jopopup jotitle {
 jopopup jogroup {
 	background-color: rgba(255, 255, 255, .4);
 }
+*/
