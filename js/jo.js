@@ -1026,6 +1026,17 @@ joYield = joDefer;/**
 	  Returns an object based on the `key` string. If an object has not been created
 	  which corresponds to the `key`, joCache will call the constructor defined to
 	  create it and store the reference for future calls to `get()`.
+
+	- `clear(key)`
+
+	  Frees up the object held by joCache for a given key. The goal is to free up
+	  memory. Note that for your object (probably a view) to be truly free, you
+	  should make sure you don't have any global references pointing to it. There
+	  isn't a practical way to do this at the framework level, it requires some
+	  careful coding.
+
+	  A potentially useful side effect of this is you can force a fresh build of
+	  your view by doing `joCache.clear("prefs").get("prefs")`.
 	
 	Use
 	---
@@ -1059,6 +1070,10 @@ joYield = joDefer;/**
 		// views which differ based on parameters passed in,
 		// you probably want your own caching mechanism instead.
 
+	Clearing cache data:
+
+		// useful if you want to free up memory
+		joCache.clear("home");
 */
 
 joCache = {
@@ -1082,6 +1097,13 @@ joCache = {
 		else {
 			return new joView("View not found: " + key);
 		}
+	},
+
+	clear: function(key) {
+		if (typeof this.cache[key] === 'object')
+			this.cache[key].view = null;
+		
+		return this;
 	}
 };
 

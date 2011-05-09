@@ -78,7 +78,8 @@ context=this;var timer=window.setTimeout(function(){call.call(context,data);},de
 joYield=joDefer;joCache={cache:{},set:function(key,call,context){if(call)
 this.cache[key]={call:call,context:context||this};return this;},get:function(key){var cache=this.cache[key]||null;if(cache){if(!cache.view)
 cache.view=cache.call.apply(cache.context,arguments);return cache.view;}
-else{return new joView("View not found: "+key);}}};joChain=function(){this.queue=[];this.active=false;this.addEvent=new joSubject("add",this);this.startEvent=new joSubject("start",this);this.stopEvent=new joSubject("stop",this);this.nextEvent=new joSubject("next",this);this.stop();this.delay=100;};joChain.prototype={add:function(call,context,data){if(!context)
+else{return new joView("View not found: "+key);}},clear:function(key){if(typeof this.cache[key]==='object')
+this.cache[key].view=null;return this;}};joChain=function(){this.queue=[];this.active=false;this.addEvent=new joSubject("add",this);this.startEvent=new joSubject("start",this);this.stopEvent=new joSubject("stop",this);this.nextEvent=new joSubject("next",this);this.stop();this.delay=100;};joChain.prototype={add:function(call,context,data){if(!context)
 context=this;if(!data)
 data="";this.queue.push({call:call,context:context,data:data});if(this.active&&!this.timer)
 this.next();},start:function(){this.active=true;this.startEvent.fire();this.next();},stop:function(){this.active=false;if(this.timer)
