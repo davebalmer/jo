@@ -1457,7 +1457,7 @@ joDataSource.prototype = {
 			load: function() {
 				// do an AJAX or SQL call here
 			}
-		}
+		});
 
 	See Class Patterns for more details on this method of "subclassing"
 	in JavaScript.
