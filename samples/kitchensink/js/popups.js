@@ -31,6 +31,7 @@ joCache.set("popups", function() {
 // a more complex popup with dialog controls
 joCache.set("popup", function() {
 	var popup = [
+		new joTitle("Login Form Example"),
 		new joGroup([
 			new joHTML("You can load up a popup with form widgets and more."),
 			new joDivider(),
