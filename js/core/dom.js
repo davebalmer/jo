@@ -141,7 +141,7 @@ joDOM = {
 						node.className = "";
 					}
 					else {
-						n.splice(i, i);
+						n.splice(i, 1);
 						node.className = n.join(" ");
 					}
 
