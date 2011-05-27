@@ -30,8 +30,8 @@
 */
 joSQLDataSource = function(db, query, args) {
 	this.db = db;
-	this.query = (typeof query == 'undefined') ? "" : query;
-	this.args = (typeof args == 'undefined') ? [] : args;
+	this.query = (typeof query === 'undefined') ? "" : query;
+	this.args = (typeof args === 'undefined') ? [] : args;
 	
 	this.changeEvent = new joSubject(this);
 	this.errorEvent = new joSubject(this);
