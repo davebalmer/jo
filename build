@@ -2,21 +2,22 @@
 echo "Building jo.js"
 
 cd js/core
-cat log.js _jo.js dom.js event.js subject.js time.js yield.js cache.js chain.js clipboard.js local.js > ../jo.js
+cat log.js _jo.js dom.js event.js subject.js time.js yield.js cache.js clipboard.js local.js > ../jo.js
 
 cd ../data
 cat datasource.js record.js database.js sqldatasource.js filesource.js script.js preference.js yql.js dispatch.js >> ../jo.js
 
 cd ../ui
-cat interface.js collect.js view.js container.js control.js button.js busy.js list.js busy.js caption.js card.js stack.js scroller.js divider.js expando.js expandotitle.js flexrow.js focus.js footer.js gesture.js group.js html.js input.js label.js menu.js option.js passwordinput.js popup.js screen.js shim.js sound.js stackscroller.js tabbar.js table.js textarea.js title.js toolbar.js form.js dialog.js selectlist.js navbar.js select.js toggle.js slider.js >> ../jo.js
+cat interface.js collect.js view.js container.js control.js button.js list.js busy.js caption.js card.js stack.js scroller.js divider.js expando.js expandotitle.js flexrow.js focus.js footer.js gesture.js group.js html.js input.js label.js menu.js option.js passwordinput.js popup.js screen.js shim.js sound.js stackscroller.js tabbar.js table.js textarea.js title.js toolbar.js form.js dialog.js selectlist.js navbar.js select.js toggle.js slider.js >> ../jo.js
 
 cd ..
 echo "Done."
 
 echo "Minifying jo.js -> jo_min.js"
 jsmin < jo.js > jo_min.js
-#echo "Compiling jo.js -> jo_com.js"
-#java -jar ~/bin/compiler.jar --js=jo.js --js_output_file=jo_com.js
+# echo "Compiling jo.js -> jo_com.js"
+# java -jar ~/bin/compiler.jar --js=jo.js --js_output_file=jo_com.js
+# gzip -c jo_com.js > jo_com.js.gz
 cd ..
 echo "Done."
 
