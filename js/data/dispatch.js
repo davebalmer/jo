@@ -70,9 +70,11 @@ joDispatch.prototype = {
 		if (typeof url === 'undefined')
 			return;
 			
-		var handler = { url: url.toLowerCase(), call: call, context: (typeof context !== undefined) ? context : null };
-		
-		this.handlers.push(handler);
+		this.handlers.push({
+			url: url.toLowerCase(),
+			call: call,
+			context: (typeof context !== undefined) ? context : null
+		});
 		this.handlers = this.handlers.sort(compare);
 		
 		function compare(a, b) {
@@ -91,7 +93,6 @@ joDispatch.prototype = {
 		url = url.toLowerCase();
 
 		for (var i = 0, l = h.length; i < l; i++) {
-//			console.log(h[i].url);
 			if (url.indexOf(h[i].url, 0) === 0)
 				return h[i];
 		}
