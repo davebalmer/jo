@@ -125,7 +125,7 @@ joFile = function(url, call, context, timeout) {
 			if (context)
 				call.call(context, data, error);
 			else
-				call(error, data, error);
+				call(data, error);
 		}
 	}
 };
