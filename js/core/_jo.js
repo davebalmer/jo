@@ -130,6 +130,7 @@ jo = {
 		'iphone',
 		'playbook',
 		'webos',
+		'hpwos',
 		'bada',
 		'android',
 		'opera',
