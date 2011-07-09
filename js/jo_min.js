@@ -76,6 +76,7 @@ o.observer=observer;if(data)
 o.data=data;this.subscriptions.unshift(o);return this.subject;},release:function(call,observer){return this.unsubscribe(call,observer);}};var SEC=1000;var MIN=60*SEC;var HOUR=60*MIN;var DAY=24*HOUR;joTime={timestamp:function(){var now=new Date();return now/1;}};function joDefer(call,context,delay,data){if(!delay)
 delay=100;if(!context)
 context=this;var timer=window.setTimeout(function(){call.call(context,data);},delay);return timer;}
+joDefer.cancel=function(timer){window.clearTimeout(timer);}
 joYield=joDefer;joCache={cache:{},set:function(key,call,context){if(call)
 this.cache[key]={call:call,context:context||this};return this;},get:function(key){var cache=this.cache[key]||null;if(cache){if(!cache.view)
 cache.view=cache.call.apply(cache.context,arguments);return cache.view;}

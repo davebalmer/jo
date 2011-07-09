@@ -1028,6 +1028,10 @@ function joDefer(call, context, delay, data) {
 	return timer;
 }
 
+joDefer.cancel = function(timer) {
+	window.clearTimeout(timer);
+}
+
 joYield = joDefer;/**
 	joCache
 	=======
