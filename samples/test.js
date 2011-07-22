@@ -76,6 +76,8 @@ var App = (function() {
 		var toolbar;
 		var nav;
 		
+		if (jo.matchPlatform("hpwos") && typeof PalmSystem === 'undefined')
+			joEvent.touchy = false;
 		// chaining is supported on constructors and any setters		
 		scn = new joScreen(
 			new joContainer([
