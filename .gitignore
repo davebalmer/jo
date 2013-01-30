@@ -2,3 +2,5 @@ syntax: glob
 .DS_Store
 *~
 *.bak
+js/jo.js
+js/jo_min.js
