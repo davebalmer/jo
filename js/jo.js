@@ -168,12 +168,12 @@ jo = {
 		'hpwos',
 		'bada',
 		'android',
+		'msie',
 		'opera',
 		'chrome',
 		'safari',
 		'mozilla',
-		'gecko',
-		'explorer'
+		'gecko'
 	],
 	
 	debug: false,
@@ -1565,127 +1565,6 @@ joDatabase.prototype = {
 	}
 };
 /**
-	joSQLDataSource
-	================
-
-	SQL flavor of joDataSource which uses "HTML5" SQL found in webkit.
-
-	Methods
-	-------
-
-	- `setDatabase(joDatabase)`
-	- `setQuery(query)`
-	- `setParameters(arguments)`
-	- `execute(query, arguments)`
-	
-	Events
-	------
-	
-	- `changeEvent`
-	
-	  Fired when data is loaded after an `execute()` or when data is cleared.
-	
-	- `errorEvent`
-	
-	  Fired when some sort of SQL error happens.
-
-	Extends
-	-------
-
-	- joDataSource
-*/
-joSQLDataSource = function(db, query, args) {
-	this.db = db;
-	this.query = (typeof query === 'undefined') ? "" : query;
-	this.args = (typeof args === 'undefined') ? [] : args;
-	
-	this.changeEvent = new joSubject(this);
-	this.errorEvent = new joSubject(this);
-};
-joSQLDataSource.prototype = {
-	setDatabase: function(db) {
-		this.db = db;
-		return this;
-	},
-	
-	setQuery: function(query) {
-		this.query = query;
-		return this;
-	},
-
-	setData: function(data) {
-		this.data = data;
-		this.changeEvent.fire();
-		return this;
-	},
-
-	clear: function() {
-		this.data = [];
-		this.changeEvent.fire();
-		return this;
-	},
-
-	setParameters: function(args) {
-		this.args = args;
-		return this;
-	},
-
-	execute: function(query, args) {
-		this.setQuery(query || "");
-		this.setParameters(args);
-		
-		if (this.query)
-			this.refresh();
-			
-		return this;
-	},
-	
-	refresh: function() {
-		if (!this.db) {
-			this.errorEvent.fire();
-//			joLog("query error: no db!");
-			return this;
-		}
-		
-		var self = this;
-		var args;
-
-		if (arguments.length) {
-			args = [];
-			for (var i = 0; i < arguments.length; i++)
-				args.push(arguments[i]);
-		}
-		else {
-			args = this.args;
-		}
-		
-		var query = this.query;
-
-		function success(t, result) {
-			self.data = [];
-
-			for (var i = 0, l = result.rows.length; i < l; i++) {
-				var row = result.rows.item(i);
-
-				self.data.push(row);
-			}
-			
-			self.changeEvent.fire(self.data);
-		}
-		
-		function error() {
-			joLog('SQL error', query, "argument count", args.length);
-			self.errorEvent.fire();
-		}
-		
-		this.db.db.transaction(function(t) {
-			t.executeSql(query, args, success, error);
-		});
-		
-		return this;
-	}
-};
-/**
 	joFileSource
 	============
 	
@@ -1817,6 +1696,127 @@ joFile = function(url, call, context, timeout) {
 	}
 };
 
+/**
+	joSQLDataSource
+	================
+
+	SQL flavor of joDataSource which uses "HTML5" SQL found in webkit.
+
+	Methods
+	-------
+
+	- `setDatabase(joDatabase)`
+	- `setQuery(query)`
+	- `setParameters(arguments)`
+	- `execute(query, arguments)`
+	
+	Events
+	------
+	
+	- `changeEvent`
+	
+	  Fired when data is loaded after an `execute()` or when data is cleared.
+	
+	- `errorEvent`
+	
+	  Fired when some sort of SQL error happens.
+
+	Extends
+	-------
+
+	- joDataSource
+*/
+joSQLDataSource = function(db, query, args) {
+	this.db = db;
+	this.query = (typeof query === 'undefined') ? "" : query;
+	this.args = (typeof args === 'undefined') ? [] : args;
+	
+	this.changeEvent = new joSubject(this);
+	this.errorEvent = new joSubject(this);
+};
+joSQLDataSource.prototype = {
+	setDatabase: function(db) {
+		this.db = db;
+		return this;
+	},
+	
+	setQuery: function(query) {
+		this.query = query;
+		return this;
+	},
+
+	setData: function(data) {
+		this.data = data;
+		this.changeEvent.fire();
+		return this;
+	},
+
+	clear: function() {
+		this.data = [];
+		this.changeEvent.fire();
+		return this;
+	},
+
+	setParameters: function(args) {
+		this.args = args;
+		return this;
+	},
+
+	execute: function(query, args) {
+		this.setQuery(query || "");
+		this.setParameters(args);
+		
+		if (this.query)
+			this.refresh();
+			
+		return this;
+	},
+	
+	refresh: function() {
+		if (!this.db) {
+			this.errorEvent.fire();
+//			joLog("query error: no db!");
+			return this;
+		}
+		
+		var self = this;
+		var args;
+
+		if (arguments.length) {
+			args = [];
+			for (var i = 0; i < arguments.length; i++)
+				args.push(arguments[i]);
+		}
+		else {
+			args = this.args;
+		}
+		
+		var query = this.query;
+
+		function success(t, result) {
+			self.data = [];
+
+			for (var i = 0, l = result.rows.length; i < l; i++) {
+				var row = result.rows.item(i);
+
+				self.data.push(row);
+			}
+			
+			self.changeEvent.fire(self.data);
+		}
+		
+		function error() {
+			joLog('SQL error', query, "argument count", args.length);
+			self.errorEvent.fire();
+		}
+		
+		this.db.db.transaction(function(t) {
+			t.executeSql(query, args, success, error);
+		});
+		
+		return this;
+	}
+};
 /**
 	joScript
 	========
@@ -2148,6 +2148,21 @@ joDispatch.prototype = {
 	}	
 };
 /**
+	joCollect
+	=========
+	
+	*DEPRECATED* use joInterface instead. This function is planned
+	to die when jo goes beta.
+
+*/
+joCollect = {
+	get: function(parent) {
+		// this is what happens when you announced something not
+		// quite fully baked
+		return new joInterface(parent);
+	}
+};
+/**
 	joInterface
 	===========
 	
@@ -2370,21 +2385,6 @@ joInterface.prototype = {
 		// send back our object with named controls as properties
 //		console.log(ui);
 		return ui;
-	}
-};
-/**
-	joCollect
-	=========
-	
-	*DEPRECATED* use joInterface instead. This function is planned
-	to die when jo goes beta.
-
-*/
-joCollect = {
-	get: function(parent) {
-		// this is what happens when you announced something not
-		// quite fully baked
-		return new joInterface(parent);
 	}
 };
 /**
@@ -4018,29 +4018,7 @@ joScroller.extend(joContainer, {
 	}
 });
 
-/*
- * A convenience method: give this joScroller a scrollbar. It only works if 
- * there are already contents, as making a scrollbar the first child of the 
- * container node would cause interesting undesirable behavior.
- */
-joScroller.prototype.addScrollbar = function(joscrollbar) {
-    if( this.container.firstChild && joscrollbar instanceof joScrollbar ) {
-        this.push(joscrollbar);
-        this.scrollbar = joscrollbar;
-        joscrollbar.scroller = this;
-    }
-    return this;
-}
-
-joScroller.prototype.originalSetPosition = joScroller.prototype.setPosition;
-
-joScroller.prototype.setPosition = function(x, y, node) {
-    if( this.scrollbar ) {
-        scaled = y / window.innerHeight;
-        this.scrollbar.setSliderPosition(scaled);
-    }
-    return this.originalSetPosition(x, y, node);
-}/**
+/**
 	joDivider
 	=========
 	
@@ -6384,103 +6362,4 @@ joSlider.extend(joControl, {
 			
 		this.initValue(this.getValue());
 	}
-});
-
-var joScrollbar = function(data, hasTabBar) {
-  joView.apply(this, arguments);
-  this.hasTabBar = hasTabBar;
-  this.scroller = null;
-  this.calibrate();
-};
-joScrollbar.extend(joView, {
-  tagName: "joscrollbar",
-
-  createContainer: function() {
-    var o = joDOM.create(this.tagName);
-
-    if (o)
-      o.setAttribute("tabindex", "1");
-
-    var w = joDOM.create("joscrollbarpadding");
-    o.appendChild(w);
-        
-    var s = joDOM.create("joscrollbarslider");
-    w.appendChild(s);
-    this.slider = s;
-
-    return o;
-  },
-    
-  /*
-   * Move the scrollbar slider.
-   *
-   * scaledPosition - how far to move expressed as a fraction of 
-   * visible page size/scrollbar size
-   */
-  setSliderPosition: function(scaledPosition) {
-    var y = -1 * Math.floor(scaledPosition * this.slider.clientHeight);
-    this.slider.style.webkitTransform = "translate3d(0, " + y + "px, 0)";
-  },
-    
-  /*
-   * We must size the scrollbar correctly: this function must be called 
-   * after the scrollbar is inserted into the DOM, and every time the 
-   * page changes size - e.g. on orientation change.
-   *
-   * a) Set the height of the joScrollbar to a useful size
-   * b) Set the relative height of the inner slider by looking at the window 
-   * and viewport height.
-   */
-  calibrate: function() {
-    if( !this.scroller ) {
-      return;
-    }; 
-        
-    // find the jocard element so we can measure its height
-    var view = null;
-    for( var i = 0, l = this.scroller.container.children.length; i < l; i++ ) {
-      if( this.scroller.container.children[i].tagName == "JOCARD" ) {
-        view = this.scroller.container.children[i];
-      }
-    }
-    if( !view ) {
-      // the thing is not in the DOM yet, so do nothing;
-      return;
-    }
-        
-    var viewportHeight = window.innerHeight;
-    var viewportWidth = window.innerWidth;
-    var viewHeight = view.clientHeight; 
-
-    if( this.hasTabBar ) {
-      // 59px is the height of the tab bar in iOS; if you are replicating 
-      // that with a joToolbar, then you need to account for its height 
-      // in figuring this lot out, otherwise you'll be noticably off.
-      viewHeight -= 59;
-    }
-        
-    // some fudge factors to get the scrollbar entirely in the visible page, 
-    // below the header and above the footer
-    if( viewportHeight > viewportWidth ) {
-      var heightFactor = 0.75;
-    } else {
-      var heightFactor = 0.65;
-    }
-        
-    var setHeight = Math.floor(viewportHeight * heightFactor);
-    this.container.style.height = "" + setHeight + "px";
-    this.container.firstChild.style.height = "" + (setHeight - 10) + "px";
-    
-    var scrollerHeight = this.container.clientHeight;
-    var sliderHeight = Math.floor(viewportHeight * (scrollerHeight - 10) / viewHeight);
-    this.slider.style.height = "" + sliderHeight + "px";
-        
-    if( sliderHeight < scrollerHeight - 10 ) {
-      this.setStyle("active");
-    } else {
-      this.setStyle("inactive");
-    }
-        
-  }
-    
 });
