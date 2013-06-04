@@ -65,12 +65,14 @@ em, i, b, span, u, a, button, input {
   -moz-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
+  -ms-box-flex: 0;
 }
 .flexible {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
+  -ms-box-flex: 1;
 }
 .flex {
   display: block;
@@ -78,10 +80,12 @@ em, i, b, span, u, a, button, input {
   display: -moz-box;
   display: -o-box;
   display: box;
+  display: -ms-box;
   margin: 0;
   -moz-box-align: stretch;
   -o-box-align: stretch;
   box-align: stretch;
+  -ms-box-align: stretch;
 }
 .listitem {
   border-top: 1px solid rgba(0, 0, 0, 0.4);
@@ -231,6 +235,7 @@ jooptionitem {
   -moz-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
+  -ms-box-flex: 1;
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.8);
   border-right-width: 0;
@@ -534,6 +539,7 @@ joflexrow > jotoggle {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
+  -ms-box-flex: 0;
   box-flex: 0;
 }
 jotoggle {
@@ -690,6 +696,7 @@ joflexrow {
   display: -moz-box;
   display: -o-box;
   display: box;
+  display: -ms-box;
   margin: 0;
   -moz-box-align: stretch;
   -o-box-align: stretch;
@@ -701,6 +708,7 @@ joflexrow > * {
   -moz-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
+  -ms-box-flex: 1;
   margin-right: 0;
   position: relative;
 }
@@ -712,10 +720,12 @@ joflexcol {
   display: -webkit-box;
   display: -moz-box;
   display: -o-box;
+  display: -ms-box;
   display: box;
   margin: 0;
   -moz-box-align: stretch;
   -o-box-align: stretch;
+  -ms-box-align: stretch;
   box-align: stretch;
   height: 100%;
   width: 100%;
@@ -723,6 +733,8 @@ joflexcol {
   -webkit-box-align: stretch;
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
+  -ms-box-orient: vertical;
+  -ms-box-align: stretch;
   -o-box-orient: vertical;
   -o-box-align: stretch;
   box-orient: vertical;
@@ -733,6 +745,7 @@ joflexcol > * {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
+  -ms-box-flex: 1;
   box-flex: 1;
 }
 jotitle + joflexcol, jotitle + joflexrow {
@@ -898,6 +911,10 @@ jofooter {
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
   -moz-box-pack: end;
+  -ms-box-flex: 1;
+  -ms-box-orient: vertical;
+  -ms-box-align: stretch;
+  -ms-box-pack: end;
   box-flex: 1;
   box-orient: vertical;
   box-align: stretch;
@@ -907,6 +924,7 @@ jofooter {
 jofooter > * {
   -webkit-box-align: end;
   -moz-box-align: end;
+  -ms-box-align: end;
   -o-box-align: end;
   box-align: end;
 }
@@ -947,6 +965,7 @@ jotoolbar {
   background-size: 100% 100%;
   -webkit-background-size: 100% 100%;
   -moz-background-size: 100% 100%;
+  -ms-background-size: 100% 100%;
   z-index: 1;
   position: absolute;
   bottom: 0;
@@ -957,11 +976,13 @@ jotoolbar {
 jotoolbar jobutton {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
+  -ms-border-radius: 0;
   border-radius: 0;
 }
 jopopup {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
+  -ms-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
   display: block;
@@ -970,9 +991,11 @@ jopopup {
   border: 2px solid #434343;
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  -ms-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   -o-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
   border-radius: 5px;
   background-color: #747474;
   color: #000;
@@ -1038,6 +1061,7 @@ jonavbar {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
+  -ms-box-flex: 0;
   box-flex: 0;
   background-color: #888;
   cursor: default;
@@ -1079,12 +1103,14 @@ jobackbutton.active {
 jonavbar > joflexrow > * {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
+  -ms-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
 }
 jonavbar > joflexrow > jobackbutton {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
+  -ms-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
   max-width: 4em;
