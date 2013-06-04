@@ -135,12 +135,12 @@ jo = {
 		'hpwos',
 		'bada',
 		'android',
+		'msie',
 		'opera',
 		'chrome',
 		'safari',
 		'mozilla',
-		'gecko',
-		'explorer'
+		'gecko'
 	],
 	
 	debug: false,
