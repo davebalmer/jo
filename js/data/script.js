@@ -11,7 +11,7 @@
 	Calling
 	-------
 
-	`joScript(url, callback, context, errorcallback, errorcontext)`
+	`joScript(url, callback, context)`
 	
 	- url
 	- callback is a function (supports bind, in which case context is optional)
