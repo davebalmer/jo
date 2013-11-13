@@ -15,7 +15,7 @@ App = {
 			new joContainer([
 				new joFlexcol([
 					this.nav = new joNavbar(),
-					this.stack = new joStackScroller()
+					this.stack = new joStack()
 				]),
 				this.toolbar = new joToolbar("This is a footer, neat huh?")
 			]).setStyle({position: "absolute", top: "0", left: "0", bottom: "0", right: "0"})
@@ -30,6 +30,7 @@ App = {
 		});
 			
 		this.stack.push(joCache.get("menu"));
+		console.log(this);
 		
 		joGesture.backEvent.subscribe(this.stack.pop, this.stack);
 	}
