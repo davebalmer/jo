@@ -50,6 +50,12 @@ joEvent = {
 		"mouseup": "touchend",
 		"mouseout": "touchcancel"
 	},
+
+	map: {
+		click: "click",
+		transitionend: "transitionend"
+	},
+
 	touchy: false,
 	
 	getTarget: function(e) {

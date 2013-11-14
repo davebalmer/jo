@@ -128,6 +128,11 @@ joView.prototype = {
 		
 		return this;
 	},
-		
+
+	setId: function(id) {
+		this.container.id = id;
+		return this;
+	},
+
 	setEvents: function() {}
 };

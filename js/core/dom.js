@@ -240,6 +240,23 @@ joDOM = {
 		
 		return css;
 	},
+
+	applyCSS: function(style, oldnode) {
+		var css = oldnode || joDOM.create('jostyle');
+		css.innerHTML = '<style>' + style + '</style>';
+
+		if (!oldnode)
+			document.body.appendChild(css);
+
+		return css;
+	},
+
+	addMeta: function(name, content) {
+		var meta = joDOM.create("meta");
+		meta.setAttribute("name", name);
+		meta.setAttribute("content", content);
+		document.head.appendChild(meta);
+	},
 	
 	pageOffsetLeft: function(node) {
 		var l = 0;
@@ -258,7 +275,7 @@ joDOM = {
 		var t = 0;
 		
 		while (typeof node !== 'undefined' && node && node.parentNode !== window) {
-			if(node.offsetTop)
+			if (node.offsetTop)
 				t += node.offsetTop;
 				
 			node = node.parentNode;
@@ -267,22 +284,34 @@ joDOM = {
 		return t;
 	},
 	
-	getBounds:function(node) {
+	getBounds: function(node) {
 		var top = joDOM.pageOffsetTop(node);
 		var left = joDOM.pageOffsetLeft(node);
-		var bottom = top+node.offsetHeight;
-		var right = left+node.offsetWidth;
+		var bottom = top + node.offsetHeight;
+		var right = left + node.offsetWidth;
 		
 		return {
-			top:top,
-			left:left,
-			bottom:bottom,
-			right:right,
+			top: top,
+			left: left,
+			bottom: bottom,
+			right: right,
 			center:{
-				x:left+(right-left)/2,
-				y:top+(bottom-top)/2
+				x: left + (right - left) / 2,
+				y: top + (bottom - top) / 2
 			}			
 		};
+	},
+
+	attach: function(node, parent) {
+		parent.appendChild(node);
+	},
+
+	detach: function(node, parent) {
+		if (!parent)
+			parent = node.parentNode;
+
+		if (parent)
+			parent.removeChild(node);
 	}
 };
 
