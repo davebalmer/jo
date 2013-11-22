@@ -45,8 +45,10 @@ joShim.extend(joContainer, {
 	},
 	
 	hide: function() {
-		this.container.className = '';
-		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
+		joDefer(function() {
+			joEvent.on(this.container, joEvent.map.transitionend, this.onHide, this);
+			this.container.className = '';
+		}, this);
 		
 		return this;
 	},
@@ -54,8 +56,10 @@ joShim.extend(joContainer, {
 	show: function() {
 		this.attach();
 
-		this.container.className = 'show';
-		joEvent.on(this.container, "webkitTransitionEnd", this.onShow, this);
+		joEvent.remove(this.container, joEvent.map.transitionend, this.onHide, this);
+		joDefer(function() {
+			this.container.className = 'show';
+		}, this);
 
 		// default parent to the document body
 		if (!this.lastParent)
@@ -69,6 +73,7 @@ joShim.extend(joContainer, {
 	},
 	
 	onHide: function() {
+		joEvent.remove(this.container, joEvent.map.transitionend, this.onHide, this);
 		this.detach();
 		this.hideEvent.fire();
 	}

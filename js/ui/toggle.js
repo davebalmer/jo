@@ -75,9 +75,11 @@ joToggle.extend(joControl, {
 		
 		this.button.innerHTML = this.labels[(this.data) ? 1 : 0];
 
-		if (this.data)
-			joDOM.addCSSClass(this.container, "on");
-		else
-			joDOM.removeCSSClass(this.container, "on");
+		joDefer(function() {
+			if (this.data)
+				joDOM.addCSSClass(this.container, "on");
+			else
+				joDOM.removeCSSClass(this.container, "on");
+		}, this);
 	}
 });
