@@ -2,7 +2,7 @@ joCache.set("themes", function() {
 	var card, theme, size;
 	
 	card = new joCard([
-		new joTitle("Pick a theme"),
+		new joCaption("Jo has a few built-in CSS munging functions, illustrated below."),
 		new joGroup([
 			new joLabel("Colors"),
 			theme = new joSelect([
@@ -17,7 +17,7 @@ joCache.set("themes", function() {
 				"Funky"
 			], 0))
 		]),
-		new joHTML("These theme options are all controlled with CSS. For this demo, we're dynamically setting styles inline using <code>joDOM.applyCSSRule</code>. Most apps should have their own style, and would not need to load CSS rules on the fly like this, but it makes for a more interesting demo."),
+		new joHTML("These app-level 'theme' options are all controlled with CSS. For this demo, we're dynamically setting styles inline using <code>joDOM.applyCSSRule</code>. Most apps should have their own style, and would not need to load CSS rules on the fly like this, but it makes for a more interesting demo."),
 		new joHTML("WARNING: Your eyes may burn while applying these theme tweaks.")
 	]);
 	

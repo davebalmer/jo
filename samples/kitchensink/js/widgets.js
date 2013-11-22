@@ -7,6 +7,8 @@ joCache.set("widgets", function() {
 			new joFlexrow(new joInput("Hello, Jo!")),
 			new joLabel("joPasswordInput"),
 			new joFlexrow(new joPasswordInput("password")),
+			new joLabel("joInput with Placeholder"),
+			new joFlexrow(new joInput("", "Placeholder Text")),
 			new joLabel("joTextArea"),
 			new joFlexrow(new joTextarea("This is some multi-line text, Jo!")),
 			new joDivider(),

@@ -1,30 +1,21 @@
 App = {
 	load: function() {
+		// loading Jo is required
 		jo.load();
 		
-		// grab the HTML for our about box
-		var about = joDOM.get("about").innerHTML;
-			
-		// this is a more complex UI with a nav bar and a toolbar
-		this.scn = new joScreen(
-			new joContainer([
-				new joFlexcol([
-					this.nav = new joNavbar(),
-					this.stack = new joStackScroller()
-				]),
-				this.toolbar = new joToolbar("This is a footer")
+		// typical card stack, nav and footer
+		this.screen = new joScreen(
+			new joFlexcol([
+				this.nav = new joNavbar(),
+				this.stack = new joStackScroller(),
+				this.toolbar = new joToolbar("This is a toolbar")
 			])
 		);
 		
+		// attach the nav to our stack
 		this.nav.setStack(this.stack);
-		
-		joCache.set("about", function() {
-			var card = new joCard(about).setTitle("About");
-			
-			return card;
-		});
-			
+
+		// push our menu card
 		this.stack.push(joCache.get("menu"));
-		console.log(this);
 	}
 };

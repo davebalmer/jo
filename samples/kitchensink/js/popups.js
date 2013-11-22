@@ -18,11 +18,11 @@ joCache.set("popups", function() {
 	card.setTitle("Popup Dialogs");
 	
 	simple.selectEvent.subscribe(function() {
-		App.scn.alert("This is an Alert", "It's a very simple call to the joScreen object. It's similar to the good ol' alert() function built into most JavaScript engines.");
+		App.screen.alert("This is an Alert", "It's a very simple call to the joScreen object. It's similar to the good ol' alert() function built into most JavaScript engines.");
 	});
 	
 	complex.selectEvent.subscribe(function() {
-		App.scn.showPopup(joCache.get("popup"));
+		App.screen.showPopup(joCache.get("popup"));
 	});
 	
 	return card;
@@ -45,7 +45,7 @@ joCache.set("popup", function() {
 	
 	function pop() {
 		console.log("hide popup");
-		App.scn.hidePopup();
+		App.screen.hidePopup();
 	}
 	
 	return popup;
