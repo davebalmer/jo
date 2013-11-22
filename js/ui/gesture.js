@@ -2,10 +2,8 @@
 	joGesture
 	=========
 	
-	Experimental global gesture handler (keyboard, dpad, back, home, flick?).
-	This needs a lot more fleshing out, so it's not (quite) ready for general
-	consumption.
-	
+	Global gesture handler.
+
 	Events
 	------
 	
@@ -32,11 +30,6 @@
 	- `activateEvent`
 	- `deactivateEvent`
 
-	> Note that the events setup here are for the browser
-	> or webOS. The `setEvents` method most likely needs to change
-	> based on which OS you're running, although looking more deeply
-	> into PhoneGap event layer.
-	
 */
 joGesture = {
 	load: function() {
