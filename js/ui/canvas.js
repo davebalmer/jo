@@ -1,3 +1,4 @@
+
 function joCanvas(w, h) {
 	this.canvas = joDOM.create("canvas");
 

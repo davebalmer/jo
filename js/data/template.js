@@ -1,3 +1,4 @@
+
 joTemplate = function(template) {
 	this.setTemplate(template || "");
 };

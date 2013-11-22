@@ -1,3 +1,4 @@
+
 joQueue = function() {
 	this.queue = [];
 
