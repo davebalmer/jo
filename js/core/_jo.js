@@ -215,8 +215,19 @@ jo = {
 		if (joGesture)
 			joGesture.load();
 
-		var s = joScroller.prototype;		
+		var s = (typeof joScroller !== "undefined") ? joScroller.prototype : null;
 		var d = joDOM;
+
+		if (s && this.matchPlatform("tizen msie chrome safari bb10")) {
+			// native scrolling
+			joDOM.addCSSClass(document.body, "nativescroll");
+			s.onDown = function() {};
+			s.setEvents = function() {};
+			s.onUp = function() {};
+			s.onMove = function() {};
+			s.onClick = function() {};
+			s.setPosition = s.setPositionNative;
+		}
 
 		// setup transition css hooks for the scroller
 		if (typeof document.body.style.webkitTransition !== "undefined") {
@@ -233,7 +244,7 @@ jo = {
 		}
 		else if (typeof document.body.style.MozTransition !== "undefined") {
 			// mozilla with transitions
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				node.style.MozTransform = "translate(" + x + "px," + y + "px)";
 			};
 			d.transform = function(node, arg) {
@@ -248,7 +259,7 @@ jo = {
 		}
 		else if (typeof document.body.style.msTransform !== "undefined") {
 			// IE9 with transitions
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				node.style.msTransform = "translate(" + x + "px," + y + "px)";
 			};
 			d.transform = function(node, arg) {
@@ -263,7 +274,7 @@ jo = {
 		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				node.style.OTransform = "translate(" + x + "px," + y + "px)";
 			};
 			joEvent.map.transitionend = "otransitionend";
@@ -281,7 +292,7 @@ jo = {
 			// no transitions, disable flick scrolling
 			s.velocity = 0;
 			s.bump = 0;
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				if (this.vertical)
 					node.style.top = y + "px";
 				
