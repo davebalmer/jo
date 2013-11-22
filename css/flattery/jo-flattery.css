@@ -21,7 +21,7 @@ body {
   background: #ffffff;
   word-wrap: break-word;
   overflow: hidden;
-  font: normal 16px "Helvetica", "Droid Sans", "Trebuchet MS";
+  font: normal 14px "Helvetica", "Droid Sans", "Trebuchet MS";
 }
 jobutton,
 joview,
@@ -95,7 +95,7 @@ joexpandotitle {
 .listitem {
   border-top: 1px solid rgba(0, 0, 0, 0.4);
   margin: 0;
-  padding: 0.75em;
+  padding: 1em;
   cursor: pointer;
 }
 .widgety {
@@ -105,7 +105,7 @@ joexpandotitle {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 0.75em 0;
+  padding: 1em 0;
 }
 .shiny {
   color: rgba(255, 255, 255, 0.9);
@@ -114,7 +114,7 @@ joexpandotitle {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 0.75em 0;
+  padding: 1em 0;
 }
 .matte {
   color: rgba(255, 255, 255, 0.9);
@@ -123,7 +123,7 @@ joexpandotitle {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 0.75em 0;
+  padding: 1em 0;
 }
 .stretch-full {
   display: block;
@@ -134,7 +134,7 @@ joexpandotitle {
   bottom: 0;
 }
 .widget {
-  margin: 0px 0.75em 0.75em 0.75em;
+  margin: 0px 1em 1em 1em;
 }
 .selected {
   background-color: #4f5b98;
@@ -177,7 +177,7 @@ jooption {
   -moz-box-align: stretch;
   -o-box-align: stretch;
   box-align: stretch;
-  margin: 0px 0.75em 0.75em 0.75em;
+  margin: 0px 1em 1em 1em;
 }
 jooptionitem {
   color: #000;
@@ -222,7 +222,7 @@ input,
 jolabel,
 textarea,
 joexpando {
-  margin: 0px 0.75em 0.75em 0.75em;
+  margin: 0px 1em 1em 1em;
 }
 jotitle {
   background-color: #b8b8b8;
@@ -230,9 +230,8 @@ jotitle {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 0.75em 0;
   text-align: center;
-  padding: 0.75em;
+  padding: 1em;
   font-size: 120%;
   margin: 0;
   border-left: none;
@@ -248,7 +247,7 @@ jolistitem,
 jomenuitem {
   border-top: 1px solid #ebebeb;
   margin: 0;
-  padding: 0.75em;
+  padding: 1em;
   cursor: pointer;
   border-bottom: 1px solid #6d6d6d;
 }
@@ -286,10 +285,10 @@ joexpando {
   margin-bottom: 0;
 }
 joexpando.open {
-  margin-bottom: 0.75em;
+  margin-bottom: 1em;
 }
 joexpandocontent {
-  padding-top: 0.75em;
+  padding-top: 1em;
 }
 joselectlist > *:last-child {
   border-bottom: none;
@@ -330,7 +329,7 @@ textarea {
   -webkit-border-radius: 0.2em;
   -moz-border-radius: 0.2em;
   border-radius: 0.2em;
-  margin: 0 0.75em 0.75em 0.75em;
+  margin: 0 1em 1em 1em;
   padding: 0.75em;
   background: #e7e6e7;
   /*  white-space: nowrap; */
@@ -372,16 +371,16 @@ joexpandotitle joicon {
   line-height: 2.6em;
   right: 0;
   top: 0;
-  -webkit-transform-origin: 1 0.2em 1 0.2em 0;
+  -webkit-transform-origin: 50% 50% 0;
   -webkit-transform: rotatez(0);
   -webkit-transition: -webkit-transform 0.2s ease-out;
-  -moz-transform-origin: 1 0.2em 1 0.2em 0;
+  -moz-transform-origin: 50% 50% 0;
   -moz-transform: rotate(0);
   -moz-transition: -moz-transform 0.2s ease-out;
-  -o-transform-origin: 1 0.2em 1 0.2em 0;
+  -o-transform-origin: 50% 50% 0;
   -o-transform: rotate(0);
   -o-transition: -o-transform 0.2s ease-out;
-  -ms-transform-origin: 1 0.2em 1 0.2em 0;
+  -ms-transform-origin: 50% 50% 0;
   -ms-transform: rotate(0);
   -ms-transition: -ms-transform 0.2s ease-out;
 }
@@ -399,35 +398,15 @@ joexpando > *:last-child {
   height: 0;
   overflow: hidden;
   opacity: 0;
+  display: none;
   margin-top: 0;
   margin-bottom: 0;
-  -webkit-transform-style: preserve-3d;
-  -webkit-transform: rotatex(-45deg);
-  -webkit-transform-origin: 0 0 0;
-  -webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
-  -moz-transform-style: preserve- 3 d;
-  -moz-transform: rotatex(-45deg);
-  -moz-transform-origin: 0 0 0;
-  -moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
-  -o-transform-style: preserve- 3 d;
-  -o-transform: rotatex(-45deg);
-  -o-transform-origin: 0 0 0;
-  -o-transform: scaley(1);
-  -o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
-  -ms-transform-style: preserve- 3 d;
-  -ms-transform: rotatex(-45deg);
-  -ms-transform-origin: 0 0 0;
-  -ms-transform: scaley(1);
-  -ms-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
 }
 joexpando.open > *:last-child {
   height: 100%;
   overflow: visible;
   opacity: 1;
-  -webkit-transform: rotatex(0);
-  -moz-transform: rotatex(0);
-  -o-transform: rotatex(0);
-  -ms-transform: rotatex(0);
+  display: block;
 }
 joexpando > *:first-child {
   -webkit-transform: none;
@@ -443,7 +422,7 @@ joexpandotitle {
   outline-color: transparent;
   height: 3em;
   line-height: 2.6em;
-  padding: 0 0.75em;
+  padding: 0 1em;
   -webkit-border-radius: 1.5em;
   -moz-border-radius: 1.5em;
   border-radius: 1.5em;
@@ -468,17 +447,17 @@ label {
   margin-bottom: 5px;
 }
 jocaption {
-  margin: 0.75em;
+  margin: 1em;
 }
 johtml {
   display: block;
-  margin: 0 0.75em 0.75em 0.75em;
+  margin: 0 1em 1em 1em;
   padding: 0;
 }
 jodivider {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  margin: 0 0 0.75em 0;
+  margin: 0 0 1em 0;
   text-align: center;
   height: 0;
   display: block;
@@ -492,7 +471,7 @@ joflexrow > jotoggle {
 jotoggle {
   cursor: pointer;
   display: block;
-  margin: 0.75em 0.75em 0 0.75em;
+  margin: 1em 1em 0 1em;
   -webkit-border-radius: 1.5em;
   -moz-border-radius: 1.5em;
   border-radius: 1.5em;
@@ -540,7 +519,7 @@ jotoggle.on > * {
 }
 jotable {
   display: block;
-  margin: 0 0.75em;
+  margin: 0 1em;
 }
 tr {
   margin: 0;
@@ -553,14 +532,14 @@ td {
   padding: 5px;
 }
 jolabel.left {
-  margin-top: 0.75em;
+  margin-top: 1em;
   padding: 9px 0;
 }
 .disabled {
   opacity: .2;
 }
 jotoolbar {
-  padding: 0.75em;
+  padding: 1em;
 }
 josliderthumb {
   position: absolute;
@@ -584,10 +563,16 @@ josliderthumb {
   -o-transition: left 0.1s ease;
   -ms-transition: left 0.1s ease;
 }
+joslider.live > josliderthumb {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+}
 joslider {
   cursor: pointer;
   background: #999;
-  margin: 0.75em;
+  margin: 1em;
   position: relative;
   height: 3em;
   -webkit-border-radius: 1.5em;
@@ -615,7 +600,7 @@ joflexrow > * {
   position: relative;
 }
 joflexrow > *:last-child {
-  margin-right: 0.75em;
+  margin-right: 1em;
 }
 joflexcol {
   display: block;
@@ -643,35 +628,37 @@ joflexcol > * {
 }
 jotitle + joflexcol,
 jotitle + joflexrow {
-  margin-top: 0.75em;
+  margin-top: 1em;
 }
 jostack {
   height: 100%;
-  -webkit-perspective: 400px;
-  -moz-perspective: 400px;
-  -o-perspective: 400px;
-  -ms-perspective: 400px;
-  -webkit-transition: opacity 0.3s ease-out;
-  -moz-transition: opacity 0.3s ease-out;
-  -o-transition: opacity 0.3s ease-out;
-  -ms-transition: opacity 0.3s ease-out;
+  /*
+  -webkit-perspective: 0;
+  -moz-perspective: 0;
+  -o-perspective: 0;
+  -ms-perspective: 0;
+*/
+  -webkit-transition: opacity 0.2s ease-out;
+  -moz-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  -ms-transition: opacity 0.2s ease-out;
 }
 jostack > * {
-  -webkit-animation-fill-mode: forwards;
-  -webkit-transform-origin: 50% 100% 0;
-  -webkit-transform: rotatez(0) translatez(0) translatex(0) translatey(0);
-  -webkit-transition: -webkit-transform 0.3s ease-out, z-index 0.3s ease-out, height 0s ease, overflow 0s ease;
-  -moz-transform-origin: 50% 100% 0;
-  -moz-transform: rotatez(0) translatez(0);
-  -moz-transition: -moz-transform 0.3s ease-out, z-index 0.3s ease-out, height 0s ease, overflow 0s ease;
   z-index: 0;
-  -o-transform-origin: 50% 100% 0;
-  -o-transform: rotatez(0);
-  -o-transition: -o-transform 0.3s ease-out;
-  -ms-transform-origin: 50% 100% 0;
-  -ms-transform: rotatez(0);
-  -ms-transition: -ms-transform 0.3s ease-out;
   position: absolute;
+  -webkit-animation-fill-mode: forwards;
+  /*  -webkit-transform-origin: 0 0 0; */
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-transform 0.2s ease-out, z-index 0.2s ease-out, height 0s ease, overflow 0s ease;
+  /*  -moz-transform-origin: 0 0 0; */
+  -moz-transform: translate3d(0, 0, 0);
+  -moz-transition: -moz-transform 0.2s ease-out, z-index 0.2s ease-out, height 0s ease, overflow 0s ease;
+  /*  -o-transform-origin: 0 0 0; */
+  -o-transform: translate3d(0, 0, 0);
+  -o-transition: -o-transform 0.2s ease-out;
+  /*  -ms-transform-origin: 0 0 0; */
+  -ms-transform: translate3d(0, 0, 0);
+  -ms-transition: -ms-transform 0.2s ease-out;
   /*
 	display: block;
 	height: 100%;
@@ -683,19 +670,19 @@ jostack > * {
 }
 jostack > .next {
   z-index: -1;
-  -webkit-transform: rotatez(45deg) translatey(-10%) translatex(100%);
-  -moz-transform: rotatez(45deg);
-  -o-transform: rotatez(45deg);
-  -ms-transform: rotatez(45deg);
+  -webkit-transform: translateX(100%);
+  -moz-transform: translateX(100%);
+  -o-transform: translateX(100%);
+  -ms-transform: translateX(100%);
   height: 100%;
   overflow: hidden;
 }
 jostack > .prev {
   z-index: 1;
-  -webkit-transform: rotatez(-45deg) translatey(10%) translatex(-100%);
-  -moz-transform: rotatez(-45deg);
-  -o-transform: rotatez(-45deg);
-  -ms-transform: rotatez(-45deg);
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
   height: 100%;
   overflow: hidden;
 }
@@ -725,7 +712,7 @@ jocard > * {
   /*	display: block; */
 }
 jocard > *:last-child {
-  margin-bottom: 0.75em;
+  margin-bottom: 1em;
 }
 joscroller {
   position: absolute;
@@ -775,8 +762,8 @@ jocontainer {
   position: relative;
 }
 jogroup {
-  margin: 0.75em;
-  padding: 0.75em 0;
+  margin: 1em;
+  padding: 1em 0;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -833,7 +820,7 @@ joshim.show {
 }
 jotoolbar {
   border-top: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 0.75em 0;
+  padding: 1em 0;
   color: rgba(255, 255, 255, 0.9);
   background-color: rgba(0, 0, 0, 0.8);
   font-weight: normal;
@@ -881,18 +868,18 @@ jopopup {
 jopopup > jolist > *.select:first-childjopopup > jomenu > *.select:first-child {
   border-top: none;
   -webkit-border-radius: 0;
-  -webkit-border-top-right-radius: 0.75em;
-  -webkit-border-top-left-radius: 0.75em;
-  -moz-border-radius: 0.75em 0.75em 0 0;
-  border-radius: 0.75em 0.75em 0 0;
+  -webkit-border-top-right-radius: 1em;
+  -webkit-border-top-left-radius: 1em;
+  -moz-border-radius: 1em 1em 0 0;
+  border-radius: 1em 1em 0 0;
 }
 jopopup > jolist > *:last-child.selectjopopup > jomenu > *:first-child.select {
   border-bottom: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 0.75em;
-  -webkit-border-bottom-left-radius: 0.75em;
-  -moz-border-radius: 0 0 0.75em 0.75em;
-  border-radius: 0 0 0.75em 0.75em;
+  -webkit-border-bottom-right-radius: 1em;
+  -webkit-border-bottom-left-radius: 1em;
+  -moz-border-radius: 0 0 1em 1em;
+  border-radius: 0 0 1em 1em;
 }
 jopopup.show {
   -webkit-transform: scale(1);
@@ -925,9 +912,9 @@ jonavbar {
   cursor: default;
 }
 jonavbar > joview {
+  margin: 0;
   display: block;
   text-align: center;
-  padding: 0.75em 0;
 }
 jonavbar > joflexrow {
   position: absolute;
@@ -937,7 +924,7 @@ jonavbar > joflexrow {
   bottom: 0;
 }
 jobackbutton {
-  margin: 3px 0.75em;
+  margin: 3px 1em;
   line-height: 3em;
   height: 3em;
   padding: 0 1.5em;
@@ -973,7 +960,7 @@ jopopup > jotitle {
   color: #fff;
   border-top: none;
   border-color: #999;
-  margin-bottom: 0.75em;
+  margin-bottom: 1em;
   -webkit-border-radius: 0;
   -webkit-border-top-right-radius: 2px;
   -webkit-border-top-left-radius: 2px;
