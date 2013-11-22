@@ -43,15 +43,10 @@ Important files in the directory tree are:
   will need to build the library to make this file (as well as the un-minified
   version `jo.js` which is useful for debugging).
 
-- `css/aluminum`
+- `css/flattery/*`
 
-  This is a CSS3 bundle ready to ship your app with. Also serves as a good example
+  This is the new CSS3 bundle ready to ship your app with. Also serves as a good example
   of modern HTML5 styling capabilities. Looks pretty bad in IE up through version 8.
-
-- `css/jo.css`
-
-  This is a newer base CSS theme for Jo, preferred over Aluminum for now. Built with
-  Less CSS compiler.
 
 - `docs/*.mdown`
 
