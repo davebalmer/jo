@@ -245,6 +245,8 @@ joStack.extend(joContainer, {
 		this.index = this.data.length - 1;
 		this.draw();
 		this.pushEvent.fire(o);
+
+		this.captureBack();
 		
 		return this;
 	},
@@ -270,6 +272,8 @@ joStack.extend(joContainer, {
 				this.hide();
 		}
 
+		this.captureBack();
+
 		if (this.data.length > 0)
 			this.popEvent.fire();
 			
@@ -289,6 +293,8 @@ joStack.extend(joContainer, {
 			this.index = 0;
 //			this.lastNode = null;
 			this.draw();
+
+			this.captureBack();
 						
 			this.popEvent.fire();
 			this.homeEvent.fire();
@@ -327,7 +333,7 @@ joStack.extend(joContainer, {
 		
 		return this;
 	},
-	
+
 	hide: function() {
 		if (this.visible) {
 			this.visible = false;
@@ -337,5 +343,12 @@ joStack.extend(joContainer, {
 		}
 		
 		return this;
+	},
+
+	captureBack: function() {
+		if (this.index > 0)
+			joGesture.backEvent.capture(this.pop, this);
+		else if (this.index <= 0)
+			joGesture.backEvent.release(this.pop, this);
 	}
 });
