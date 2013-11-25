@@ -28,8 +28,8 @@ Windows
 	build.bat
 
 If you're not up for building the library yourself, there's nothing wrong with
-downloading the latest stable release, all built and ready to plug in from:
-[GitHub Downloads](http://github.com/davebalmer/jo/downloads)
+downloading the latest stable release, all built and ready to plug in by selecting
+"Download as Zip" here on GitHub.
 
 
 Directory Map
