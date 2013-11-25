@@ -165,16 +165,16 @@ joStack.extend(joContainer, {
 		var self = this;
 		var transitionevent = null;
 
-		joDefer(animate, this, 1);
+		joDefer(animate, this, 20);
 		
 		function animate() {
 			// FIXME: AHHH must have some sort of transition for this to work,
 			// need to check computed style for transition to make this
 			// better
 			if (typeof window.onwebkittransitionend !== 'undefined')
-				transitionevent = joEvent.on(newchild, "webkitTransitionEnd", cleanup, self);
+				transitionevent = joEvent.on(newchild, joEvent.map.transitionend, cleanup, self);
 			else
-				joDefer(cleanup, this, 200);
+				joDefer(cleanup, this, 500);
 
 			if (newclass && newchild)
 				joDOM.removeCSSClass(newchild, newclass);
@@ -192,7 +192,7 @@ joStack.extend(joContainer, {
 
 			if (newchild) {
 				if (transitionevent)
-					joEvent.remove(newchild, "webkitTransitionEnd", transitionevent);
+					joEvent.remove(newchild, joEvent.map.transitionend, transitionevent);
 
 				joDOM.removeCSSClass(newchild, "next");
 				joDOM.removeCSSClass(newchild, "prev");
@@ -236,7 +236,7 @@ joStack.extend(joContainer, {
 	push: function(o) {
 //		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
 //			return;
-			
+
 		// don't push the same view we already have
 		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
 			return this;
@@ -245,6 +245,8 @@ joStack.extend(joContainer, {
 		this.index = this.data.length - 1;
 		this.draw();
 		this.pushEvent.fire(o);
+
+		this.captureBack();
 		
 		return this;
 	},
@@ -270,6 +272,8 @@ joStack.extend(joContainer, {
 				this.hide();
 		}
 
+		this.captureBack();
+
 		if (this.data.length > 0)
 			this.popEvent.fire();
 			
@@ -289,6 +293,8 @@ joStack.extend(joContainer, {
 			this.index = 0;
 //			this.lastNode = null;
 			this.draw();
+
+			this.captureBack();
 						
 			this.popEvent.fire();
 			this.homeEvent.fire();
@@ -327,7 +333,7 @@ joStack.extend(joContainer, {
 		
 		return this;
 	},
-	
+
 	hide: function() {
 		if (this.visible) {
 			this.visible = false;
@@ -337,5 +343,12 @@ joStack.extend(joContainer, {
 		}
 		
 		return this;
+	},
+
+	captureBack: function() {
+		if (this.index > 0)
+			joGesture.backEvent.capture(this.pop, this);
+		else if (this.index <= 0)
+			joGesture.backEvent.release(this.pop, this);
 	}
 });

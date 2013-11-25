@@ -35,15 +35,23 @@
 	  You can manually set focus or call the `blur()` method (which also
 	  triggers a data save).
 	
-	- `setData()`
+	- `setData(string)`
 	
 	  Pass in either some arbitrary value for the control, or a reference to
 	  a joDataSource if you want to automatically bind to a storage system
 	  (e.g. joPreference).
+
+	- `setPlaceholder(string)`
+	
+	  Display placeholder text on an empty input control (* not all
+	  browsers support this).
 	
 */
-joInput = function(data) {
+joInput = function(data, placeholder) {
 	joControl.apply(this, arguments);
+
+	if (placeholder)
+		this.setPlaceholder(placeholder);
 };
 joInput.extend(joControl, {
 	tagName: "input",
@@ -62,6 +70,11 @@ joInput.extend(joControl, {
 		}
 		
 		return this;
+	},
+
+	setPlaceholder: function(placeholder) {
+		if (typeof this.container !== "undefined")
+			this.container.setAttribute("placeholder", placeholder);
 	},
 	
 	getData: function() {
@@ -87,7 +100,7 @@ joInput.extend(joControl, {
 		if (!o)
 			return;
 	
-		o.setAttribute("type", "text");
+		o.setAttribute("type", this.type);
 		o.setAttribute("tabindex", "1");
 		o.contentEditable = this.enabled;
 		
@@ -100,13 +113,6 @@ joInput.extend(joControl, {
 		
 		joControl.prototype.setEvents.call(this);
 		joEvent.on(this.container, "keydown", this.onKeyDown, this);
-
-/*
-		this.container.addEventListener('touchmove', function(e) {
-		    e.preventDefault();
-			joEvent.stop(e);
-		}, false);
-*/
 	},
 	
 	onKeyDown: function(e) {

@@ -45,19 +45,29 @@ joPopup.extend(joContainer, {
 	},
 	
 	hide: function() {
-		joEvent.on(this.container, "webkitTransitionEnd", this.onHide, this);
-		this.container.className = 'hide';
+		joGesture.backEvent.release(this.hide, this);
+
+		joDefer(function() {
+			joEvent.on(this.container, joEvent.map.transitionend, this.onHide, this);
+			this.container.className = 'hide';
+		}, this);
 		
 		return this;
 	},
 	
 	onHide: function() {
+		joEvent.remove(this.container, joEvent.map.transitionend, this.onHide, this);
 		this.hideEvent.fire();
 	},
 	
 	show: function() {
-		this.container.className = 'show';
-		this.showEvent.fire();
+		joEvent.remove(this.container, joEvent.map.transitionend, this.onHide, this);
+		joDefer(function() {
+			this.container.className = 'show';
+			this.showEvent.fire();
+		}, this);
+
+		joGesture.backEvent.capture(this.hide, this);
 		
 		return this;
 	}

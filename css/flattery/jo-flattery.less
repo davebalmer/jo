@@ -1,6 +1,24 @@
-/* @override http://localhost/~dbalmer/jo/css/jo2.css */
 
-/* @override http://localhost/~dbalmer/jo/css/jo.css */
+
+@bgcolor: #fff;
+@groupcolor: difference(#fff, #111);
+@widgetheight: 3em;
+@widgetborderwidth: .2em;
+@widgetlineheight: (@widgetheight - (2 * @widgetborderwidth));
+@widgetborder: (@widgetheight / 2);
+@space: (@widgetheight / 3);
+@widgetpadding: (@widgetheight / 4);
+@fontsize: 14px;
+
+@font-face {
+  font-family: 'jo-flattery';
+  src:url('jo-flattery.eot');
+  src:url('jo-flattery.eot?#iefix') format('embedded-opentype'),
+    url('jo-flattery.ttf') format('truetype'),
+    url('jo-flattery.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 ::selection {
         background: #4f5b98; /* Safari */
@@ -14,10 +32,10 @@
 body {
   margin: 0;
   padding: 0;
-  background: #c5c5c5;
+  background: @bgcolor;
   word-wrap: break-word;
   overflow: hidden;
-  font: normal 15px "Helvetica", "Droid Sans", "Trebuchet MS";
+  font: normal @fontsize "Helvetica", "Droid Sans", "Trebuchet MS";
 }
 jobutton,
 joview,
@@ -50,7 +68,6 @@ josliderthumb {
   padding: 0;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
   -webkit-background-clip: padding-box;
@@ -65,33 +82,31 @@ em, i, b, span, u, a, button, input {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
-  -ms-box-flex: 0;
   box-flex: 0;
 }
 .flexible {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
-  -ms-box-flex: 1;
   box-flex: 1;
 }
+
+jobutton, jooptionitem, joexpandotitle { overflow: hidden; }
 .flex {
   display: block;
   display: -webkit-box;
   display: -moz-box;
   display: -o-box;
-  display: -ms-box;
   display: box;
   margin: 0;
   -moz-box-align: stretch;
   -o-box-align: stretch;
-  -ms-box-align: stretch;
   box-align: stretch;
 }
 .listitem {
   border-top: 1px solid rgba(0, 0, 0, 0.4);
   margin: 0;
-  padding: 10px;
+  padding: @space;
   cursor: pointer;
 }
 .widgety {
@@ -101,7 +116,7 @@ em, i, b, span, u, a, button, input {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
+  padding: @space 0;
 }
 .shiny {
   color: rgba(255, 255, 255, 0.9);
@@ -110,14 +125,7 @@ em, i, b, span, u, a, button, input {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
+  padding: @space 0;
 }
 .matte {
   color: rgba(255, 255, 255, 0.9);
@@ -126,17 +134,7 @@ em, i, b, span, u, a, button, input {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  background-image: url(subtle-matte-full.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  /*
-	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
-*/
-
+  padding: @space 0;
 }
 .stretch-full {
   display: block;
@@ -147,78 +145,52 @@ em, i, b, span, u, a, button, input {
   bottom: 0;
 }
 .widget {
-  margin: 0px 10px 10px 10px;
+  margin: 0px @space @space @space;
 }
 *.selected, *.focus {
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
-  -o-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
-  -ms-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
 }
 .selected {
   background-color: #4f5b98;
-  background-image: none;
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-	color: #fffeff;
+  color: #fffeff;
 }
 .focus {
   background-color: #fff;
 }
 jooptionitem:last-child {
   -webkit-border-radius: 0;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -moz-border-radius: 0 3px 3px 0;
-  border-radius: 0 3px 3px 0;
-  border-right-width: 1px;
+  -webkit-border-top-right-radius: @widgetborder;
+  -webkit-border-bottom-right-radius: @widgetborder;
+  -moz-border-radius: 0 @widgetborder @widgetborder 0;
+  border-radius: 0 @widgetborder @widgetborder 0;
 }
 jobutton {
   display: block;
   text-align: center;
-  color: #000;
-  background-color: #c5c5c5;
+  color: #fff;
+  background: #333;
   font-weight: normal;
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  height: @widgetheight;
+  line-height: @widgetheight;
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
 }
 jobutton .focus {
   background-color: #4f5b98;
-  background-image: url(shade-top-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
 }
 jooption {
   display: block;
   display: -webkit-box;
   display: -moz-box;
-  display: -ms-box;
   display: -o-box;
   display: box;
-  margin: 0;
   -moz-box-align: stretch;
-  -ms-box-align: stretch;
   -o-box-align: stretch;
   box-align: stretch;
-  margin: 0px 10px 10px 10px;
+  margin: 0px @space @space @space;
 }
 jooptionitem {
   color: #000;
@@ -227,45 +199,45 @@ jooptionitem {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
+  padding: 0 @widgetborder;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
-  -ms-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
   text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-right-width: 0;
   margin: 0;
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  height:  @widgetheight;
+  line-height: @widgetlineheight;
+
+  border-left: @widgetborderwidth solid #999;
+  border-top: @widgetborderwidth solid #999;
+  border-bottom: @widgetborderwidth solid #999;
 }
 jooptionitem:first-child {
   -webkit-border-radius: 0;
-  -webkit-border-top-left-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -moz-border-radius: 3px 0 0 3px;
-  border-radius: 3px 0 0 3px;
+  -webkit-border-top-left-radius: @widgetborder;
+  -webkit-border-bottom-left-radius: @widgetborder;
+  -moz-border-radius: @widgetborder 0 0 @widgetborder;
+  border-radius: @widgetborder 0 0 @widgetborder;
 }
 jooptionitem:last-child {
+  border-right: @widgetborderwidth solid #999;
   -webkit-border-radius: 0;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -moz-border-radius: 0 3px 3px 0;
-  border-radius: 0 3px 3px 0;
-  border-right-width: 1px;
+  -webkit-border-top-right-radius: @widgetborder;
+  -webkit-border-bottom-right-radius: @widgetborder;
+  -moz-border-radius: 0 @widgetborder @widgetborder 0;
+  border-radius: 0 @widgetborder @widgetborder 0;
 }
 jobutton,
 input,
 jolabel,
 textarea,
 joexpando {
-  margin: 0px 10px 10px 10px;
+  margin: 0px @space @space @space;
 }
 jotitle {
   background-color: #b8b8b8;
@@ -273,27 +245,16 @@ jotitle {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  background-image: none;
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  /*
-	background-image: -webkit-gradient(linear, left top, left 80%, from(rgba(255, 255, 255, .3)), to(rgba(0, 0, 0, 0)));
-*/
 
   text-align: center;
-  padding: 10px;
+  padding: @space;
   font-size: 120%;
   margin: 0;
   border-left: none;
   border-right: none;
-	border-bottom: 1px solid #858585;
-	border-top: 1px solid #d8d8d8;
-	color: #3c3c3c;
-	text-shadow: #e3e3e3 0 1px 1px;
+  border-bottom: 1px solid #858585;
+  border-top: 1px solid #d8d8d8;
+  color: #3c3c3c;
 }
 *:focus {
   outline: none;
@@ -301,9 +262,9 @@ jotitle {
 jolistitem, jomenuitem {
   border-top: 1px solid #ebebeb;
   margin: 0;
-  padding: 10px;
+  padding: @space;
   cursor: pointer;
-	border-bottom: 1px solid #6d6d6d;
+  border-bottom: 1px solid #6d6d6d;
 }
 jolistitem.selected, jomenuitem.selected {
 	border-color: #333;
@@ -323,13 +284,12 @@ jolist {
 }
 joselectlist, joexpandocontent {
   display: block;
-  border: 1px solid rgba(0, 0, 0, 0.6);
   border-top: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -moz-border-radius: 0 0 3px 3px;
-  border-radius: 0 0 3px 3px;
+  -webkit-border-bottom-right-radius: @widgetborder;
+  -webkit-border-bottom-left-radius: @widgetborder;
+  -moz-border-radius: 0 0 @widgetborder @widgetborder;
+  border-radius: 0 0 @widgetborder @widgetborder;
   background-color: rgba(255, 255, 255, 0.6);
 }
 joexpando {
@@ -338,26 +298,26 @@ joexpando {
   margin-bottom: 0;
 }
 joexpando.open {
-  margin-bottom: 10px;
+  margin-bottom: @space;
 }
 joexpandocontent {
-  padding-top: 10px;
+  padding-top: @space;
 }
 joselectlist > *:last-child {
   border-bottom: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -moz-border-radius: 0 0 3px 3px;
-  border-radius: 0 0 3px 3px;
+  -webkit-border-bottom-right-radius: @widgetborder;
+  -webkit-border-bottom-left-radius: @widgetborder;
+  -moz-border-radius: 0 0 @widgetborder @widgetborder;
+  border-radius: 0 0 @widgetborder @widgetborder;
 }
 joselectlist > *:last-child.select {
   border-bottom: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -moz-border-radius: 0 0 3px 3px;
-  border-radius: 0 0 3px 3px;
+  -webkit-border-bottom-right-radius: @widgetborder;
+  -webkit-border-bottom-left-radius: @widgetborder;
+  -moz-border-radius: 0 0 @widgetborder @widgetborder;
+  border-radius: 0 0 @widgetborder @widgetborder;
 }
 joselectlist > *.first-child {
   border-top: none;
@@ -365,17 +325,9 @@ joselectlist > *.first-child {
 jocard > jolist, jocard > jomenu {
   margin: 0;
 }
-jobutton,
-jotitle,
-jooptionitem,
-joexpandotitle,
-jotoggle {
-/*  text-shadow: 0 0 5px rgba(0, 0, 0, 0.6); */
-}
 joinput.password, input.password {
   -webkit-text-security: disc;
   -moz-text-security: disc;
-  -ms-text-security: disc;
   -o-text-security: disc;
   text-security: disc;
 }
@@ -385,24 +337,25 @@ input,
 textarea {
   cursor: text;
   display: block;
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  margin: 0 10px 10px 10px;
-  padding: 9px;
+  -webkit-border-radius: @widgetborderwidth;
+  -moz-border-radius: @widgetborderwidth;
+  border-radius: @widgetborderwidth;
+  margin: 0 @space @space @space;
+  padding: @widgetpadding;
   background: #e7e6e7;
-  white-space: nowrap;
+/*  white-space: nowrap; */
+  font-size: 105%;
   overflow: hidden;
   outline: none;
-  font-family: "Droid Sans", "Apres", "Trebuchet MS";
-  font-size: 105%;
   -webkit-user-select: text;
   -moz-user-select: text;
   user-select: text;
-  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0);
-  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0);
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+
+  border: @widgetborderwidth solid #999;
 }
 jolist, jomenu {
   font-size: 110%;
@@ -419,26 +372,35 @@ textarea.disabled {
 }
 joexpandotitle joicon {
   position: absolute;
+  border-radius: 0 @widgetborder @widgetborder 0;
+  background: none;
   border: none;
+  text-align: center;
   display: block;
-  height: 32px;
-  width: 32px;
-  right: 4px;
-  top: 10%;
-  background: url(expando.png) no-repeat;
-  -webkit-transform-origin: 16px 16px 0;
+  height: @widgetheight;
+  width: @widgetheight;
+  line-height: @widgetlineheight;
+  right: 0;
+  top: 0;
+
+  -webkit-transform-origin: 50% 50% 0;
   -webkit-transform: rotatez(0);
   -webkit-transition: -webkit-transform 0.2s ease-out;
-  -moz-transform-origin: 16px 16px 0;
+  -moz-transform-origin: 50% 50% 0;
   -moz-transform: rotate(0);
   -moz-transition: -moz-transform 0.2s ease-out;
-  -o-transform-origin: 16px 16px 0;
+  -o-transform-origin: 50% 50% 0;
   -o-transform: rotate(0);
   -o-transition: -o-transform 0.2s ease-out;
-  -ms-transform-origin: 16px 16px 0;
+  -ms-transform-origin: 50% 50% 0;
   -ms-transform: rotate(0);
   -ms-transition: -ms-transform 0.2s ease-out;
 }
+joexpando joicon:after {
+  content: ">";
+  font-family: "jo-flattery";
+}
+
 joexpando.open > joexpandotitle joicon {
   -webkit-transform: rotatez(90deg);
   -moz-transform: rotate(90deg);
@@ -449,42 +411,22 @@ joexpando > *:last-child {
   height: 0;
   overflow: hidden;
   opacity: 0;
+  display: none;
   margin-top: 0;
   margin-bottom: 0;
-  -webkit-transform-style: preserve- 3 d;
-  -webkit-transform: rotatex(-45deg);
-  -webkit-transform-origin: 0 0 0;
-  -webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
-  -moz-transform-style: preserve- 3 d;
-  -moz-transform: rotatex(-45deg);
-  -moz-transform-origin: 0 0 0;
-  -moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
-  -o-transform-style: preserve- 3 d;
-  -o-transform: rotatex(-45deg);
-  -o-transform-origin: 0 0 0;
-  -o-transform: scaley(1);
-  -o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
-  -ms-transform-style: preserve- 3 d;
-  -ms-transform: rotatex(-45deg);
-  -ms-transform-origin: 0 0 0;
-  -ms-transform: scaley(1);
-  -ms-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-out, height 0.2s ease-out, overflow 0.2s ease-out;
 }
 joexpando.open > *:last-child {
   height: 100%;
   overflow: visible;
   opacity: 1;
-  -webkit-transform: rotatex(0);
-  -moz-transform: rotatex(0);
-  -o-transform: rotatex(0);
-  -ms-transform: rotatex(0);
+  display: block;
 }
 joexpando > *:first-child {
   -webkit-transform: none;
   opacity: 1;
   overflow: visible;
-  height: auto;
 }
+
 joexpandotitle {
   color: #000;
   position: relative;
@@ -493,148 +435,118 @@ joexpandotitle {
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  padding: 10px;
+  height: @widgetheight;
+  line-height: @widgetlineheight;
+  padding: 0 @space;
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
   cursor: pointer;
   text-align: left;
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+
+  border: @widgetborderwidth solid #999;
 }
+
 joexpando.open > *:first-child {
   background-color: #6d6d6d;
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
-  -o-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
   -webkit-border-radius: 0;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius: 3px 3px 0 0;
-  border-radius: 3px 3px 0 0;
+  -webkit-border-top-right-radius: @widgetborder;
+  -webkit-border-top-left-radius: @widgetborder;
+  -moz-border-radius: @widgetborder @widgetborder 0 0;
+  border-radius: @widgetborder @widgetborder 0 0;
   color: #fff;
 }
 jolabel, label {
   margin-bottom: 5px;
-  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.6);
 }
 jocaption {
-  margin: 10px;
+  margin: @space;
 }
 johtml {
   display: block;
-  margin: 0 10px 10px 10px;
+  margin: 0 @space @space @space;
   padding: 0;
 }
 jodivider {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  margin: 0 0 10px 0;
+  margin: 0 0 @space 0;
   text-align: center;
   height: 0;
   display: block;
 }
+
 joflexrow > jotoggle {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
-  -ms-box-flex: 0;
   box-flex: 0;
 }
+
 jotoggle {
   cursor: pointer;
   display: block;
-  margin: 10px 10px 0 10px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  /*	border: 1px solid rgba(0, 0, 0, .6); */
-
-  background-color: inherit;
-  background-image: url(shade-top-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
-  -o-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
+  margin: @space @space 0 @space;
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
+  background-color: #999;
   position: relative;
-  overflow: hidden;
-  width: 90px;
+  width: (@widgetheight * 3);
+  height: @widgetheight;
+  line-height: @widgetheight;
 }
+
 jotoggle > * {
-  margin: 0px 10px 10px 10px;
   color: #000;
   background-color: #c5c5c5;
   font-weight: normal;
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  border-color: #000;
-  margin: 0;
   text-align: center;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  padding: 10px 0;
-  width: 60px;
-  -webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  height: @widgetheight;
+  line-height: @widgetlineheight;
+
+  border: @widgetborderwidth solid #999;
+
+  width: (@widgetheight * 2);
  
-  -webkit-transform: translatex(0);
-  -moz-transform: translatex(0);
-  -o-transform: translatex(0);
-  -ms-transform: translatex(0);
+  -webkit-transition: -webkit-transform 0.1s ease, background 0.1s ease;
+  -moz-transition: -moz-transform 0.1s ease, background 0.1s ease;
+  -o-transition: -o-transform 0.1s ease, background 0.1s ease;
+  -ms-transition: -ms-transform 0.1s ease, background 0.1s ease;
+
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translatex(0em);
+  -o-transform: translatex(0em);
+  -ms-transform: translatex(0em);
 
   -webkit-animation-fill-mode: forwards;
+}
 
-  -webkit-transition: -webkit-transform 2s ease !important;
-  -moz-transition: -moz-transform 0.2s ease, background-color 0.2s ease;
-  -o-transition: -o-transform 0.2s ease, background-color 0.2s ease;
-  -ms-transition: -ms-transform 0.2s ease, background-color 0.2s ease;
-}
-jotoggle.on {
-  background-color: inherit;
-  background-image: url(shade-top-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-}
 jotoggle.on > * {
   color: #fff;
-  -webkit-box-shadow: -2px 0 2px rgba(0, 0, 0, 0.2);
   background-color: #4f5b98;
-  -webkit-transform: translatex(28px);
-  -moz-transform: translatex(26px);
-  -o-transform: translatex(26px);
-  -ms-transform: translatex(26px);
-  -webkit-transition: -webkit-transform 2s ease;
-  -moz-transition: -moz-transform 0.2s ease, background-color 0.2s ease;
-  -o-transition: -o-transform 0.2s ease, background-color 0.2s ease;
-  -ms-transition: -ms-transform 0.2s ease, background-color 0.2s ease;
+  -webkit-transform: translate3d(@widgetheight, 0, 0);
+  -moz-transform: translatex(@widgetheight);
+  -o-transform: translatex(@widgetheight);
+  -ms-transform: translatex(@widgetheight);
 }
 jotable {
   display: block;
-  margin: 0 10px;
+  margin: 0 @space;
 }
 tr {
   margin: 0;
@@ -647,65 +559,68 @@ td {
   padding: 5px;
 }
 jolabel.left {
-  margin-top: 10px;
+  margin-top: @space;
   padding: 9px 0;
 }
 .disabled {
   opacity: .2;
 }
 jotoolbar {
-  padding: 10px;
+  padding: @space;
 }
 josliderthumb {
   position: absolute;
-  height: 18px;
-  width: 40px;
+  height: @widgetheight;
+  width: (@widgetheight * 2);
   color: rgba(255, 255, 255, 0.9);
   background-color: #4f5b98;
   font-weight: normal;
-  cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  line-height: @widgetlineheight;
+
+  border: @widgetborderwidth solid #999;
+
+  -webkit-transition: left 0.1s ease;
+  -moz-transition: left 0.1s ease;
+  -o-transition: left 0.1s ease;
+  -ms-transition: left 0.1s ease;
 }
+
+joslider.live > josliderthumb {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+}
+
+
 joslider {
-  margin: 10px;
+  cursor: pointer;
+  background: #999;
+  margin: @space;
   position: relative;
-  height: 40px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  background-image: url(shade-top-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
-  -o-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
+  height: @widgetheight;
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
 }
 joflexrow {
   display: block;
   display: -webkit-box;
   display: -moz-box;
   display: -o-box;
-  display: -ms-box;
   display: box;
   margin: 0;
   -moz-box-align: stretch;
   -o-box-align: stretch;
-  -ms-box-align: stretch;
   box-align: stretch;
   width: 100%;
 }
@@ -713,25 +628,22 @@ joflexrow > * {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
-  -ms-box-flex: 1;
   box-flex: 1;
   margin-right: 0;
   position: relative;
 }
 joflexrow > *:last-child {
-  margin-right: 10px;
+  margin-right: @space;
 }
 joflexcol {
   display: block;
   display: -webkit-box;
   display: -moz-box;
   display: -o-box;
-  display: -ms-box;
   display: box;
   margin: 0;
   -moz-box-align: stretch;
   -o-box-align: stretch;
-  -ms-box-align: stretch;
   box-align: stretch;
   height: 100%;
   width: 100%;
@@ -739,8 +651,6 @@ joflexcol {
   -webkit-box-align: stretch;
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
-  -ms-box-orient: vertical;
-  -ms-box-align: stretch;
   -o-box-orient: vertical;
   -o-box-align: stretch;
   box-orient: vertical;
@@ -751,39 +661,41 @@ joflexcol > * {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
-  -ms-box-flex: 1;
   box-flex: 1;
 }
 jotitle + joflexcol, jotitle + joflexrow {
-  margin-top: 10px;
+  margin-top: @space;
 }
 jostack {
   height: 100%;
-  -webkit-perspective: 400px;
-  -moz-perspective: 400px;
-  -o-perspective: 400px;
-  -ms-perspective: 400px;
-  -webkit-transition: opacity 0.3s ease-out;
-  -moz-transition: opacity 0.3s ease-out;
-  -o-transition: opacity 0.3s ease-out;
-  -ms-transition: opacity 0.3s ease-out;
+/*
+  -webkit-perspective: 0;
+  -moz-perspective: 0;
+  -o-perspective: 0;
+  -ms-perspective: 0;
+*/
+  -webkit-transition: opacity 0.2s ease-out;
+  -moz-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  -ms-transition: opacity 0.2s ease-out;
 }
 jostack > * {
-  -webkit-animation-fill-mode: forwards;
-  -webkit-transform-origin: 50% 100% 0;
-  -webkit-transform: rotatez(0) translatez(0) translatex(0) translatey(0);
-  -webkit-transition: -webkit-transform 0.3s ease-out, z-index 0.3s ease-out, height 0s ease, overflow 0s ease;
-  -moz-transform-origin: 50% 100% 0;
-  -moz-transform: rotatez(0) translatez(0);
-  -moz-transition: -moz-transform 0.3s ease-out, z-index 0.3s ease-out, height 0s ease, overflow 0s ease;
   z-index: 0;
-  -o-transform-origin: 50% 100% 0;
-  -o-transform: rotatez(0);
-  -o-transition: -o-transform 0.3s ease-out;
-  -ms-transform-origin: 50% 100% 0;
-  -ms-transform: rotatez(0);
-  -ms-transition: -ms-transform 0.3s ease-out;
   position: absolute;
+
+  -webkit-animation-fill-mode: forwards;
+/*  -webkit-transform-origin: 0 0 0; */
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-transform 0.2s ease-out, z-index 0.2s ease-out, height 0s ease, overflow 0s ease;
+/*  -moz-transform-origin: 0 0 0; */
+  -moz-transform: translate3d(0, 0, 0);
+  -moz-transition: -moz-transform 0.2s ease-out, z-index 0.2s ease-out, height 0s ease, overflow 0s ease;
+/*  -o-transform-origin: 0 0 0; */
+  -o-transform: translate3d(0, 0, 0);
+  -o-transition: -o-transform 0.2s ease-out;
+/*  -ms-transform-origin: 0 0 0; */
+  -ms-transform: translate3d(0, 0, 0);
+  -ms-transition: -ms-transform 0.2s ease-out;
   /*
 	display: block;
 	height: 100%;
@@ -796,27 +708,24 @@ jostack > * {
 }
 jostack > .next {
   z-index: -1;
-  -webkit-transform: rotatez(45deg) translatey(-10%) translatex(100%);
-  -moz-transform: rotatez(45deg);
-  -o-transform: rotatez(45deg);
-  -ms-transform: rotatez(45deg);
+  -webkit-transform: translateX(100%);
+  -moz-transform: translateX(100%);
+  -o-transform: translateX(100%);
+  -ms-transform: translateX(100%);
   height: 100%;
   overflow: hidden;
 }
 jostack > .prev {
   z-index: 1;
-  -webkit-transform: rotatez(-45deg) translatey(10%) translatex(-100%);
-  -moz-transform: rotatez(-45deg);
-  -o-transform: rotatez(-45deg);
-  -ms-transform: rotatez(-45deg);
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
   height: 100%;
   overflow: hidden;
 }
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-jobutton {
-  background-repeat: repeat-x;
 }
 jocard {
   width: 100%;
@@ -831,20 +740,18 @@ jocard {
   -webkit-box-align: stretch;
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
-  -ms-box-orient: vertical;
-  -ms-box-align: stretch;
   -o-box-orient: vertical;
   -o-box-align: stretch;
   box-orient: vertical;
   box-align: stretch;
-  background: #c1c1c1;
+  background: @bgcolor;
 }
 jocard > * {
   /*	display: block; */
 
 }
 jocard > *:last-child {
-  margin-bottom: 10px;
+  margin-bottom: @space;
 }
 joscroller {
   position: absolute;
@@ -894,13 +801,12 @@ jocontainer {
   position: relative;
 }
 jogroup {
-  margin: 10px;
-  padding: 10px 0;
+  margin: @space;
+  padding: @space 0;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
-	background: #b8b8b8 none repeat-x;
-	border: 1px solid #9d9d9d;
+	background: @groupcolor;
 }
 jogroup > *.last-child {
   margin-bottom: 0;
@@ -909,7 +815,6 @@ jofooter {
   display: block;
   display: -webkit-box;
   display: -moz-box;
-  display: -ms-box;
   display: box;
   width: 100%;
   -webkit-box-flex: 1;
@@ -920,10 +825,6 @@ jofooter {
   -moz-box-orient: vertical;
   -moz-box-align: stretch;
   -moz-box-pack: end;
-  -ms-box-flex: 1;
-  -ms-box-orient: vertical;
-  -ms-box-align: stretch;
-  -ms-box-pack: end;
   box-flex: 1;
   box-orient: vertical;
   box-align: stretch;
@@ -933,7 +834,6 @@ jofooter {
 jofooter > * {
   -webkit-box-align: end;
   -moz-box-align: end;
-  -ms-box-align: end;
   -o-box-align: end;
   box-align: end;
 }
@@ -960,21 +860,13 @@ joshim.show {
 }
 jotoolbar {
   border-top: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 10px 0;
+  padding: @space 0;
   color: rgba(255, 255, 255, 0.9);
   background-color: rgba(0,0,0,0.8);
   font-weight: normal;
   cursor: pointer;
   outline: none;
   outline-color: transparent;
-  padding: 10px 0;
-  background-image: url(subtle-matte-full.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -ms-background-size: 100% 100%;
   z-index: 1;
   position: absolute;
   bottom: 0;
@@ -982,16 +874,9 @@ jotoolbar {
   right: 0;
   text-align: center;
 }
-jotoolbar jobutton {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  border-radius: 0;
-}
 jopopup {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
-  -ms-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
   display: block;
@@ -1000,11 +885,9 @@ jopopup {
   border: 2px solid #434343;
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  -ms-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   -o-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
   border-radius: 5px;
   background-color: #747474;
   color: #000;
@@ -1026,18 +909,18 @@ jopopup {
 jopopup > jolist > *.select:first-childjopopup > jomenu > *.select:first-child {
   border-top: none;
   -webkit-border-radius: 0;
-  -webkit-border-top-right-radius: 10px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius: 10px 10px 0 0;
-  border-radius: 10px 10px 0 0;
+  -webkit-border-top-right-radius: @space;
+  -webkit-border-top-left-radius: @space;
+  -moz-border-radius: @space @space 0 0;
+  border-radius: @space @space 0 0;
 }
 jopopup > jolist > *:last-child.selectjopopup > jomenu > *:first-child.select {
   border-bottom: none;
   -webkit-border-radius: 0;
-  -webkit-border-bottom-right-radius: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  -moz-border-radius: 0 0 10px 10px;
-  border-radius: 0 0 10px 10px;
+  -webkit-border-bottom-right-radius: @space;
+  -webkit-border-bottom-left-radius: @space;
+  -moz-border-radius: 0 0 @space @space;
+  border-radius: 0 0 @space @space;
 }
 jopopup.show {
   -webkit-transform: scale(1);
@@ -1052,17 +935,12 @@ jopopup > joscroller {
 jonavbar {
   font-size: 120%;
   font-weight: bold;
-  background-image: url(shiny-split.png);
-  background-repeat: repeat-x;
-  background-position: top left;
-  background-size: 100% 100%;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
   display: block;
   position: relative;
-  margin: 0;
   padding: 0;
   color: #333;
+  height: 3em;
+  line-height: 3em;
   border-top: none;
   border-right: none;
   border-left: none;
@@ -1070,17 +948,14 @@ jonavbar {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
   -o-box-flex: 0;
-  -ms-box-flex: 0;
   box-flex: 0;
   background-color: #888;
   cursor: default;
-  text-shadow: #b3b3b3 0 1px 1px;
-	border-bottom: 1px solid #696969;
 }
 jonavbar > joview {
+  margin: 0;
   display: block;
   text-align: center;
-  padding: 10px 0;
 }
 jonavbar > joflexrow {
   position: absolute;
@@ -1090,18 +965,17 @@ jonavbar > joflexrow {
   bottom: 0;
 }
 jobackbutton {
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-bottom-color: rgba(255, 255, 255, 0.3);
-  padding: 6px 10px 4px 10px;
-  margin: 5px 10px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6);
-  -moz-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6);
-  -o-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6);
+  margin: 3px @space;
+  line-height: @widgetheight;
+  height: @widgetheight;
+  padding: 0 @widgetborder;
+  -webkit-border-radius: @widgetborder;
+  -moz-border-radius: @widgetborder;
+  border-radius: @widgetborder;
   display: none;
-  color: #ddd;
+  color: #fff;
+  background: #000;
+  font-size: 85%;
 }
 jobackbutton.focus, jobackbutton.selected {
   background-color: rgba(0, 0, 0, 0.5);
@@ -1112,14 +986,12 @@ jobackbutton.active {
 jonavbar > joflexrow > * {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
-  -ms-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
 }
 jonavbar > joflexrow > jobackbutton {
   -webkit-box-flex: 0;
   -moz-box-flex: 0;
-  -ms-box-flex: 0;
   -o-box-flex: 0;
   box-flex: 0;
   max-width: 4em;
@@ -1128,17 +1000,13 @@ jopopup > jotitle {
   color: #fff;
   border-top:  none;
   border-color: #999;
-  margin-bottom: 10px;
+  margin-bottom: @space;
   -webkit-border-radius: 0;
   -webkit-border-top-right-radius: 2px;
   -webkit-border-top-left-radius: 2px;
   -moz-border-radius: 2px 2px 0 0;
   border-radius: 2px 2px 0 0;
-  background-image: url(shiny-split.png);
 	background-color: #3f3f3f;
-}
-jopopup > jobutton {
-  background-color: #c5c5c5;
 }
 joflexcol {
   height: 100%;
@@ -1160,26 +1028,25 @@ html {
   -webkit-text-size-adjust: none;
 }
 body {
-  -webkit-backface-visibility: hidden;
+/*  -webkit-backface-visibility: hidden; */
 }
 
-jobackbutton {
-	color: inherit;
-	font-size: 85%;
-}
 
-.nativescroll jostack { width: 100%; position: relative; }
+.nativescroll jostack {
+    width: 100%;
+    position: relative;
+}
 
 .nativescroll joscroller {
-  position: absolute;
-  display: block;
-  height: auto;
-  width: auto;
-  top: 0; left: 0; bottom: 0; right: 0;
-  overflow: auto;
-  padding: 0;
-  margin: 0;
-  -webkit-overflow-scrolling: touch;
+    position: absolute;
+    display: block;
+    height: auto;
+    width: auto;
+    top: 0; left: 0; bottom: 0; right: 0;
+    overflow: auto;
+    padding: 0;
+    margin: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 .nativescroll jocontainer {
@@ -1194,4 +1061,3 @@ jobackbutton {
     right: 0;
     bottom: 0;
 }
-

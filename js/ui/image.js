@@ -57,3 +57,4 @@ joImage.extend(joControl, {
 			this.container.src = data;
 	}
 });
+

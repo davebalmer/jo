@@ -1,6 +1,28 @@
 Release Notes
 =============
 
+Jo 0.5.0 "Pumpkin Spice"
+------------------------
+
+- Support for Tizen 2.2+ browser & the Tizen Web App SDK
+	- Native scroller support
+	- CSS rendering tweaks
+	- Enhanced back button support
+- New theme: "Flattery" (css/flattery)
+	- Flat design
+	- Easy to customize (either directly or with less.js)
+	- No image dependencies
+	- Uses a custom font for glyphs (built with http://icomoon.io)
+- Improved desktop browser support (yes, your trackpad can now scroll)
+- Improved kitchen sink sample app
+- CSS transition bug fixes for joToggle, joSlider and joPopup
+- New joQueue for serializing asynchronous calls
+- New joPool for class-based object pooling
+- New joTimer object for, well, timing things
+- New joCanvas widget, a basic canvas tag wrapper
+- New joImage widget
+- New joTemplate class for simple string templating
+
 Jo 0.4.1
 --------
 

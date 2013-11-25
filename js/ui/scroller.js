@@ -364,6 +364,12 @@ joScroller.extend(joContainer, {
 		node.jotop = y;
 		node.joleft = x;
 	},
+
+	setPositionNative: function(x, y, node) {
+		node.scrollTop = y;
+
+		return this;
+	},
 	
 	setPosition: function(x, y, node) {
 		node.style.webkitTransform = "translate3d(" + x + "px, " + y + "px, 0)";

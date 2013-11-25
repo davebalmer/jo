@@ -90,7 +90,11 @@
 // syntactic sugar to make it easier to extend a class
 Function.prototype.extend = function(superclass, proto) {
 	// create our new subclass
-	this.prototype = new superclass();
+
+	if (typeof Object.create !== "undefined")
+		this.prototype = Object.create(superclass.prototype);
+	else
+		this.prototype = new superclass();
 
 	// optional subclass methods and properties
 	if (proto) {
@@ -125,16 +129,23 @@ if (typeof console.log !== 'function')
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
-	version: "0.4.2",
+	version: "0.5.0",
 	
 	useragent: [
 		'ipad',
 		'iphone',
+		'ipod',
 		'playbook',
+		'bb10',
 		'webos',
 		'hpwos',
 		'bada',
+		'ouya',
+		'tizen',
 		'android',
+		'kindle',
+		'silk',
+		'iemobile',
 		'msie',
 		'opera',
 		'chrome',
@@ -143,6 +154,20 @@ jo = {
 		'gecko'
 	],
 	
+	osMap: {
+		ipad: "ios",
+		iphone: "ios",
+		ipod: "ios",
+		webos: "webos",
+		hpwos: "webos",
+		silk: "android",
+		ouya: "android",
+		kindle: "android",
+		msie: "windows",
+		iemobile: "windows",
+		safari: "osx"
+	},
+
 	debug: false,
 	setDebug: function(state) {
 		this.debug = state;
@@ -173,6 +198,8 @@ jo = {
 			}
 		}
 
+		this.os = this.osMap[this.platform] || this.platform;
+
 		if (joEvent) {
 			// detect if we're on a touch or mouse based browser
 			var o = document.createElement('div');
@@ -188,45 +215,101 @@ jo = {
 		if (joGesture)
 			joGesture.load();
 
-		var s = joScroller.prototype;
-		
+		var s = (typeof joScroller !== "undefined") ? joScroller.prototype : null;
+		var d = joDOM;
+
+		if (s && this.matchPlatform("tizen msie chrome safari bb10")) {
+			// native scrolling
+			joDOM.addCSSClass(document.body, "nativescroll");
+			s.onDown = function() {};
+			s.setEvents = function() {};
+			s.onUp = function() {};
+			s.onMove = function() {};
+			s.onClick = function() {};
+			s.setPosition = s.setPositionNative;
+		}
+
 		// setup transition css hooks for the scroller
 		if (typeof document.body.style.webkitTransition !== "undefined") {
-			// webkit, leave everything alone
+			joEvent.map.transitionend = "webkitTransitionEnd";
+			d.transform = function(node, arg) {
+				node.style.webkitTransform = arg;
+			};
+			d.transformOrigin = function(node, arg) {
+				node.style.webkitTransformOrigin = arg;
+			};
+			d.transition = function(node, arg) {
+				node.style.webkitTransition = arg;
+			};
 		}
 		else if (typeof document.body.style.MozTransition !== "undefined") {
 			// mozilla with transitions
-			s.transitionEnd = "transitionend";
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				node.style.MozTransform = "translate(" + x + "px," + y + "px)";
+			};
+			d.transform = function(node, arg) {
+				node.style.MozTransform = arg;
+			};
+			d.transformOrigin = function(node, arg) {
+				node.style.MozTransformOrigin = arg;
+			};
+			d.transition = function(node, arg) {
+				node.style.MozTransition = arg;
 			};
 		}
 		else if (typeof document.body.style.msTransform !== "undefined") {
 			// IE9 with transitions
-			s.transitionEnd = "transitionend";
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				node.style.msTransform = "translate(" + x + "px," + y + "px)";
+			};
+			d.transform = function(node, arg) {
+				node.style.msTransform = arg;
+			};
+			d.transformOrigin = function(node, arg) {
+				node.style.msTransformOrigin = arg;
+			};
+			d.transition = function(node, arg) {
+				node.style.msTransition = arg;
 			};
 		}
 		else if (typeof document.body.style.OTransition !== "undefined") {
 			// opera with transitions
-			s.transitionEnd = "otransitionend";
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				node.style.OTransform = "translate(" + x + "px," + y + "px)";
+			};
+			joEvent.map.transitionend = "otransitionend";
+			d.transform = function(node, arg) {
+				node.style.OTransform = arg;
+			};
+			d.transformOrigin = function(node, arg) {
+				node.style.OTransformOrigin = arg;
+			};
+			d.transition = function(node, arg) {
+				node.style.OTransition = arg;
 			};
 		}
 		else {
 			// no transitions, disable flick scrolling
 			s.velocity = 0;
 			s.bump = 0;
-			s.transitionEnd = "transitionend";
-			s.setPosition = function(x, y, node) {
+			if (s) s.setPosition = function(x, y, node) {
 				if (this.vertical)
 					node.style.top = y + "px";
 				
 				if (this.horizontal)
 					node.style.left = x + "px";
 			};
+		}
+
+		if (!window.requestAnimationFrame) {
+			console.log("jo: swapping requestanimationframe with settimeout");
+			jo.requestAnimationFrame = false;
+			window.requestAnimationFrame = function(call) {
+				setTimeout(call, 17);
+			}
+		}
+		else {
+			jo.requestAnimationFrame = true;
 		}
 
 		joLog("Jo", this.version, "loaded for", this.platform, "environment");

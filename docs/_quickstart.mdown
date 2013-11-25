@@ -10,7 +10,7 @@ Jo needs at least a simple HTML file to operate in. Here is a bare-bones example
 	<!DOCTYPE html>
 	<html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/jo.css">
+		<link rel="stylesheet" type="text/css" href="css/flattery/jo-flattery.css">
 	</head>
 	<body>
 

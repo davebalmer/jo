@@ -101,14 +101,26 @@ joScreen.extend(joContainer, {
 		else {
 			this.popup.setData(data);
 		}
-//		this.shim.showEvent.subscribe(this.popup.show, this);
+		this.shim.hideEvent.subscribe(this.hideShim, this);
+		this.popup.hideEvent.subscribe(this.hidePopup, this);
 		this.shim.show();
 		this.popup.show();
 		
 		return this;
 	},
+
+	hideShim: function() {
+		this.shim = null;
+
+		if (this.popup)
+			this.popup.hide();
+
+		return this;
+	},
 	
 	hidePopup: function() {
+		this.popup = null;
+
 		if (this.shim)
 			this.shim.hide();
 			

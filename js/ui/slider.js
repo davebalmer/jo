@@ -131,7 +131,8 @@ joSlider.extend(joControl, {
 		joEvent.stop(e);
 
 		this.reset();
-		
+		joDOM.addCSSClass(this.container, "live");
+				
 		var node = this.container.firstChild;
 		
 		this.inMotion = true;
@@ -157,7 +158,7 @@ joSlider.extend(joControl, {
 
 		joEvent.stop(e);
 		e.preventDefault();
-		
+
 		var point = this.getMouse(e);
 
 		var y = point.y;
@@ -198,8 +199,6 @@ joSlider.extend(joControl, {
 	},
 
 	initValue: function(value) {
-		console.log(this.container);
-		
 		if (!this.container)
 			return this;
 		
@@ -248,6 +247,8 @@ joSlider.extend(joControl, {
 		var point = this.getMouse(e);
 		var x = Math.floor(point.x);
 		var t = this.thumb.offsetWidth;
+
+		joDOM.removeCSSClass(this.container, "live");
 		
 		x = x - t;
 		

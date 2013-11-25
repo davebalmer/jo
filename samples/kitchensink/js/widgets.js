@@ -1,4 +1,5 @@
 joCache.set("widgets", function() {
+	var slider;
 	var card = new joCard([
 		new joTitle("Input Boxes"),
 		new joGroup([
@@ -6,11 +7,13 @@ joCache.set("widgets", function() {
 			new joFlexrow(new joInput("Hello, Jo!")),
 			new joLabel("joPasswordInput"),
 			new joFlexrow(new joPasswordInput("password")),
+			new joLabel("joInput with Placeholder"),
+			new joFlexrow(new joInput("", "Placeholder Text")),
 			new joLabel("joTextArea"),
 			new joFlexrow(new joTextarea("This is some multi-line text, Jo!")),
 			new joDivider(),
 			new joFlexrow([
-				new joLabel("Left Aligned").setStyle({className:"left", marginTop:"2px"}),
+				new joLabel("Left Aligned").setStyle({className: "left", marginTop: "2px"}),
 				new joInput("From CSS").setStyle({width: "150px", marginBottom: "0"})
 			])
 		]),
@@ -26,7 +29,10 @@ joCache.set("widgets", function() {
 				"Chocolate Mousse",
 				"Rum Raisin Ice Cream",
 				"Fudge Sundae"
-			]),
+			]).openEvent.subscribe(function(data, select) {
+				console.log(select);
+				App.stack.scrollTo(select);
+			}),
 			new joFlexrow([
 				new joLabel("joToggle").setStyle("left"),
 				new joToggle(true)
@@ -43,14 +49,6 @@ joCache.set("widgets", function() {
 				new joFlexrow(new joInput("Hello again, Jo!"))
 			])
 		]),
-/*
-		new joLabel("Horizontal Scroller"),
-		new joScroller([
-			new joFlexrow([
-				"HI", "HELLO", "HOLA", "SUP", "CHEERS", "DUDE", "YO"
-			])
-		]).setScroll(true, false).setStyle('iconz'),
-*/
 		new joDivider(),
 		new joButton("joButton").selectEvent.subscribe(function() {
 			App.scn.alert("You pressed a button!");
@@ -69,4 +67,3 @@ joCache.set("widgets", function() {
 	return card;
 });
 
-var slider;
