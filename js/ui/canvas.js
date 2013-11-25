@@ -1,3 +1,9 @@
+/**
+	joCanvas
+	========
+
+	Simple canvas wrapper control.
+*/
 
 function joCanvas(w, h) {
 	this.canvas = joDOM.create("canvas");

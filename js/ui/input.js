@@ -12,14 +12,17 @@
 		// simple value, simple field
 		var x = new joInput(a);
 		
-		// set up a simple joRecord instance with some default data
+		// OR set up a simple joRecord instance with some default data
 		var pref = new joRecord({
 			username: "Bob",
 			password: "password"
 		});
 				
-		// attach the value to a data structure property
+		// AND attach the value to a data structure property
 		var y = new joInput(pref.link("username"));
+
+		// set an input with a placehlder string
+		var z = new joInput(b, "Placeholder");
 	
 	Extends
 	-------

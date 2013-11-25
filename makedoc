@@ -1,5 +1,5 @@
 #!/bin/bash
-#../joDoc/jodoc --toc ~/Projects/jodocs/contents.mdown --template ~/Projects/jodocs/template.html --title "Jo HTML5 Mobile JavaScript Framework" --output ~/Projects/jodocs/docs ABOUT.mdown LICENSE.mdown README.mdown js/core/*.js js/data/*.js js/ui/*.js docs/*.mdown
+#../joDoc/jodoc --toc ~/Projects/jodocs/contents.mdown --template ~/Projects/jodocs/template.html --title "Jo HTML5 Mobile JavaScript Framework 0.5.0" --output ~/Projects/jodocs/docs ABOUT.mdown LICENSE.mdown README.mdown js/core/*.js js/data/*.js js/ui/*.js docs/*.mdown
 #cat ABOUT.mdown README.mdown docs/*.mdown LICENSE.mdown > /tmp/jo.mdown
 #cat js/core/*.js js/data/*.js js/ui/*.js > /tmp/jo.js
 #../joDoc/jodoc --template ~/Projects/jodocs/singletemplate.html --title "Jo HTML5 Mobile JavaScript Framework" /tmp/jo.js /tmp/jo.mdown > ~/Projects/jodocs/docs/singlepage.html

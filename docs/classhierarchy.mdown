@@ -29,6 +29,7 @@ User Interface
 	* joControl
 		* joButton
 			* joBackButton
+		* joCanvas
 		* joCaption
 		* joExpando
 			* joSelect
@@ -43,7 +44,6 @@ User Interface
 			* joSelectList
 			* joTabBar
 			* joTable
-		* joKnob
 		* joSlider
 		* joToggle
 		* joOption
@@ -75,7 +75,7 @@ Processing
 
 * joChain
 * joDefer
-* joWait
+* joQueue
 
 Utility
 -------
@@ -85,7 +85,9 @@ Utility
 * joJSON
 * joLocal
 * joString
+* joTemplate
 * joTime
+* joTimer
 
 Debugging
 ---------

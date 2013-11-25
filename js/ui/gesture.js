@@ -13,7 +13,9 @@
 	
 	- `backEvent`
 
-	  Fired when `ESC` key is pressed (on webOS, the back gesture fires an `ESC` key)
+	  Fired when `ESC` key is pressed (on webOS, the back gesture fires an `ESC` key),
+	  also used to hook in hardware back buttons for different platforms (e.g.
+	  Tizen, Android).
 	
 	- `resizeEvent`
 	
