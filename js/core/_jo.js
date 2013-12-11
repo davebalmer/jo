@@ -150,6 +150,7 @@ jo = {
 		'opera',
 		'chrome',
 		'safari',
+		'firefox',
 		'mozilla',
 		'gecko'
 	],
@@ -218,7 +219,7 @@ jo = {
 		var s = (typeof joScroller !== "undefined") ? joScroller.prototype : null;
 		var d = joDOM;
 
-		if (s && this.matchPlatform("tizen msie chrome safari bb10")) {
+		if (s && this.matchPlatform("tizen msie chrome safari bb10 firefox")) {
 			// native scrolling
 			joDOM.addCSSClass(document.body, "nativescroll");
 			s.onDown = function() {};
