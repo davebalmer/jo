@@ -87,9 +87,12 @@ joCache = {
 				
 			return cache.view;
 		}
-		else {
-			return new joView("View not found: " + key);
-		}
+
+		return null;
+	},
+
+	exists: function(key) {
+		return this.cache[key];
 	},
 
 	clear: function(key) {
