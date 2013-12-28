@@ -129,6 +129,21 @@ joView.prototype = {
 		return this;
 	},
 
+	setSize: function(w, h) {
+		this.container.style.width = w + "px";
+		this.container.style.height = h + "px";
+
+		return this;
+	},
+
+	setPosition: function(x, y) {
+		this.container.style.position = "absolute";
+		this.container.style.left = x + "px";
+		this.container.style.top = y + "px";
+
+		return this;
+	},
+
 	setId: function(id) {
 		this.container.id = id;
 		return this;
