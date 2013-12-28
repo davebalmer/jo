@@ -83,7 +83,7 @@ joDOM = {
 	
 	get: function(id) {
 		if (typeof id === "string") {
-			return document.getElementById(id);
+			return joCache.exists(id) ? joCache.get(id) : document.getElementById(id);
 		}
 		else if (typeof id === 'object') {
 			if (id instanceof joView)
