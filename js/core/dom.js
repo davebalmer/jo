@@ -302,6 +302,17 @@ joDOM = {
 		};
 	},
 
+	setPosition: function(o, x, y, w, h) {
+		o.style.position = "absolute";
+
+		o.style.left = Math.floor(x) + "px";
+		o.style.top = Math.floor(y) + "px";
+		if (w && h) {
+			o.style.width = Math.floor(w) + "px";
+			o.style.height = Math.floor(h) + "px";
+		}
+	},
+
 	attach: function(node, parent) {
 		parent.appendChild(node);
 	},
