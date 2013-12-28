@@ -25,36 +25,33 @@
 	- `errorEvent()`
 	
 */
-joImage = function(data) {
-	joControl.apply(this, arguments);
-};
-joImage.extend(joControl, {
+function joImage(url) {
+	var container = new Image();
+
+	this.image = container;
+	this.container = container;
+	var self = this;
+
+	this.loadEvent = new joSubject(this);
+	this.errorEvent = new joSubject(this);
+
+	function onload() {
+		self.loadEvent.fire();
+	}
+
+	function onerror() {
+		self.errorEvent.fire();
+	}
+
+	container.onload = onload;
+	container.onerror = onerror;
+	container.src = url;
+}
+joImage.extend(joLabel, {
 	tagName: "img",
-	
-	createContainer: function() {
-		var o = joDOM.create(this.tagName);
-		if (!o)
-			return;
-
-		joEvent.on(o, "load", this.loadEvent.fire, this);
-		joEvent.on(o, "error", this.errorEvent.fire, this);
-		
-		if (this.data)
-			o.src = data;
-
-		return o;
-	},
-
-	getImageData: function() {
-		// baase64
-	},
-	
-	setData: function(data) {
-		this.data = data;
-
-		// TODO: create Image instead, then attach to img tag?
-		if (data)
-			this.container.src = data;
+	setImage: function(image) {
+//		console.log("image", image);
+		this.container.src = "url(" + image + ")";
 	}
 });
 
