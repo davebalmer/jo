@@ -234,6 +234,9 @@ joStack.extend(joContainer, {
 	},
 	
 	push: function(o) {
+		if (typeof o === "string")
+			o = joDOM.get(o);
+
 //		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
 //			return;
 
