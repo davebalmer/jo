@@ -111,30 +111,21 @@ jobutton {
     line-height: 1.7em;
     
     border:solid 1px #7e7e7e;
-    
-
-
     width: auto;
     padding: 0.25em 1em;
-
-
 	-webkit-border-radius: 0.4em;
-	background: #33B5E5;
+	background: #575757;
 
 }
 
 jobutton:hover {
-	opacity: 0.6;
 	outline: none;
-	border: 2px solid;
+
 }
 
 jobutton.focus {
-	opacity: 0.2;
-	outline: none;
-	border: 2px solid;
-		background: #33B5E5;
-	
+    background: #33B5E5;
+/*	outline: none;*/
 
 }
 
@@ -193,6 +184,7 @@ jotitle {
 	background-image: none;
 	text-align: center;
 	color: rgba(255, 255, 255, 0.8);
+	background: darkgray;
 	padding: 10px;
 
 	font-size: 18px;
@@ -439,6 +431,7 @@ johtml {
 	display: block;
 	margin: 0 10px 10px 10px;
 	padding: 0;
+	color: white;
 }
 jodivider {
   border-top: 1px solid rgba(0, 0, 0, 0.5);
@@ -646,6 +639,7 @@ jogroup {
 
 
 	background-color: #4b4b4b;
+	background-color: #383838;
 	padding-top:10px; padding-right:5px;padding-left:5px; padding-bottom: 10px;
 
 	margin-left:10px; margin-top:10px; margin-right:10px; margin-bottom:10px;
@@ -769,7 +763,8 @@ jopopup > joscroller {
 jonavbar {
 
 
-background: black;
+	color: rgba(255, 255, 255, 0.8);
+	background: darkgray;
 	border-bottom: 1px solid #777;
 	display: block;
 	position: relative;
@@ -827,13 +822,14 @@ jobackbutton {
 
 	-webkit-border-radius: 0.4em;
 
-	background: black;
+		color: white;
+		background: #575757;
 
 }
 jobackbutton.focus, jobackbutton.selected {
-	opacity: 0.6;
+
 	outline: none;
-	border: 2px solid;  
+	    background: #33B5E5;
 
 }
 jobackbutton.active {
@@ -841,9 +837,7 @@ jobackbutton.active {
 }
 
 jobackbutton:hover {
-	opacity: 0.6;
-	outline: none;
-	border: 2px solid;
+
 }
 
 
@@ -858,15 +852,14 @@ jonavbar > joflexrow > jobackbutton {
 
 jopopup > jotitle {
 
-	background: black;
+	color: rgba(255, 255, 255, 0.8);
+	background: darkgray;
 
 	-webkit-border-top-left-radius: 0.3em;
 	-webkit-border-top-right-radius: 0.3em;
 
 	text-align: center;
 	font-size: 20px;
-	color: #ffffff;
-
 	
 	border-bottom: 1px solid #777;
 	
@@ -875,8 +868,7 @@ jopopup > jotitle {
 }
 
 jopopup > jobutton {
-	background-color: rgba(255, 255, 255, 0.4);
-		background: #33B5E5;
+
 }
 joflexcol {
 	height: 100%;
