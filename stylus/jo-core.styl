@@ -1,0 +1,75 @@
+/*
+	jo-core.styl
+	============
+
+	Core Jo CSS for Stylus
+*/
+
+@font-face
+	font-family: 'jo-flattery'
+	src: url('jo-flattery.eot')
+	src: url('jo-flattery.eot?#iefix') format('embedded-opentype'), url('jo-flattery.ttf') format('truetype'), url('jo-flattery.woff') format('woff')
+	font-weight: normal
+	font-style: normal
+
+@css {
+	@-ms-viewport {
+	    width: device-width;
+	    height: device-height;
+	    user-zoom: fixed;
+	}
+}
+
+::selection
+	background: #4f5b98
+	color: #fff;
+
+*
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+
+*:focus
+	outline: none
+
+html {
+  -webkit-text-size-adjust: none
+}
+
+body
+	background: #ffffff
+	font: normal 14px 'Helvetica', 'Droid Sans', 'Trebuchet MS'
+	margin: 0
+	padding: 0
+	word-wrap: break-word
+	overflow: hidden
+
+	> jocontainer,
+	> jocard,
+	> joview,
+	> joflexcol,
+	> joscroller,
+	> jostack
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+
+joview
+	border: none
+	display: block
+	margin: 0
+	padding: 0
+	user-select: none
+	background-clip: padding-box
+
+.selected
+	background-color: #4f5b98
+	color: #fffeff
+
+.focus
+	background-color: #fff
+
+.disabled
+	opacity: .2
+
+

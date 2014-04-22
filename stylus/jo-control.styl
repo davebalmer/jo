@@ -1,0 +1,376 @@
+/*
+	jo-control.styl
+	===============
+
+	Jo CSS Stylus CSS for joControl and its children
+*/
+
+jocontrol
+	@extend joview
+
+jobutton
+	@extend jocontrol
+
+	margin: 0px 1em 1em 1em
+	text-align: center
+	font-weight: normal
+	color: #fff
+	background: #333
+	cursor: pointer
+	outline: none
+	outline-color: transparent
+	height: 3em
+	line-height: 3em
+	border-radius: 1.5em
+	overflow: hidden
+	display: block
+
+jobutton.focus
+	background-color: #4f5b98
+
+jobackbutton
+	@extend jocontrol
+
+	color: #fff
+	background: #000
+	font-size: 85%
+	margin: 3px 1em
+	line-height: 3em
+	height: 3em
+	padding: 0 1.5em
+	border-radius: 1.5em
+	display: none
+
+jobackbutton.focus, jobackbutton.selected
+	background-color: rgba(0, 0, 0, 0.5)
+
+jobackbutton.active
+	display: block
+
+jocanvas
+	@extend jocontrol
+
+jocaption
+	@extend jocontrol
+
+	margin: 1em
+
+joexpando
+	@extend jocontrol
+
+	margin: 0px 1em 1em 1em
+	display: block
+	padding-bottom: 0px
+	margin-bottom: 0
+
+	> *:last-child
+		height: 0
+		overflow: hidden
+		opacity: 0
+		display: none
+		margin-top: 0
+		margin-bottom: 0
+
+	> *:first-child
+		transform: none
+		opacity: 1
+		overflow: visible
+
+
+joexpando.open
+	margin-bottom: 1em
+
+	> joexpandotitle joicon
+		transform: rotatez(90deg)
+
+	> *:first-child
+		background-color: #6d6d6d
+		border-radius: 1.5em 1.5em 0 0
+		color: #fff
+
+	> *:last-child
+		height: 100%
+		overflow: visible
+		opacity: 1
+		display: block
+
+joexpandotitle
+	@extend jocontrol
+
+	overflow: hidden
+	color: #000
+	position: relative
+	background-color: #c5c5c5
+	font-weight: normal
+	outline: none
+	outline-color: transparent
+	height: 3em
+	line-height: 2.6em
+	padding: 0 1em
+	border-radius: 1.5em
+	cursor: pointer
+	text-align: left
+	box-sizing: border-box
+	border: 0.2em solid #999999
+
+	joicon
+		position: absolute
+		border-radius: 0 1.5em 1.5em 0
+		background: none
+		border: none
+		text-align: center
+		display: block
+		height: 3em
+		width: 3em
+		line-height: 2.6em
+		right: 0
+		top: 0
+		transform-origin: 50% 50% 0
+		transform: rotatez(0)
+		transition: transform 0.2s ease-out
+
+	joicon:after
+		content: ">"
+		font-family: "jo-flattery"
+
+joexpandocontent
+	@extend jocontrol
+
+	padding-top: 1em
+	border-top: none
+	border-radius: 0 0 1.5em 1.5em
+	background-color: rgba(255, 255, 255, 0.6)
+
+
+johtml
+	@extend jocontrol
+
+	display: block
+	margin: 0 1em 1em 1em
+	padding: 0
+
+joinput, jotextarea, input, textarea
+	@extend jocontrol
+
+	border: 0.2em solid #999999
+	cursor: text
+	display: block
+	border-radius: 0.2em
+	margin: 0 1em 1em 1em
+	padding: 0.75em
+	background: #e7e6e7
+	font-size: 105%
+	overflow: hidden
+	outline: none
+	user-select: text
+	box-sizing: border-box
+
+joinput.password, input.password
+	text-security: disc
+
+joinput.disabled, jotextarea.disabled, input.disabled, textarea.disabled
+	color: #666
+	cursor: text
+
+jodatetime
+	@extend jocontrol
+
+jopasswordinput // deprecated?
+	@extend jocontrol
+
+jotextarea, textarea
+	@extend jocontrol
+
+	white-space: normal
+
+jolabel, label
+	@extend jocontrol
+
+	margin-bottom: 5px
+
+jolabel.left
+	margin-top: 1em
+	padding: 9px 0
+
+jolist
+	@extend jocontrol
+
+jomenu
+	@extend jocontrol
+
+	font-size: 110%
+
+jolistitem, jomenuitem
+	@extend jocontrol
+
+	border-top: 1px solid #ebebeb
+	margin: 0
+	padding: 1em
+	cursor: pointer
+	border-bottom: 1px solid #6d6d6d
+
+jolistitem.selected, jomenuitem.selected
+	border-color: #333
+
+jomenuitem:last-child
+	border-bottom: 1px solid #666
+
+joselect
+	@extend jocontrol
+
+joselect.focus
+	background-color: transparent
+
+joselectlist
+	@extend jocontrol
+
+	border-top: none
+	border-radius: 0 0 1.5em 1.5em
+	background-color: rgba(255, 255, 255, 0.6)
+
+	> *:last-child
+		border-bottom: none;
+		border-radius: 0 0 1.5em 1.5em
+
+	> *:last-child.select
+		border-bottom: none;
+		border-radius: 0 0 1.5em 1.5em;
+
+	> *:first-child
+		border-top: none;
+
+jotabbar
+	@extend jocontrol
+
+jotable
+	@extend jocontrol
+
+	display: block;
+	margin: 0 1em;
+
+tr
+	margin: 0;
+
+th
+	text-align: left;
+	padding: 5px;
+
+td
+	padding: 5px;
+
+joslider
+	@extend jocontrol
+
+	background: #999
+	margin: 1em
+	position: relative
+	height: 3em
+	cursor: pointer
+	border-radius: 1.5em
+
+josliderthumb
+	@extend jocontrol
+
+	position: absolute
+	height: 3em
+	width: 6em
+	color: rgba(255, 255, 255, 0.9)
+	background-color: #4f5b98
+	font-weight: normal
+	line-height: 2.6em
+	outline: none
+	outline-color: transparent
+	border-radius: 1.5em
+	border: 0.2em solid #999
+	box-sizing: border-box
+	transition: left 0.1s ease
+
+joslider.live > josliderthumb
+	transition: none;
+
+jotoggle
+	@extend jocontrol
+
+	cursor: pointer
+	display: block
+	margin: 1em 1em 0 1em
+	border-radius: 1.5em
+	background-color: #999
+	position: relative
+	width: 9em
+	max-width: 9em
+	height: 3em
+	line-height: 3em
+
+	> *
+		color: #000
+		background-color: #c5c5c5
+		font-weight: normal
+		text-align: center
+		height: 3em
+		line-height: 2.6em
+		border: 0.2em solid #999999
+		width: 6em
+		cursor: pointer
+		outline: none
+		outline-color: transparent
+		border-radius: 1.5em
+		box-sizing: border-box
+		transition: transform 0.1s ease, background 0.1s ease
+		transform: translate3d(0, 0, 0)
+		animation-fill-mode: forwards
+
+jotoggle.on > *
+	color: #fff
+	background-color: #4f5b98
+	transform: translate3d(3em, 0, 0)
+
+joflexrow > jotoggle
+	flex: 1;
+
+jooption
+	@extend jocontrol
+
+	overflow: hidden
+	display: block
+	display: flex
+	align-items: stretch
+	margin: 0px 1em 1em 1em
+
+jooptionitem
+	@extend jocontrol
+
+	color: #000
+	background-color: #c5c5c5
+	font-weight: normal
+	padding: 0 1.5em
+	cursor: pointer
+	height: 3em
+	line-height: 2.6em
+	border-left: 0.2em solid #999
+	border-top: 0.2em solid #999
+	border-bottom: 0.2em solid #999
+	outline: none
+	outline-color: transparent
+	flex: 1
+	text-align: center
+	margin: 0
+	box-sizing: border-box
+
+	:first-child
+		border-radius: 1.5em 0 0 1.5em
+
+	:last-child
+		border-right: 0.2em solid #999
+		border-radius: 0 1.5em 1.5em 0
+
+jodivider
+	@extend jocontrol
+
+	border-top: 1px solid rgba(0, 0, 0, 0.2)
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2)
+	margin: 0 0 1em 0
+	text-align: center
+	height: 0
+	display: block
+

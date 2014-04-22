@@ -5,6 +5,16 @@
   font-weight: normal;
   font-style: normal;
 }
+
+@-ms-viewport {
+    width: device-width;
+    height: device-height;
+    user-zoom: fixed;
+/*    max-zoom: 1;
+    min-zoom: 1;
+*/
+}
+
 ::selection {
   background: #4f5b98;
   /* Safari */
@@ -1007,6 +1017,8 @@ body {
   padding: 0;
   margin: 0;
   -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: scrollbar;
+  -ms-touch-action: pan-y;
 }
 .nativescroll jocontainer {
   height: inherit;
@@ -1019,3 +1031,23 @@ body {
   right: 0;
   bottom: 0;
 }
+
+jocard {
+  min-height: 100%;
+  display: block;
+}
+
+joflexrow {
+  display: -ms-flexbox;
+  -ms-flex-direction: row;
+  -ms-flex-pack: justify;
+}
+
+jooption {
+  display: -ms-flexbox;
+  -ms-flex-direction: row;
+  -ms-flex-pack: end;
+}
+
+
+
