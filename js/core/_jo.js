@@ -129,6 +129,7 @@ if (typeof console.log !== 'function')
 // just a place to hang our hat
 jo = {
 	platform: "webkit",
+	os: "chrome",
 	version: "0.5.0",
 	
 	useragent: [
@@ -147,6 +148,7 @@ jo = {
 		'silk',
 		'iemobile',
 		'msie',
+		'trident',
 		'opera',
 		'chrome',
 		'safari',
@@ -166,6 +168,7 @@ jo = {
 		kindle: "android",
 		msie: "windows",
 		iemobile: "windows",
+		trident: "windows",
 		safari: "osx"
 	},
 
@@ -219,7 +222,7 @@ jo = {
 		var s = (typeof joScroller !== "undefined") ? joScroller.prototype : null;
 		var d = joDOM;
 
-		if (s && this.matchPlatform("tizen msie chrome safari bb10 firefox")) {
+		if (s && this.matchPlatform("tizen msie iemobile trident chrome safari bb10 firefox")) {
 			// native scrolling
 			joDOM.addCSSClass(document.body, "nativescroll");
 			s.onDown = function() {};
