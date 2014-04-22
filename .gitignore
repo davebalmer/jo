@@ -4,3 +4,4 @@ syntax: glob
 *.bak
 js/jo.js
 js/jo_min.js
+node_modules
