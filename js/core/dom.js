@@ -1,9 +1,9 @@
 /**
 	joDOM
 	======
-	
+
 	Singleton with utility methods for manipulating DOM elements.
-	
+
 	Methods
 	-------
 
@@ -11,9 +11,9 @@
 
 	  Returns an HTMLElement which has the given id or if the
 	  id is not a string returns the value of id.
-	
+
 	- `create(type, style)`
-	
+
 	  Type is a valid HTML tag type. Style is the same as `setStyle()`
 	  method. Returns an HTMLElement.
 
@@ -29,58 +29,58 @@
 			});
 
 	- `setStyle(tag, style)`
-	
+
 	  Style can be an object literal with
 	  style information (including "id" or "className") or a string. If
 	  it's a string, it will simply use the style string as the className
 	  for the new element.
-	  
+
 	  Note that the preferred and most cross-platform method for working
 	  with the DOM is to use `className` and possibly `id` and put your
 	  actual style information in your CSS file. That said, sometimes it's
 	  easier to just set the background color in the code. Up to you.
-	
+
 	- `getParentWithin(node, ancestor)`
 
 	  Returns an HTMLElement which is
 	  the first child of the ancestor which is a parent of a given node.
-	
+
 	- `addCSSClass(HTMLElement, classname)`
 
 	  Adds a CSS class to an element unless it is already there.
-	
+
 	- `removeCSSClass(HTMLElement, classname)`
 
 	  Removes a CSS class from an element if it exists.
-	
+
 	- `toggleCSSClass(HTMLElement, classname)`
 
 	  Auto add or remove a class from an element.
-	
+
 	- `pageOffsetLeft(HTMLElement)` and `pageOffsetHeight(HTMLElement)`
-	
+
 	  Returns the "true" left and top, in pixels, of a given element relative
 	  to the page.
-	
+
 	- `applyCSS(css, stylenode)`
-	
+
 	  Applies a `css` string to the app. Useful for quick changes, like backgrounds
 	  and other goodies. Basically creates an inline `<style>` tag. This method
 	  returns a reference to the new `<style>` tag, which you can use with `removeCSS()`
 	  and subsequent calls to `applyCSS()` as the `stylenode` argument.
-	
+
 	- `loadCSS(filename)`
-	
+
 	  Works the same as `applyCSS()` but loads the CSS from a file instead of a string.
-	
+
 	- `removeCSS(stylenode)`
-	
+
 	  Removes a `<style>` tag created with `applyCSS()` or `loadCSS()`.
 
 */
 joDOM = {
 	enabled: false,
-	
+
 	get: function(id) {
 		if (typeof id === "string") {
 			return joCache.exists(id) ? joCache.get(id) : document.getElementById(id);
@@ -92,7 +92,7 @@ joDOM = {
 				return id;
 		}
 	},
-	
+
 	remove: function(node) {
 		if (node.parentNode)
 			node.parentNode.removeChild(node);
@@ -101,7 +101,7 @@ joDOM = {
 	enable: function() {
 		this.enabled = true;
 	},
-	
+
 	getParentWithin: function(node, ancestor) {
 		while (node.parentNode !== window && node.parentNode !== ancestor) {
 			node = node.parentNode;
@@ -168,7 +168,7 @@ joDOM = {
 			return null;
 
 		var o;
-		
+
 		if (typeof tag === "object" && typeof tag.tagName === "string") {
 			// being used to create a container for a joView
 			o = document.createElement(tag.tagName);
@@ -182,13 +182,13 @@ joDOM = {
 			if (style)
 				this.setStyle(o, style);
 		}
-		
+
 		return o;
 	},
-	
+
 	setStyle: function(node, style) {
 		node = joDOM.get(node);
-		
+
 		if (typeof style === "string") {
 			node.className = style;
 		}
@@ -208,24 +208,11 @@ joDOM = {
 			throw("joDOM.setStyle(): unrecognized type for style argument; must be object or string.");
 		}
 	},
-	
-	applyCSS: function(style, oldnode) {
-		// TODO: should insert before and then remove the old node
-		if (oldnode)
-			document.body.removeChild(oldnode);
 
-		var css = joDOM.create('jostyle');
-		css.innerHTML = '<style>' + style + '</style>';
-
-		document.body.appendChild(css);
-
-		return css;
-	},
-	
 	removeCSS: function(node) {
 		document.body.removeChild(node);
 	},
-	
+
 	loadCSS: function(filename, oldnode) {
 		// you can just replace the source for a given
 		// link if one is passed in
@@ -237,7 +224,7 @@ joDOM = {
 
 		if (!oldnode)
 			document.body.appendChild(css);
-		
+
 		return css;
 	},
 
@@ -257,10 +244,10 @@ joDOM = {
 		meta.setAttribute("content", content);
 		document.head.appendChild(meta);
 	},
-	
+
 	pageOffsetLeft: function(node) {
 		var l = 0;
-		
+
 		while (typeof node !== 'undefined' && node && node.parentNode !== window) {
 			if (node.offsetLeft)
 				l += node.offsetLeft;
@@ -270,26 +257,26 @@ joDOM = {
 
 		return l;
 	},
-	
+
 	pageOffsetTop: function(node) {
 		var t = 0;
-		
+
 		while (typeof node !== 'undefined' && node && node.parentNode !== window) {
 			if (node.offsetTop)
 				t += node.offsetTop;
-				
+
 			node = node.parentNode;
 		}
 
 		return t;
 	},
-	
+
 	getBounds: function(node) {
 		var top = joDOM.pageOffsetTop(node);
 		var left = joDOM.pageOffsetLeft(node);
 		var bottom = top + node.offsetHeight;
 		var right = left + node.offsetWidth;
-		
+
 		return {
 			top: top,
 			left: left,
@@ -298,7 +285,7 @@ joDOM = {
 			center:{
 				x: left + (right - left) / 2,
 				y: top + (bottom - top) / 2
-			}			
+			}
 		};
 	},
 
@@ -312,6 +299,19 @@ joDOM = {
 			o.style.width = Math.floor(w) + "px";
 			o.style.height = Math.floor(h) + "px";
 		}
+	},
+
+	setChildTabIndex: function(e, start) {
+		e = joDOM.get(e);
+		var  c = e.childNodes;
+
+		start = start || 1;
+
+		for (var i = 0; i < c.length; i++) {
+			c[i].setAttribute("tabindex", (start + i));
+		}
+
+		return i;
 	},
 
 	attach: function(node, parent) {
@@ -332,20 +332,20 @@ joCSSRule = function(data) {
 };
 joCSSRule.prototype = {
 	container: null,
-	
+
 	setData: function(data) {
 		this.data = data || "";
 		this.enable();
 	},
-	
+
 	clear: function() {
 		this.setData();
 	},
-	
+
 	disable: function() {
 		joDOM.removeCSS(this.container);
 	},
-	
+
 	enable: function() {
 		this.container = joDOM.applyCSS(this.data, this.container);
 	}

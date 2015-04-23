@@ -1,23 +1,23 @@
 /**
 	joContainer
 	============
-	
+
 	A view which is designed to contain other views and controls. Subclass to provide
 	different layout types. A container can be used to intantiate an entire tree of
 	controls at once, and is a very powerful UI component in jo.
-	
+
 	Use
 	---
-	
+
 		// plain container
 		var x = new joContainer();
-		
+
 		// HTML or plain text
 		var y = new joContainer("Some HTML");
-		
+
 		// HTMLElement
 		var w = new joContainer(joDOM.get("mydiv"));
-		
+
 		// nested inline structure with text, HTML, joViews or HTMLElements
 		var z = new joContainer([
 			new joTitle("Hello"),
@@ -32,36 +32,36 @@
 			]),
 			new joButton("Done")
 		]);
-		
+
 		// set an optional title string, used with joNavbar
 		z.setTitle("About");
-	
+
 	Extends
 	-------
-	
+
 	- joView
-	
+
 	Events
 	------
-	
+
 	- `changeEvent`
-	
+
 	Methods
 	-------
-	
+
 	- `setData(data)`
 
 	  The constructor calls this method if you provide `data` when you instantiate
 	  (see example above)
-	
+
 	- `push(data)`
-	
+
 	  Same support as `setData()`, but places the new content at the end of the
 	  existing content.
-	
+
 	- `setTitle(string)`
 	- `getTitle(string)`
-	
+
 	  Titles are optional, but used with joStack & joStackScroller to update a
 	  joNavbar control automagically.
 
@@ -72,23 +72,23 @@ joContainer = function(data) {
 };
 joContainer.extend(joView, {
 	tagName: "jocontainer",
-	
+
 	getContent: function() {
 		return this.container.childNodes;
 	},
-	
+
 	setTitle: function(title) {
 		this.title = title;
 		return this;
 	},
-	
+
 	setData: function(data) {
 		this.data = data;
 		return this.refresh();
 	},
-	
+
 	activate: function() {},
-	
+
 	deactivate: function() {},
 
 	push: function(data) {
@@ -113,24 +113,24 @@ joContainer.extend(joView, {
 			o.innerHTML = data;
 			this.container.appendChild(o);
 		}
-		
+
 		return this;
 	},
-	
+
 	getTitle: function() {
 		return this.title;
 	},
-	
+
 	refresh: function() {
 		if (this.container)
 			this.container.innerHTML = "";
 
 		this.draw();
 		this.changeEvent.fire();
-		
+
 		return this;
 	},
-	
+
 	draw: function() {
 		this.push(this.data);
 	}

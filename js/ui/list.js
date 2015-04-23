@@ -1,41 +1,41 @@
 /**
 	joList
 	=======
-	
+
 	A widget class which expects an array of any data type and renders the
 	array as a list. The list control handles DOM interactions with only a
 	single touch event to determine which item was selected.
-	
+
 	Extends
 	-------
-	
+
 	- joControl
-	
+
 	Events
 	------
-	
+
 	- `selectEvent`
-	
+
 	  Fired when an item is selected from the list. The data in the call is the
 	  index of the item selected.
-	
+
 	- `changeEvent`
-	
+
 	  Fired when the data is changed for the list.
-	
+
 	Methods
 	-------
 
 	- `formatItem(data, index)`
-	
+
 	  When subclassing or augmenting, this is the method responsible for
 	  rendering a list item's data.
-	
+
 	- `compareItems(a, b)`
-	
+
 	  For sorting purposes, this method is called and should be overriden
 	  to support custom data types.
-	
+
 			// general logic and approriate return values
 			if (a > b)
 				return 1;
@@ -46,25 +46,25 @@
 
 	- `setIndex(index)`
 	- `getIndex()`
-	
+
 	  *DEPRECATED* USe `setValue()` and `getValue()` instead, see joControl.
-	
+
 	- `refresh()`
-	
+
 	- `setDefault(message)`
-	
+
 	  Will present this message (HTML string) when the list is empty.
 	  Normally the list is empty; this is a convenience for "zero state"
 	  UI requirements.
 
 	- `getNodeData(index)`
-	
+
 	- `getLength()`
-	
+
 	- `next()`
 
 	- `prev()`
-	
+
 	- `setAutoSort(boolean)`
 
 */
@@ -73,7 +73,7 @@ joList = function() {
 	// for now, we'll keep references to the new stuff
 	this.setIndex = this.setValue;
 	this.getIndex = this.getValue;
-	
+
 	joControl.apply(this, arguments);
 };
 joList.extend(joControl, {
@@ -82,10 +82,10 @@ joList.extend(joControl, {
 	lastNode: null,
 	value: null,
 	autoSort: false,
-	
+
 	setDefault: function(msg) {
 		this.defaultMessage = msg;
-		
+
 		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
 			if (typeof msg === 'object') {
 				this.innerHTML = "";
@@ -98,10 +98,10 @@ joList.extend(joControl, {
 				this.innerHTML = msg;
 			}
 		}
-		
+
 		return this;
 	},
-	
+
 	draw: function() {
 		var html = "";
 		var length = 0;
@@ -118,7 +118,7 @@ joList.extend(joControl, {
 
 			if (!element)
 				continue;
-			
+
 			if (typeof element === "string")
 				html += element;
 			else
@@ -126,16 +126,16 @@ joList.extend(joControl, {
 
 			++length;
 		}
-		
+
 		// support setting the contents with innerHTML in one go,
 		// or getting back HTMLElements ready to append to the contents
 		if (html.length)
 			this.container.innerHTML = html;
-		
+
 		// refresh our current selection
 		if (this.value >= 0)
 			this.setValue(this.value, true);
-			
+
 		return;
 	},
 
@@ -151,10 +151,10 @@ joList.extend(joControl, {
 				this.value = null;
 			}
 		}
-		
+
 		return this;
 	},
-	
+
 	setValue: function(index, silent) {
 		this.value = index;
 
@@ -175,13 +175,13 @@ joList.extend(joControl, {
 			joDOM.addCSSClass(node, "selected");
 			this.lastNode = node;
 		}
-		
+
 		if (index >= 0 && !silent)
 			this.fireSelect(index);
-			
+
 		return this;
 	},
-	
+
 	getNode: function(index) {
 		return this.container.childNodes[index];
 	},
@@ -189,17 +189,21 @@ joList.extend(joControl, {
 	fireSelect: function(index) {
 		this.selectEvent.fire(index);
 	},
-	
+
 	getValue: function() {
 		return this.value;
 	},
-	
+
 	onMouseDown: function(e) {
-		joEvent.stop(e);
+		if (e)
+			joEvent.stop(e);
+
+		if (!this.enabled)
+			return;
 
 		var node = joEvent.getTarget(e);
 		var index = -1;
-		
+
 		while (index == -1 && node !== this.container) {
 			index = node.getAttribute("index") || -1;
 			node = node.parentNode;
@@ -208,7 +212,7 @@ joList.extend(joControl, {
 		if (index >= 0)
 			this.setValue(index);
 	},
-	
+
 	refresh: function() {
 //		this.value = null;
 //		this.lastNode = null;
@@ -225,15 +229,15 @@ joList.extend(joControl, {
 		else
 			return null;
 	},
-	
+
 	getLength: function() {
 		return this.length || this.data.length || 0;
 	},
-	
+
 	sort: function() {
 		this.data.sort(this.compareItems);
 	},
-	
+
 	getNodeIndex: function(element) {
 		var index = element.getAttribute('index');
 		if (typeof index !== "undefined" && index !== null)
@@ -241,7 +245,7 @@ joList.extend(joControl, {
 		else
 			return -1;
 	},
-	
+
 	formatItem: function(itemData, index) {
 		var element = document.createElement('jolistitem');
 		element.innerHTML = itemData;
@@ -263,18 +267,18 @@ joList.extend(joControl, {
 		this.autoSort = state;
 		return this;
 	},
-	
+
 	next: function() {
 		if (this.getValue() < this.getLength() - 1)
 			this.setValue(this.value + 1);
-		
+
 		return this;
 	},
-	
+
 	prev: function() {
 		if (this.getValue() > 0)
 			this.setValue(this.value - 1);
-			
+
 		return this;
 	}
 });

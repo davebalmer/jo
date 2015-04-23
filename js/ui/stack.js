@@ -1,29 +1,29 @@
 /**
 	joStack
 	========
-	
+
 	A UI container which keeps an array of views which can be pushed and popped.
 	The DOM elements for a given view are removed from the DOM tree when popped
 	so we keep the render tree clean.
 
 	Extends
 	-------
-	
+
 	- joView
 
 	Methods
 	-------
-	
-	- `push(joView | HTMLElement)`	
-	
+
+	- `push(joView | HTMLElement)`
+
 	  Pushes a new joView (or HTMLELement) onto the stack.
-	
+
 	- `pop()`
-	
+
 	  Pulls the current view off the stack and goes back to the previous view.
 
 	- `home()`
-	
+
 	  Return to the first view, pop everything else off the stack.
 
 	- `show()`
@@ -33,34 +33,34 @@
 
 	- `forward()`
 	- `back()`
-	
+
 	  Much like your browser forward and back buttons, only for the stack.
-	
+
 	- `setLocked(boolean)`
-	
+
 	  The `setLocked()` method tells the stack to keep the first view pushed onto the
 	  stack set; that is, `pop()` won't remove it. Most apps will probably use this,
 	  so setting it as a default for now.
-	
+
 	Events
 	------
-	
+
 	- `showEvent`
 	- `hideEvent`
 	- `homeEvent`
 	- `pushEvent`
 	- `popEvent`
-	
+
 	Notes
 	-----
-	
+
 	Should set classNames to new/old views to allow for CSS transitions to be set
 	(swiping in/out, cross fading, etc). Currently, it does none of this.
-	
+
 	Also, some weirdness with the new `forward()` and `back()` methods in conjuction
 	with `push()` -- need to work on that, or just have your app rigged to `pop()`
 	on back to keep the nesting simple.
-	
+
 */
 joStack = function(data) {
 	this.visible = false;
@@ -95,39 +95,39 @@ joStack = function(data) {
 joStack.extend(joContainer, {
 	tagName: "jostack",
 	type: "fixed",
-	
+
 	setEvents: function() {
 		// do not setup DOM events for the stack
 	},
-	
+
 	onClick: function(e) {
 		joEvent.stop(e);
 	},
-	
+
 	forward: function() {
 		if (this.index < this.data.length - 1) {
 			this.index++;
 			this.draw();
 			this.forwardEvent.fire();
 		}
-		
+
 		return this;
 	},
-	
+
 	back: function() {
 		if (this.index > 0) {
 			this.index--;
 			this.draw();
 			this.backEvent.fire();
 		}
-		
+
 		return this;
 	},
-	
+
 	draw: function() {
 		if (!this.container)
 			this.createContainer();
-			
+
 		if (!this.data || !this.data.length)
 			return;
 
@@ -143,12 +143,12 @@ joStack.extend(joContainer, {
 		function getnode(o) {
 			return (o instanceof joView) ? o.container : o;
 		}
-		
+
 		if (!newchild)
 			return;
-		
+
 		var oldclass, newclass;
-		
+
 		if (this.index > this.lastIndex) {
 			oldclass = "prev";
 			newclass = "next";
@@ -165,13 +165,13 @@ joStack.extend(joContainer, {
 		var self = this;
 		var transitionevent = null;
 
-		joDefer(animate, this, 20);
-		
+		joDefer(animate, this);
+
 		function animate() {
 			// FIXME: AHHH must have some sort of transition for this to work,
 			// need to check computed style for transition to make this
 			// better
-			if (typeof window.onwebkittransitionend !== 'undefined')
+			if (typeof joEvent.map.transitionend !== 'undefined')
 				transitionevent = joEvent.on(newchild, joEvent.map.transitionend, cleanup, self);
 			else
 				joDefer(cleanup, this, 500);
@@ -182,7 +182,7 @@ joStack.extend(joContainer, {
 			if (oldclass && oldchild)
 				joDOM.addCSSClass(oldchild, oldclass);
 		}
-		
+
 		function cleanup() {
 			if (oldchild) {
 				joDOM.removeCSSClass(oldchild, "next");
@@ -201,21 +201,21 @@ joStack.extend(joContainer, {
 
 		if (typeof this.data[this.index].activate !== "undefined")
 			this.data[this.index].activate.call(this.data[this.index]);
-		
+
 		this.lastIndex = this.index;
 		this.lastNode = newchild;
-		
+
 		return this;
 	},
 
 	appendChild: function(child) {
 		this.container.appendChild(child);
 	},
-	
+
 	getChildStyleContainer: function(child) {
 		return child;
 	},
-	
+
 	getChild: function() {
 		return this.container.firstChild;
 	},
@@ -223,16 +223,16 @@ joStack.extend(joContainer, {
 	getContentContainer: function() {
 		return this.container;
 	},
-	
+
 	removeChild: function(child) {
 		if (child && child.parentNode === this.container)
 			this.container.removeChild(child);
 	},
-	
+
 	isVisible: function() {
 		return this.visible;
 	},
-	
+
 	push: function(o) {
 		if (typeof o === "string")
 			o = joDOM.get(o);
@@ -243,54 +243,64 @@ joStack.extend(joContainer, {
 		// don't push the same view we already have
 		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
 			return this;
-			
+
 		this.data.push(o);
 		this.index = this.data.length - 1;
 		this.draw();
 		this.pushEvent.fire(o);
 
 		this.captureBack();
-		
+
 		return this;
 	},
 
 	// lock the stack so the first pushed view stays put
 	setLocked: function(state) {
 		this.locked = (state) ? 1 : 0;
-		
+
 		return this;
 	},
-	
+
 	pop: function() {
 		if (this.data.length > this.locked) {
 			var o = this.data.pop();
 			this.index = this.data.length - 1;
 
+//			console.log(o);
+
 			this.draw();
-			
+
 			if (typeof o.deactivate === "function")
 				o.deactivate.call(o);
 
-			if (!this.data.length)
-				this.hide();
+//			if (!this.data.length)
+//				this.hide();
 		}
 
 		this.captureBack();
 
 		if (this.data.length > 0)
 			this.popEvent.fire();
-			
+
 		return this;
 	},
-	
+
 	home: function() {
 		if (this.data && this.data.length && this.data.length > 1) {
+			// cleanup all card deactivate calls
+			for (var i = 1; i < this.data.length; i++) {
+				var j = this.data.length - i;
+				var d = this.data[j];
+				if (typeof d.deactivate === "function")
+					d.deactivate.call(d);
+			}
+
 			var o = this.data[0];
 			var c = this.data[this.index];
-			
+
 			if (o === c)
 				return this;
-			
+
 			this.data = [o];
 			this.lastIndex = 1;
 			this.index = 0;
@@ -298,26 +308,26 @@ joStack.extend(joContainer, {
 			this.draw();
 
 			this.captureBack();
-						
+
 			this.popEvent.fire();
 			this.homeEvent.fire();
 		}
-		
+
 		return this;
 	},
-	
+
 	showHome: function() {
 		this.home();
-		
+
 		if (!this.visible) {
 			this.visible = true;
 			joDOM.addCSSClass(this.container, "show");
 			this.showEvent.fire();
 		}
-		
+
 		return this;
 	},
-	
+
 	getTitle: function() {
 		var c = this.data[this.index];
 		if (typeof c.getTitle === 'function')
@@ -325,7 +335,7 @@ joStack.extend(joContainer, {
 		else
 			return false;
 	},
-	
+
 	show: function() {
 		if (!this.visible) {
 			this.visible = true;
@@ -333,25 +343,25 @@ joStack.extend(joContainer, {
 
 			joDefer(this.showEvent.fire, this.showEvent, 500);
 		}
-		
+
 		return this;
 	},
 
 	hide: function() {
 		if (this.visible) {
 			this.visible = false;
-			joDOM.removeCSSClass(this.container, "show");			
+			joDOM.removeCSSClass(this.container, "show");
 
 			joDefer(this.hideEvent.fire, this.hideEvent, 500);
 		}
-		
+
 		return this;
 	},
 
 	captureBack: function() {
 		if (this.index > 0)
-			joGesture.backEvent.capture(this.pop, this);
+			joGesture.backEvent.capture(this.back, this);
 		else if (this.index <= 0)
-			joGesture.backEvent.release(this.pop, this);
+			joGesture.backEvent.release(this.back, this);
 	}
 });

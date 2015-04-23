@@ -1,29 +1,29 @@
 /**
 	joImage
 	=======
-	
+
 	Convenience wrapper for an image tag, handles image load
 	and failure.
-	
+
 	Extends
 	-------
-	
+
 	- joControl
-	
+
 	Methods
 	-------
 
 	- `setData(image)`
-	
+
 	  `image` can be a URL (including local files), base64 image data
 	  string, or a reference to an `Image` object.
-	  
+
 	Events
 	------
-	
+
 	- `loadEvent()`
 	- `errorEvent()`
-	
+
 */
 function joImage(url) {
 	var container = new Image();
@@ -51,7 +51,6 @@ joImage.extend(joLabel, {
 	tagName: "img",
 	setImage: function(image) {
 //		console.log("image", image);
-		this.container.src = "url(" + image + ")";
+		this.container.src = image;
 	}
 });
-
