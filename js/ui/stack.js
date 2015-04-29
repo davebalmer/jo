@@ -63,6 +63,12 @@
 
 */
 joStack = function(data) {
+	this.scrollers = [
+		new joScroller(),
+		new joScroller()
+	];
+	this.scroller = this.scrollers[0];
+
 	this.visible = false;
 
 	if (data) {
@@ -91,10 +97,54 @@ joStack = function(data) {
 	this.index = 0;
 	this.lastIndex = 0;
 	this.lastNode = null;
+
+	this.scroller.attach(this.container);
 };
 joStack.extend(joContainer, {
 	tagName: "jostack",
 	type: "fixed",
+	scrollerindex: 1,
+	scroller: null,
+	scrollers: [],
+
+	switchScroller: function() {
+		this.scrollerindex = this.scrollerindex ? 0 : 1;
+		this.scroller = this.scrollers[this.scrollerindex];
+	},
+
+	getLastScroller: function() {
+		return this.scrollers[this.scrollerindex ? 0 : 1];
+	},
+
+	scrollTo: function(something) {
+		this.scroller.scrollTo(something);
+
+		return this;
+	},
+
+	scrollBy: function(y) {
+		this.scroller.scrollBy(y);
+
+		return this;
+	},
+
+	getChildStyleContainer: function() {
+		return this.scroller.container;
+	},
+
+	getContentContainer: function() {
+		return this.scroller.container;
+	},
+
+	appendChild: function(child) {
+		var scroller = this.scroller;
+		scroller.setData(child);
+		this.container.appendChild(scroller.container);
+	},
+
+	getChild: function() {
+		return this.scroller.container || null;
+	},
 
 	setEvents: function() {
 		// do not setup DOM events for the stack
@@ -106,6 +156,8 @@ joStack.extend(joContainer, {
 
 	forward: function() {
 		if (this.index < this.data.length - 1) {
+			this.switchScroller();
+
 			this.index++;
 			this.draw();
 			this.forwardEvent.fire();
@@ -116,6 +168,8 @@ joStack.extend(joContainer, {
 
 	back: function() {
 		if (this.index > 0) {
+			this.switchScroller();
+
 			this.index--;
 			this.draw();
 			this.backEvent.fire();
@@ -147,81 +201,69 @@ joStack.extend(joContainer, {
 		if (!newchild)
 			return;
 
+		if (typeof this.data[this.index].activate !== "undefined")
+			this.data[this.index].activate.call(this.data[this.index]);
+
 		var oldclass, newclass;
 
 		if (this.index > this.lastIndex) {
 			oldclass = "prev";
 			newclass = "next";
-			joDOM.addCSSClass(newchild, newclass);
 		}
 		else if (this.index < this.lastIndex) {
 			oldclass = "next";
 			newclass = "prev";
-			joDOM.addCSSClass(newchild, newclass);
 		}
 
-		this.appendChild(newnode);
+		if (newclass)
+			joDOM.addCSSClass(newchild, newclass);
 
 		var self = this;
 		var transitionevent = null;
 
-		joDefer(animate, this);
+		if (oldclass && oldchild)
+			joDOM.addCSSClass(oldchild, oldclass);
+
+		if (oldclass)
+			joDefer(animate, this);
+
+		this.appendChild(newnode);
 
 		function animate() {
 			// FIXME: AHHH must have some sort of transition for this to work,
 			// need to check computed style for transition to make this
 			// better
-			if (typeof joEvent.map.transitionend !== 'undefined')
-				transitionevent = joEvent.on(newchild, joEvent.map.transitionend, cleanup, self);
-			else
-				joDefer(cleanup, this, 500);
 
 			if (newclass && newchild)
 				joDOM.removeCSSClass(newchild, newclass);
 
-			if (oldclass && oldchild)
-				joDOM.addCSSClass(oldchild, oldclass);
+			if (typeof joEvent.map.transitionend !== 'undefined')
+				transitionevent = joEvent.on(newchild, joEvent.map.transitionend, cleanup, self);
+			else
+				joDefer(cleanup, this);
 		}
 
 		function cleanup() {
 			if (oldchild) {
-				joDOM.removeCSSClass(oldchild, "next");
-				joDOM.removeCSSClass(oldchild, "prev");
 				self.removeChild(oldchild);
+				joDOM.removeCSSClass(oldchild, oldclass);
+//				joDOM.removeCSSClass(oldchild, "next");
+//				joDOM.removeCSSClass(oldchild, "prev");
 			}
 
 			if (newchild) {
 				if (transitionevent)
 					joEvent.remove(newchild, joEvent.map.transitionend, transitionevent);
 
-				joDOM.removeCSSClass(newchild, "next");
-				joDOM.removeCSSClass(newchild, "prev");
+//				joDOM.removeCSSClass(newchild, "next");
+//				joDOM.removeCSSClass(newchild, "prev");
 			}
 		}
-
-		if (typeof this.data[this.index].activate !== "undefined")
-			this.data[this.index].activate.call(this.data[this.index]);
 
 		this.lastIndex = this.index;
 		this.lastNode = newchild;
 
 		return this;
-	},
-
-	appendChild: function(child) {
-		this.container.appendChild(child);
-	},
-
-	getChildStyleContainer: function(child) {
-		return child;
-	},
-
-	getChild: function() {
-		return this.container.firstChild;
-	},
-
-	getContentContainer: function() {
-		return this.container;
 	},
 
 	removeChild: function(child) {
@@ -234,15 +276,17 @@ joStack.extend(joContainer, {
 	},
 
 	push: function(o) {
-		if (typeof o === "string")
-			o = joDOM.get(o);
-
-//		if (!this.data || !this.data.length || o !== this.data[this.data.length - 1])
-//			return;
-
 		// don't push the same view we already have
 		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
-			return this;
+			return;
+
+		this.switchScroller();
+
+		this.scroller.setData(o);
+		this.scroller.scrollTo(0, true);
+
+		if (typeof o === "string")
+			o = joDOM.get(o);
 
 		this.data.push(o);
 		this.index = this.data.length - 1;
@@ -263,18 +307,15 @@ joStack.extend(joContainer, {
 
 	pop: function() {
 		if (this.data.length > this.locked) {
+			this.switchScroller();
+
 			var o = this.data.pop();
 			this.index = this.data.length - 1;
-
-//			console.log(o);
 
 			this.draw();
 
 			if (typeof o.deactivate === "function")
 				o.deactivate.call(o);
-
-//			if (!this.data.length)
-//				this.hide();
 		}
 
 		this.captureBack();
@@ -286,32 +327,37 @@ joStack.extend(joContainer, {
 	},
 
 	home: function() {
-		if (this.data && this.data.length && this.data.length > 1) {
-			// cleanup all card deactivate calls
-			for (var i = 1; i < this.data.length; i++) {
-				var j = this.data.length - i;
-				var d = this.data[j];
-				if (typeof d.deactivate === "function")
-					d.deactivate.call(d);
-			}
+		if (!this.data || !this.data.length || this.data.length < 1)
+			return this;
 
-			var o = this.data[0];
-			var c = this.data[this.index];
+		this.switchScroller();
+		joStack.prototype.home.call(this);
 
-			if (o === c)
-				return this;
+		// cleanup all card deactivate calls
+		for (var i = 1; i < this.data.length; i++) {
+			var j = this.data.length - i;
+			var d = this.data[j];
 
-			this.data = [o];
-			this.lastIndex = 1;
-			this.index = 0;
-//			this.lastNode = null;
-			this.draw();
-
-			this.captureBack();
-
-			this.popEvent.fire();
-			this.homeEvent.fire();
+			if (typeof d.deactivate === "function")
+				d.deactivate.call(d);
 		}
+
+		var o = this.data[0];
+		var c = this.data[this.index];
+
+		if (o === c)
+			return this;
+
+		this.data = [o];
+		this.lastIndex = 1;
+		this.index = 0;
+//			this.lastNode = null;
+		this.draw();
+
+		this.captureBack();
+
+		this.popEvent.fire();
+		this.homeEvent.fire();
 
 		return this;
 	},
