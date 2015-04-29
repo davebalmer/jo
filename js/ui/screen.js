@@ -97,7 +97,7 @@ joScreen.extend(joContainer, {
 					this.popup = new joPopup(data),
 					'&nbsp'
 				])
-			);
+			).setStyle("scrollv");
 		}
 		else {
 			this.popup.setData(data);
