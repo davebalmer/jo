@@ -9,6 +9,7 @@ joApp.prototype = {
 	},
 
 	quickTouch: false,
+	title: "",
 
 	notify: function(msg) {
 		var notification;
