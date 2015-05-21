@@ -1,3 +1,4 @@
+
 joData = {
 	union: function() {
 		var o = {};
