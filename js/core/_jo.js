@@ -222,7 +222,7 @@ jo = {
 		var s = (typeof joScroller !== "undefined") ? joScroller.prototype : null;
 		var d = joDOM;
 
-		if (s && this.matchPlatform("tizen msie iemobile trident chrome safari bb10 firefox")) {
+		if (s && this.matchPlatform("tizen android msie iemobile trident chrome safari bb10 firefox")) {
 			// native scrolling
 			joDOM.addCSSClass(document.body, "nativescroll");
 			s.onDown = function() {};

@@ -1,0 +1,49 @@
+/*
+	jo-flatness.css
+*/
+
+accent-bg = #3498DB
+control-bg = #BDC3C7
+control-off = #7F8C8D
+
+jobutton
+	background-color: accent-bg
+	border-radius: .5em
+
+joslider,
+jotoggle
+	background-color: control-bg
+
+josliderthumb
+	background-color: accent-bg
+	border-color: control-bg
+
+jotoggle > *
+	background-color: control-off
+	border-color: control-bg
+	border: none
+
+jotoggle.on > *
+	background-color: accent-bg
+
+jomenu > *.selected,
+jolist > *.selected,
+jooption > *.selected
+	background-color: accent-bg
+
+jooption
+	border-radius: .5em
+
+jooption > *
+	background-color: control-bg
+	border-color: control-bg
+	border: none
+
+jooption > *:first-child
+	border-radius: .5em 0 0 .5em
+
+jooption > *:last-child
+	border-radius: 0 .5em .5em 0
+	border-right-width: .2em
+
+

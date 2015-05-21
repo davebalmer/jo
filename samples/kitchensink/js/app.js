@@ -15,7 +15,11 @@ App = {
 		// attach the nav to our stack
 		this.nav.setStack(this.stack);
 
-		// push our menu card
 		this.stack.push(joCache.get("menu"));
 	}
 };
+
+addEventListener("load", function() {
+	App.load();
+}, false);
+

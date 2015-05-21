@@ -842,3 +842,43 @@ jodivider {
   height: 0;
   display: block;
 }
+jobutton {
+  background-color: #3498db;
+  border-radius: 0.5em;
+}
+joslider,
+jotoggle {
+  background-color: #bdc3c7;
+}
+josliderthumb {
+  background-color: #3498db;
+  border-color: #bdc3c7;
+}
+jotoggle > * {
+  background-color: #7f8c8d;
+  border-color: #bdc3c7;
+  border: none;
+}
+jotoggle.on > * {
+  background-color: #3498db;
+}
+jomenu > *.selected,
+jolist > *.selected,
+jooption > *.selected {
+  background-color: #3498db;
+}
+jooption {
+  border-radius: 0.5em;
+}
+jooption > * {
+  background-color: #bdc3c7;
+  border-color: #bdc3c7;
+  border: none;
+}
+jooption > *:first-child {
+  border-radius: 0.5em 0 0 0.5em;
+}
+jooption > *:last-child {
+  border-radius: 0 0.5em 0.5em 0;
+  border-right-width: 0.2em;
+}
