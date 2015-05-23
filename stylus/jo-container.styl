@@ -5,13 +5,15 @@
 jocontainer
 	@extend joview
 
+/*
 .nativescroll jocontainer
 	height: inherit
+*/
 
 jocaption
 	@extend jocontainer
 	margin: 1em
-	
+
 jocard
 	@extend jocontainer
 	background: #ffffff
@@ -28,10 +30,10 @@ jocard
 
 	> *:last-child
 		margin-bottom: 1em
-	
+
 jodialog
 	@extend jocontainer
-	
+
 joflexcol
 	height: 100%
 	width: 100%
@@ -43,7 +45,7 @@ joflexcol
 
 	> *
 		flex: 1
-	
+
 joflexrow
 	width: 100%
 	margin: 0
@@ -61,7 +63,7 @@ joflexrow
 
 	> jotoggle
 		flex: 0
-	
+
 jofooter
 	@extend jocontainer
 
@@ -76,10 +78,10 @@ jofooter
 
 	> *
 		align-items: flex-end
-	
+
 joform
 	@extend jocontainer
-	
+
 jogroup
 	@extend jocontainer
 
@@ -90,7 +92,7 @@ jogroup
 
 	> *.last-child
 		margin-bottom: 0
-	
+
 jonavbar
 	@extend jocontainer
 
@@ -128,34 +130,33 @@ jonavbar
 		> jobackbutton
 			  flex: 1
 			  max-width: 4em
-	
+
 jopopup
 	@extend jocontainer
 
-	flex: 0
 	display: block
-	overflow: hidden
+	position: absolute
 	border: 2px solid #434343
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)
-	border-radius: 5px
+	border-radius: 1em
 	background-color: #747474
 	color: #000
-	background-repeat: repeat-x
-	background-position: top left
-	background-size: 100% 100%
-	transition: transform 0.4s ease-in, opacity 0.4s ease-in
-	transform: scale(0.5)
-	max-width: 280px
+	transition: opacity 0.4s ease-in
+	width: 90%
+	max-width: 500px
 	margin: 0 auto
 	opacity: 0
+	top: 50%
+	left: 50%
+	transform: translateY(-50%) translateX(-50%)
 
 	> jolist > *.select:first-childjopopup > jomenu > *.select:first-child
 		border-top: none
 		border-radius: 1em 1em 0 0
 
 	> jolist > *:last-child.selectjopopup > jomenu > *:first-child.select
-			border-bottom: none
-			border-radius: 0 0 1em 1em
+		border-bottom: none
+		border-radius: 0 0 1em 1em
 
 	> joscroller
 		width: 100%
@@ -165,16 +166,25 @@ jopopup
 		border-top: none
 		border-color: #999
 		margin-bottom: 1em
-		border-radius: 2px 2px 0 0
 		background-color: #3f3f3f
 
+	> *
+		border-radius: 0
+
+	> *:first-child
+		border-top-right-radius: 1em
+		border-top-left-radius: 1em
+
+	> *:last-child
+		border-bottom-right-radius: 1em
+		border-bottom-left-radius: 1em
+
 jopopup.show
-	transform: scale(1)
 	opacity: 1
-	
+
 joscreen
 	@extend jocontainer
-	
+
 joscroller
 	@extend jocontainer
 
@@ -193,20 +203,9 @@ joscroller
 		animation-fill-mode: forwards
 		transition: transform 0s ease
 
-joscroller.flick
-	transition: transform 1.8s cubic-bezier(0, 0.2, 0, 1)
-
-joscroller.flickback
-	transition: transform 0.2s cubic-bezier(0, 0, 0.4, 1)
-
-joscroller.flickfast
-	transition: transform 0.6s cubic-bezier(0, 0.2, 0, 1)
-
 .nativescroll joscroller
 	position: absolute
 	display: block
-	height: auto
-	width: auto
 	top: 0
 	left: 0
 	bottom: 0
@@ -214,7 +213,7 @@ joscroller.flickfast
 	overflow: auto
 	padding: 0
 	margin: 0
-	overflow-scrolling: touch // -webkit?
+	overflow-scrolling: touch
 
 joshim
 	@extend jocontainer
@@ -229,24 +228,24 @@ joshim
 	display: none
 	background: rgba(0, 0, 0, 0.8)
 	opacity: 0
-	transition: opacity .2s ease
+	transition: opacity .4s ease
 
 joshim.show
 		display: block
 		opacity: 1
-	
+
 jostack
 	@extend jocontainer
 
 	height: 100%;
-	transition: opacity 0.2s ease-out;
+	transition: opacity 0.4s ease-out;
 
 	> *
 		z-index: 0
 		position: absolute
 		animation-fill-mode: forwards
 		transform: translate3d(0, 0, 0)
-		transition: transform 0.2s ease-out, z-index 0.2s ease-out, height 0s ease, overflow 0s ease
+		transition: transform 0.4s ease-out, z-index 0.4s ease-out, height 0s ease, overflow 0s ease
 
 	> .next
 		z-index: -1
@@ -266,32 +265,25 @@ jostack
 
 jostackscroller
 	@extend jocontainer
-	
+
 jotitle
 	@extend jocontainer
 
-	background-color: #b8b8b8
+	background-color: #000
 	color: #3c3c3c
 	font-weight: normal
-	font-size: 120%
 	text-align: center
 	padding: 1em
 	margin: 0
 	cursor: pointer
-	outline: none
-	outline-color: transparent
-	border-left: none
-	border-right: none
-	border-bottom: 1px solid #858585
-	border-top: 1px solid #d8d8d8
 
 	+ joflexcol
 	+ joflexrow
 		margin-top: 1em
-	
+
 jotoolbar
 	@extend jocontainer
-	
+
 	color: rgba(255, 255, 255, 0.9)
 	background-color: rgba(0, 0, 0, 0.8)
 	font-weight: normal

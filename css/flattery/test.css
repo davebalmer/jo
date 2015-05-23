@@ -297,27 +297,19 @@ jonavbar > joflexrow > jobackbutton {
   max-width: 4em;
 }
 jopopup {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0;
-  -ms-flex: 0;
-  flex: 0;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   display: block;
-  overflow: hidden;
   border: 2px solid #434343;
   -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.6);
   box-shadow: 0 0 20px rgba(0,0,0,0.6);
-  border-radius: 5px;
+  border-radius: 1em;
   background-color: #747474;
   color: #000;
-  background-repeat: repeat-x;
-  background-position: top left;
-  -webkit-background-size: 100% 100%;
-  background-size: 100% 100%;
-  -webkit-transition: -webkit-transform 0.4s ease-in, opacity 0.4s ease-in;
-  transition: transform 0.4s ease-in, opacity 0.4s ease-in;
-  -webkit-transform: scale(0.5);
-  -ms-transform: scale(0.5);
-  transform: scale(0.5);
+  -webkit-transition: opacity 0.4s ease-in;
+  transition: opacity 0.4s ease-in;
   max-width: 280px;
   margin: 0 auto;
   opacity: 0;
@@ -342,9 +334,6 @@ jopopup > jotitle {
   background-color: #3f3f3f;
 }
 jopopup.show {
-  -webkit-transform: scale(1);
-  -ms-transform: scale(1);
-  transform: scale(1);
   opacity: 1;
 }
 joscroller {
@@ -365,18 +354,6 @@ joscroller > * {
   animation-fill-mode: forwards;
   -webkit-transition: -webkit-transform 0s ease;
   transition: transform 0s ease;
-}
-joscroller.flick {
-  -webkit-transition: -webkit-transform 1.8s cubic-bezier(0, 0.2, 0, 1);
-  transition: transform 1.8s cubic-bezier(0, 0.2, 0, 1);
-}
-joscroller.flickback {
-  -webkit-transition: -webkit-transform 0.2s cubic-bezier(0, 0, 0.4, 1);
-  transition: transform 0.2s cubic-bezier(0, 0, 0.4, 1);
-}
-joscroller.flickfast {
-  -webkit-transition: -webkit-transform 0.6s cubic-bezier(0, 0.2, 0, 1);
-  transition: transform 0.6s cubic-bezier(0, 0.2, 0, 1);
 }
 .nativescroll joscroller {
   position: absolute;

@@ -6,9 +6,15 @@ accent-bg = #3498DB
 control-bg = #BDC3C7
 control-off = #7F8C8D
 
+border-color = #BDC3C7
+
+input-radius = 0
+control-radius = .5em
+border-width = 2px
+
 jobutton
 	background-color: accent-bg
-	border-radius: .5em
+	border-radius: control-radius
 
 joslider,
 jotoggle
@@ -32,18 +38,29 @@ jooption > *.selected
 	background-color: accent-bg
 
 jooption
-	border-radius: .5em
+	border-radius: control-radius
+	border-color: border-color
+	border-width: border-width
 
 jooption > *
 	background-color: control-bg
 	border-color: control-bg
-	border: none
+	border-width: border-width
 
 jooption > *:first-child
-	border-radius: .5em 0 0 .5em
+	border-radius: control-radius 0 0 control-radius
 
 jooption > *:last-child
-	border-radius: 0 .5em .5em 0
-	border-right-width: .2em
+	border-radius: 0 control-radius control-radius 0
+	border-width: border-width
+	border-right: border-width solid border-color
+
+joinput,
+input,
+jotextarea,
+textarea
+	border-radius: control-radius
+	border-width: border-width
+	border-color: border-color
 
 
