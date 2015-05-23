@@ -129,7 +129,7 @@ jonavbar
 
 		> jobackbutton
 			  flex: 1
-			  max-width: 4em
+			  max-width: 1em
 
 jopopup
 	@extend jocontainer
@@ -184,7 +184,7 @@ jopopup.show
 
 joscreen
 	@extend jocontainer
-
+/*
 joscroller
 	@extend jocontainer
 
@@ -202,8 +202,11 @@ joscroller
 		top: 0
 		animation-fill-mode: forwards
 		transition: transform 0s ease
+*/
 
-.nativescroll joscroller
+joscroller
+	@extend jocontainer
+
 	position: absolute
 	display: block
 	top: 0
@@ -298,4 +301,8 @@ jotoolbar
 	outline: none
 	outline-color: transparent
 	z-index: 1
+
+jopopup > jocard
+	margin-bottom: 0
+
 

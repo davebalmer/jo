@@ -33,13 +33,12 @@ jobackbutton
 
 	color: #fff
 	background: #000
-	font-size: 85%
 	margin: 3px 1em
 	line-height: 3em
 	height: 3em
 	padding: 0 1.5em
 	border-radius: 1.5em
-	display: none
+	max-width: 1em
 
 jobackbutton.focus, jobackbutton.selected
 	background-color: rgba(0, 0, 0, 0.5)
@@ -198,8 +197,6 @@ jolist
 jomenu
 	@extend jocontrol
 
-	font-size: 110%
-
 jolistitem, jomenuitem
 	@extend jocontrol
 
@@ -346,7 +343,7 @@ jooptionitem
 	padding: 0 1.5em
 	cursor: pointer
 	height: 3em
-	line-height: 2.6em
+	line-height: 3em
 	border-left: 0.2em solid #999
 	border-top: 0.2em solid #999
 	border-bottom: 0.2em solid #999
@@ -373,4 +370,5 @@ jodivider
 	text-align: center
 	height: 0
 	display: block
+
 

@@ -25,7 +25,7 @@ joApp.prototype = {
 		}
 
 		function go() {
-			notification = new Notification(this.title, {
+			notification = new Notification(App.title, {
 				body: msg,
 				icon: "favicon-192x192.png"
 			});
@@ -103,10 +103,10 @@ joApp.prototype = {
 			joDefer(function() {
 				joDOM.applyCSS("jooption { display: flex; } jocard { margin-bottom: 3em; }");
 			}, this);
-			document.body.style.fontSize = "1.1rem";
+			document.body.style.fontSize = "1rem";
 		}
 		else {
-			document.body.style.fontSize = "1.1rem";
+			document.body.style.fontSize = "1rem";
 		}
 
 		joDefer(function() {
