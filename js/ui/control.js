@@ -90,7 +90,8 @@ joControl.extend(joView, {
 	},
 
 	setTabIndex: function(t) {
-		this.container.setAttribute("tabindex", t);
+//		this.container.setAttribute("tabindex", t);
+
 		return this;
 	},
 
