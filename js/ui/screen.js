@@ -92,11 +92,7 @@ joScreen.extend(joContainer, {
 		// make it pop up in the screen.
 		if (!this.popup) {
 			this.shim = new joShim(
-				new joFlexcol([
-					'&nbsp',
-					this.popup = new joPopup(data),
-					'&nbsp'
-				])
+				this.popup = new joPopup(data)
 			).setStyle("scrollv");
 		}
 		else {

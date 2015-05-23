@@ -65,7 +65,7 @@ joPopup.extend(joContainer, {
 		joDefer(function() {
 			this.container.className = 'show';
 			this.showEvent.fire();
-		}, this);
+		}, this, 100);
 
 //		joGesture.backEvent.capture(this.hide, this);
 
