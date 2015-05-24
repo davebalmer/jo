@@ -79,9 +79,6 @@ joexpando
 joexpando.open
 	margin-bottom: 1em
 
-	> joexpandotitle joicon
-		transform: rotatez(90deg)
-
 	> *:first-child
 		background-color: #6d6d6d
 		border-radius: 1.5em 1.5em 0 0
@@ -96,7 +93,6 @@ joexpando.open
 joexpandotitle
 	@extend jocontrol
 
-	overflow: hidden
 	color: #000
 	position: relative
 	background-color: #c5c5c5
@@ -104,33 +100,12 @@ joexpandotitle
 	outline: none
 	outline-color: transparent
 	height: 3em
-	line-height: 2.6em
+	line-height: 3em
 	padding: 0 1em
 	border-radius: 1.5em
-	cursor: pointer
 	text-align: left
 	box-sizing: border-box
 	border: 0.2em solid #999999
-
-	joicon
-		position: absolute
-		border-radius: 0 1.5em 1.5em 0
-		background: none
-		border: none
-		text-align: center
-		display: block
-		height: 3em
-		width: 3em
-		line-height: 2.6em
-		right: 0
-		top: 0
-		transform-origin: 50% 50% 0
-		transform: rotatez(0)
-		transition: transform 0.2s ease-out
-
-	joicon:after
-		content: ">"
-		font-family: "jo-flattery"
 
 joexpandocontent
 	@extend jocontrol
@@ -138,7 +113,7 @@ joexpandocontent
 	padding-top: 1em
 	border-top: none
 	border-radius: 0 0 1.5em 1.5em
-	background-color: rgba(255, 255, 255, 0.6)
+	background-color: #eee
 
 
 johtml
