@@ -171,6 +171,17 @@ joinput.disabled, jotextarea.disabled, input.disabled, textarea.disabled
 	color: #666
 	cursor: text
 
+input[type=text],
+input[type=url],
+input[type=tel],
+input[type=number],
+input[type=color],
+input[type=email],
+input[type=date],
+input[type=datetime],
+input[type=time]
+	font: inherit
+
 jodatetime
 	@extend jocontrol
 
@@ -358,7 +369,7 @@ jooptionitem
 		border-radius: 1.5em 0 0 1.5em
 
 	:last-child
-		border-right: 0.2em solid #999
+		border-right: 0.2em solid inherit
 		border-radius: 0 1.5em 1.5em 0
 
 jodivider

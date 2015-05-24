@@ -3,14 +3,16 @@
 */
 
 accent-bg = #3498DB
-control-bg = #BDC3C7
+//control-bg = #BDC3C7
+control-bg = #ecf0f1
 control-off = #7F8C8D
 
-border-color = #BDC3C7
+// border-color = #BDC3C7
+border-color = #7f8c8d
 
 input-radius = 0
 control-radius = .5em
-border-width = 2px
+border-width = 1px
 
 jobutton
 	background-color: accent-bg
@@ -26,7 +28,7 @@ josliderthumb
 
 jotoggle > *
 	background-color: control-off
-	border-color: control-bg
+	border-color: border-color
 	border: none
 
 jotoggle.on > *
@@ -42,23 +44,43 @@ jooption
 	border-color: border-color
 	border-width: border-width
 
-jooption > *
-	background-color: control-bg
-	border-color: control-bg
-	border-width: border-width
+	> *
+		background-color: control-bg
+		border-color: border-color
+		border-width: border-width
 
-jooption > *:first-child
-	border-radius: control-radius 0 0 control-radius
+	> *:first-child
+		border-radius: control-radius 0 0 control-radius
 
-jooption > *:last-child
-	border-radius: 0 control-radius control-radius 0
-	border-width: border-width
+	> *:last-child
+		border-radius: 0 control-radius control-radius 0
+		border-width: border-width
+		border-right: border-width solid border-color
+
+jooption.vertical
+	display: block !important
 	border-right: border-width solid border-color
+
+	> jooptionitem
+		border-bottom: none
+		line-height: 1.2
+		height: auto
+		min-height: 3em
+		padding: 1em .5em
+
+	> jooptionitem:first-child
+		border-radius: control-radius control-radius 0 0
+
+	> jooptionitem:last-child
+		border-radius: 0 0 control-radius control-radius
+		border-bottom: border-width solid border-color
+		border-right: none
 
 joinput,
 input,
 jotextarea,
 textarea
+	background-color: control-bg
 	border-radius: input-radius
 	border-width: border-width
 	border-color: border-color
