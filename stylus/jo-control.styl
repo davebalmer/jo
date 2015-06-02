@@ -190,7 +190,10 @@ jolistitem, jomenuitem
 	margin: 0
 	padding: 1em
 	cursor: pointer
-	border-bottom: 1px solid #6d6d6d
+
+jolistitem:last-child,
+jomenuitme:last-child
+	border-bottom: 1px solid #ebebeb
 
 jolistitem.selected, jomenuitem.selected
 	border-color: #333
@@ -201,26 +204,24 @@ jomenuitem:last-child
 joselect
 	@extend jocontrol
 
+	border: none;
+
 joselect.focus
 	background-color: transparent
 
 joselectlist
 	@extend jocontrol
 
-	border-top: none
-	border-radius: 0 0 1.5em 1.5em
+	border: 1px solid #999
+	border-radius: 0
 	background-color: rgba(255, 255, 255, 0.6)
 
+	> *
+		border: none
+		border-bottom: 1px solid #999
+
 	> *:last-child
-		border-bottom: none;
-		border-radius: 0 0 1.5em 1.5em
-
-	> *:last-child.select
-		border-bottom: none;
-		border-radius: 0 0 1.5em 1.5em;
-
-	> *:first-child
-		border-top: none;
+		border: none
 
 jotabbar
 	@extend jocontrol
@@ -291,7 +292,7 @@ jotoggle
 		font-weight: normal
 		text-align: center
 		height: 3em
-		line-height: 2.6em
+		line-height: 3em
 		border: 0.2em solid #999999
 		width: 6em
 		cursor: pointer

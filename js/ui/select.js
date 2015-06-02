@@ -65,11 +65,27 @@ joSelect = function(data, value) {
 
 	this.field.setList(this.list);
 
-	this.changeEvent = this.list.changeEvent;
-	this.selectEvent = this.list.selectEvent;
+	this.changeEvent = new joSubject(this);
+	this.selectEvent = new joSubject(this);
+
+	this.list.selectEvent.subscribe(function() {
+		this.selectEvent.fire(this.list.value);
+	}, this);
+
+	this.list.changeEvent.subscribe(function() {
+		this.changeEvent.fire(this.list.data);
+	}, this);
+
+//	this.openEvent.subscribe(function(a, b, c) {
+//		this.field.setData("")
+//	}, this);
+//	this.closeEvent.subscribe(function(a, b, c) {
+//		this.field.setData(this.)
+//	}, this);
+
 
 	joExpando.call(this, ui);
-	this.container.setAttribute("tabindex", 1);
+//	this.container.setAttribute("tabindex", 1);
 
 	this.field.setData(this.list.value);
 

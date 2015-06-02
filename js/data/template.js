@@ -24,10 +24,12 @@ joTemplate.prototype = {
 			var key = "{{" + i + "}}";
 			var reg = new RegExp(key, "g");
 
-			if (typeof this.data[i] === "function")
-				str = str.replace(reg, this.data[i](data));
-			else
-				str = str.replace(reg, data[i]);
+			if (typeof this.data[i] === "function") {
+				str = str.replace(reg, this.data[i](data) || "");
+			}
+			else {
+				str = str.replace(reg, data[i] || "");
+			}
 		}
 
 		return str;

@@ -103,6 +103,11 @@ Function.prototype.extend = function(superclass, proto) {
 	}
 };
 
+function jomo(o, p) {
+	for (i in p)
+		o[i] = p;
+}
+
 // add bind() method if we don't have it already
 if (typeof Function.prototype.bind === 'undefined') {
 	Function.prototype.bind = function(context) {

@@ -16,11 +16,11 @@ joApp.prototype = {
 		var that = this;
 
 		function nogo() {
-			this.screen.alert(msg);
-//			console.log(">>> notify >>>", msg);
+			App.screen.alert(msg);
+			console.log(">>> notify >>>", msg);
 
 			joDefer(function() {
-				this.screen.hidePopup();
+				App.screen.hidePopup();
 			}, that, 5000);
 		}
 
@@ -35,22 +35,23 @@ joApp.prototype = {
 			}, that, 5000);
 		}
 
-		if (!("Notification" in window)) {
+// notifications got weird -- rope this off for now
+//		if (!("Notification" in window)) {
 			nogo();
 			return;
-		}
-		else if (Notification.permission === "granted") {
-			// fine
-			go();
-		}
-		else if (Notification.permission !== 'denied') {
-			Notification.requestPermission(function (permission) {
-				if (Notification.permission === "granted")
-					go();
-				else
-					nogo();
-			});
-		}
+//		}
+//		else if (Notification.permission === "granted") {
+//			// fine
+//			go();
+//		}
+//		else if (Notification.permission !== 'denied') {
+//			Notification.requestPermission(function (permission) {
+//				if (Notification.permission === "granted")
+//					go();
+//				else
+//					nogo();
+//			});
+//		}
 	},
 
 	setupPlatform: function() {

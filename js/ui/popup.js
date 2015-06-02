@@ -45,27 +45,36 @@ joPopup.extend(joContainer, {
 	},
 
 	hide: function() {
-		joGesture.backEvent.release(this.hide, this);
+		console.log("hide");
+//		joGesture.backEvent.release(this.hide, this);
 
-		joDefer(function() {
-			joEvent.on(this.container, joEvent.map.transitionend, this.onHide, this);
-			this.container.className = 'hide';
-		}, this);
+		joEvent.on(this.container, joEvent.map.transitionend, this.onHide, this);
+		this.container.className = 'hide';
+//		joDefer(function() {
+//		}, this);
 
 		return this;
 	},
 
 	onHide: function() {
+		console.log("onhide");
 		joEvent.remove(this.container, joEvent.map.transitionend, this.onHide, this);
 		this.hideEvent.fire();
 	},
 
+	onShow: function() {
+		console.log("onshow");
+		joEvent.remove(this.container, joEvent.map.transitionend, this.onShow, this);
+		this.showEvent.fire();
+	},
+
 	show: function() {
-		joEvent.remove(this.container, joEvent.map.transitionend, this.onHide, this);
-		joDefer(function() {
-			this.container.className = 'show';
+		console.log("show");
+		joEvent.remove(this.container, joEvent.map.transitionend, this.onShow, this);
+		this.container.className = 'show';
+//		joDefer(function() {
 			this.showEvent.fire();
-		}, this, 100);
+//		}, this);
 
 //		joGesture.backEvent.capture(this.hide, this);
 

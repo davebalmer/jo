@@ -102,7 +102,7 @@ joScreen.extend(joContainer, {
 		}
 
 		if (maxwidth)
-			this.popup.container.style.maxWidth = maxwidth + "px";
+			this.popup.container.style.maxWidth = (typeof maxwidth == "string") ? maxwidth : (maxwidth + "px");
 		else
 			this.popup.container.style.maxWidth = "";
 
@@ -112,25 +112,31 @@ joScreen.extend(joContainer, {
 			this.shim.setModal(false);
 
 		this.shim.show();
-		this.popup.show();
+
+		joDefer(function() {
+			this.popup.show();
+		}, this);
 
 		return this;
 	},
 
 	hideShim: function() {
-		this.shim = null;
+//		this.shim = null;
 
-		if (this.popup)
-			this.popup.hide();
+//		if (this.shim) {
+			joDefer(function() {
+				this.shim.hide();
+			}, this);
+//		}
 
 		return this;
 	},
 
 	hidePopup: function() {
-		this.popup = null;
+//		this.popup = null;
 
-		if (this.shim)
-			this.shim.hide();
+		this.hideShim();
+		this.popup.hide();
 
 		return this;
 	},
@@ -193,7 +199,7 @@ joScreen.extend(joContainer, {
 		}
 
 		function defaultaction() {
-			self.hidePopup();
+			self.hideShim();
 			if (callback) {
 				if (context)
 					callback.call(context);
@@ -203,5 +209,9 @@ joScreen.extend(joContainer, {
 		}
 
 		return this;
+	},
+
+	notify: function(msg) {
+
 	}
 });

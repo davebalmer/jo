@@ -331,7 +331,25 @@ joStack.extend(joContainer, {
 			return this;
 
 		this.switchScroller();
-		joStack.prototype.home.call(this);
+
+		if (this.data && this.data.length && this.data.length > 1) {
+			var o = this.data[0];
+			var c = this.data[this.index];
+
+			if (o === c)
+				return this;
+
+			this.data = [o];
+			this.lastIndex = 1;
+			this.index = 0;
+//			this.lastNode = null;
+			this.draw();
+
+			this.captureBack();
+
+			this.popEvent.fire();
+			this.homeEvent.fire();
+		}
 
 		// cleanup all card deactivate calls
 		for (var i = 1; i < this.data.length; i++) {

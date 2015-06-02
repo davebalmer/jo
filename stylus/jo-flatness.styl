@@ -82,7 +82,7 @@ joexpando
 	> *:first-child
 		border-radius: control-radius
 		background-color: accent-bg
-		border: border-width solid border-color
+		border: none
 		color: #fff
 		line-height: 3em
 		position: relative
@@ -98,12 +98,12 @@ joexpando
 		text-align: center
 		font-family: "jo-flattery"
 		transform-origin: 50% 50% 0
-		transition: transform .4s ease-out
+		transition: transform .3s ease-out
 		color: #fff
 
 	> joexpandocontent
-		transition: opacity .4s ease-out
-		opacity: .5
+		transition: opacity .3s ease-out
+		opacity: 0
 
 joexpando.open > *:first-child
 	border-radius: control-radius control-radius 0 0
@@ -114,14 +114,25 @@ joexpando.open > joexpandotitle:after
 joexpando.open > joexpandocontent
 	opacity: 1
 
+joselect > *:first-child
+	border: none
+
+joexpandotitle,
+joselectitle
+	border: none
+
 joinput,
 input,
 jotextarea,
 textarea
+	height: 3em
 	background-color: control-bg
 	border-radius: input-radius
 	border-width: border-width
 	border-color: border-color
 
-
-
+joinput:focus,
+input:focus,
+jotextarea:focus,
+textarea:focus
+	border-color: accent-bg
