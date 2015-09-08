@@ -21,7 +21,8 @@ gulp.task('css', function() {
 //	.pipe(minifycss())
 	// Set the output of the minified files.
 	.pipe(rename('test.css'))
-	.pipe(gulp.dest('css/flattery/'))
+//	.pipe(gulp.dest('css/flattery/'))
+	.pipe(gulp.dest('/Users/dbalmer/Projects/avixena/demo/app/css/'))
 });
 
 //gulp.task('js', function() {

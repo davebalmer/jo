@@ -79,7 +79,12 @@ joEvent = {
 		}
 
 //		console.log(cc, typeof cc.call);
-		var callcc = cc;
+		var callcc = cc || null;
+		var contextcc = context || null;
+		var datacc = data || null;
+
+		if (typeof callcc.call === "undefined")
+			console.log("we set context with no call.call", contextcc, callcc);
 
 		element = joDOM.get(element);
 //		data = data || "";
@@ -102,10 +107,15 @@ joEvent = {
 
 //			console.log("call", call);
 
-			if (context)
-				callcc.call(context, e, data);
-			else
-				callcc(e, data);
+			if (typeof callcc.call !== "function")
+				console.log("Nono call.call", contextcc);
+
+			if (contextcc && typeof callcc.call === "function") {
+				callcc.call(contextcc, e, datacc);
+			}
+			else {
+				callcc(e, datacc);
+			}
 		}
 
 		// annoying kludge for Mozilla

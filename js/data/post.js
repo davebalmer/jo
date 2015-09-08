@@ -18,10 +18,10 @@ function joPost(url, data, call, context, timeout, silent) {
 	req.send(data);
 
 	function onchange(e) {
-		if (timer)
-			timer = clearTimeout(timer);
-
 		if (req.readyState == 4) {
+			if (timer)
+				timer = clearTimeout(timer);
+
 			if (!req.status || req.status !== 200)
 				onerror(req.status);
 			else

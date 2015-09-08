@@ -8,6 +8,9 @@
 jocontrol
 	@extend joview
 
+	cursor: pointer
+
+
 jobutton
 	@extend jocontrol
 
@@ -16,7 +19,6 @@ jobutton
 	font-weight: normal
 	color: #fff
 	background: #333
-	cursor: pointer
 	outline: none
 	outline-color: transparent
 	height: 3em
@@ -81,7 +83,6 @@ joexpando.open
 
 	> *:first-child
 		background-color: #6d6d6d
-		border-radius: 1.5em 1.5em 0 0
 		color: #fff
 
 	> *:last-child
@@ -110,10 +111,10 @@ joexpandotitle
 joexpandocontent
 	@extend jocontrol
 
-	padding-top: 1em
+	padding: 1em
 	border-top: none
-	border-radius: 0 0 1.5em 1.5em
-	background-color: #eee
+	border-radius: 0
+	background-color: #fff
 
 
 johtml
@@ -320,33 +321,30 @@ jooption
 	display: flex
 	align-items: stretch
 	margin: 0px 1em 1em 1em
+	border: 0.2em solid #999
+
+	>*
+		border-right: 0.2em solid #999
+
+
+	>*:last-child
+		border-right: none
 
 jooptionitem
 	@extend jocontrol
 
 	color: #000
-	background-color: #c5c5c5
 	font-weight: normal
 	padding: 0 1.5em
 	cursor: pointer
 	height: 3em
 	line-height: 3em
-	border-left: 0.2em solid #999
-	border-top: 0.2em solid #999
-	border-bottom: 0.2em solid #999
-	outline: none
-	outline-color: transparent
+	//	outline: none
+	//	outline-color: transparent
 	flex: 1
 	text-align: center
 	margin: 0
 	box-sizing: border-box
-
-	:first-child
-		border-radius: 1.5em 0 0 1.5em
-
-	:last-child
-		border-right: 0.2em solid inherit
-		border-radius: 0 1.5em 1.5em 0
 
 jodivider
 	@extend jocontrol
@@ -358,4 +356,27 @@ jodivider
 	height: 0
 	display: block
 
+jonotification
+	@extend jocontrol
+
+	min-width: 50%
+	max-width: 90%
+
+	z-index: 1000
+
+	display: block
+	position: absolute
+	padding: 1em
+	border: #000
+	background: #eee
+	color: #000
+
+	margin: 0 .5em 0 0
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .5)
+
+	transition: bottom .5s ease-in, opacity .5s ease-out
+	opacity: 0
+
+jonotification.show
+	opacity: 1
 

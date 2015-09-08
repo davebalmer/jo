@@ -54,7 +54,7 @@
 	  The constructor calls this method if you provide `data` when you instantiate
 	  (see example above)
 
-	- `push(data)`
+	- `pushData(data)`
 
 	  Same support as `setData()`, but places the new content at the end of the
 	  existing content.
@@ -91,12 +91,12 @@ joContainer.extend(joView, {
 
 	deactivate: function() {},
 
-	push: function(data) {
+	pushData: function(data) {
 		if (typeof data === 'object') {
 			if (data instanceof Array) {
 				// we have a list of stuff
 				for (var i = 0; i < data.length; i++)
-					this.push(data[i]);
+					this.pushData(data[i]);
 			}
 			else if (data instanceof joView && data.container !== this.container) {
 				// ok, we have a single widget here
@@ -122,9 +122,6 @@ joContainer.extend(joView, {
 	},
 
 	refresh: function() {
-		if (this.container)
-			this.container.innerHTML = "";
-
 		this.draw();
 		this.changeEvent.fire();
 
@@ -132,6 +129,9 @@ joContainer.extend(joView, {
 	},
 
 	draw: function() {
-		this.push(this.data);
+		if (this.container)
+			joDOM.empty(this.container);
+
+		this.pushData(this.data);
 	}
 });

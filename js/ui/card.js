@@ -20,11 +20,10 @@
 	  application-level handlers to initialize or cleanup a joCard.
 
 */
-joCard = function(data) {
+joCard = function() {
 	joContainer.apply(this, arguments);
 };
 joCard.extend(joContainer, {
 	tagName: "jocard"
-	// TODO: add activating/deactivating methods to this; should be easy to override
 });
 

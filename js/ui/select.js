@@ -59,11 +59,11 @@ joSelect = function(data, value) {
 		v = value.getData();
 
 	var ui = [
-		this.field = new joSelectTitle(v),
+		this.field = new joSelectTitle(),
 		this.list = new joSelectList(data, value)
 	];
 
-	this.field.setList(this.list);
+//	this.field.setList(this.list);
 
 	this.changeEvent = new joSubject(this);
 	this.selectEvent = new joSubject(this);
@@ -84,22 +84,60 @@ joSelect = function(data, value) {
 //	}, this);
 
 
+	this.defaultTitle = "Select...";
+
 	joExpando.call(this, ui);
 //	this.container.setAttribute("tabindex", 1);
 
-	this.field.setData(this.list.value);
+	this.setTitle(data[v]);
 
-	this.list.selectEvent.subscribe(this.setValue, this);
+	this.changeEvent.subscribe(this.setListValue, this);
+	this.list.titleEvent.subscribe(this.setTitle, this);
+//	this.selectEvent.subscribe(function() {
+//	}, this);
 };
 joSelect.extend(joExpando, {
+	setTitle: function(v) {
+		if (v)
+			joDOM.addCSSClass(this.field.container, "selected");
+		else
+			joDOM.removeCSSClass(this.field.container, "selected");
+
+		console.log("v", v, this.field.container.className);
+
+		this.field.setData(v || this.defaultTitle);
+		this.close();
+
+		return this;
+	},
+
+	setListValue: function(value) {
+		this.value = value;
+		this.setTitle(this.list.data[this.list.value]);
+		this.close();
+
+		console.log("setlistvalue", value, this.list.data[value]);
+
+		return this;
+	},
+
+	setDefault: function(d) {
+		this.defaultTitle = d;
+
+		return this;
+	},
+
 	setValue: function(value, list) {
 		if (list) {
-			this.field.setData(value);
+			this.list.setData(value);
 			this.close();
 		}
 		else {
-			this.field.setData(value);
+			this.list.setValue(value);
+			this.setTitle(this.list.data[value]);
 		}
+
+		console.log("setvalue", value, this.list.data[value]);
 
 		return this;
 	},
@@ -134,6 +172,7 @@ joSelectTitle = function() {
 	joExpandoTitle.apply(this, arguments);
 };
 joSelectTitle.extend(joExpandoTitle, {
+/*
 	list: null,
 
 	setList: function(list) {
@@ -150,4 +189,5 @@ joSelectTitle.extend(joExpandoTitle, {
 
 		return this;
 	}
+*/
 });

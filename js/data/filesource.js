@@ -103,7 +103,11 @@ joFile = function(url, call, context, timeout) {
 
 	var timer = (timeout > 0) ? setTimeout(onerror, timeout) : null;
 
-	App.setBusy(true);
+	if (typeof App.setBusy !== "undefined")
+		App.setBusy(true);
+
+	url = url.replace(/#/g, "");
+//	console.log('jofile', url);
 
 	req.open('GET', url, true);
 	req.onreadystatechange = onchange;
@@ -111,11 +115,15 @@ joFile = function(url, call, context, timeout) {
 	req.send(null);
 
 	function onchange(e) {
-		if (timer)
-			timer = clearTimeout(timer);
+		if (req.readyState == 4) {
+			if (timer)
+				timer = clearTimeout(timer);
 
-		if (req.readyState == 4)
-			handler(req.responseText, 0);
+			if (!req.status || req.status !== 200)
+				onerror(req.status);
+			else
+				handler(req.responseText, 0);
+		}
 	}
 
 	function onerror() {
@@ -123,7 +131,8 @@ joFile = function(url, call, context, timeout) {
 	}
 
 	function handler(data, error) {
-		App.setBusy(false);
+		if (typeof App.setBusy !== "undefined")
+			App.setBusy(false);
 
 		if (call) {
 			if (context)

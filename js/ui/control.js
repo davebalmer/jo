@@ -145,7 +145,9 @@ joControl.extend(joView, {
 
 	onBlur: function(e) {
 		this.data = (this.container.value) ? this.container.value : this.container.innerHTML;
-		joEvent.stop(e);
+
+		if (e)
+			joEvent.stop(e);
 
 		if (this.enabled) {
 			this.blur();

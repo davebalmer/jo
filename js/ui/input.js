@@ -91,13 +91,16 @@ joInput.extend(joControl, {
 
 	enable: function() {
 		this.container.contentEditable = true;
-		this.container.setAttribute("tabindex", "1");
+		this.container.removeAttribute("readonly");
+//		this.container.removeAttribute("tabindex");
+//		this.container.setAttribute("tabindex", "1");
 		return joControl.prototype.enable.call(this);
 	},
 
 	disable: function() {
 		this.container.contentEditable = false;
-		this.container.removeAttribute("tabindex");
+		this.container.setAttribute("readonly", true);
+//		this.container.removeAttribute("tabindex");
 		return joControl.prototype.disable.call(this);
 	},
 

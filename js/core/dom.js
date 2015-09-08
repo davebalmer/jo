@@ -98,6 +98,14 @@ joDOM = {
 			node.parentNode.removeChild(node);
 	},
 
+	empty: function(node) {
+		if (!node)
+			return;
+
+		while (node.firstChild)
+			node.removeChild(node.firstChild);
+	},
+
 	enable: function() {
 		this.enabled = true;
 	},

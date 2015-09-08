@@ -41,25 +41,18 @@ jooption > *.selected
 
 jooption
 	border-radius: control-radius
-	border-color: border-color
-	border-width: border-width
+	border: border-width solid border-color
+	background-color: control-bg
 
 	> *
-		background-color: control-bg
-		border-color: border-color
-		border-width: border-width
-
-	> *:first-child
-		border-radius: control-radius 0 0 control-radius
+		border-right: border-width solid border-color
 
 	> *:last-child
-		border-radius: 0 control-radius control-radius 0
-		border-width: border-width
-		border-right: border-width solid border-color
+		border-right: none
 
 jooption.vertical
 	display: block !important
-	border-right: border-width solid border-color
+	border-radius: control-radius
 
 	> jooptionitem
 		border-bottom: none
@@ -67,14 +60,11 @@ jooption.vertical
 		height: auto
 		min-height: 3em
 		padding: 1em .5em
-
-	> jooptionitem:first-child
-		border-radius: control-radius control-radius 0 0
+		border-right: none
+		border-bottom: border-width solid border-color
 
 	> jooptionitem:last-child
-		border-radius: 0 0 control-radius control-radius
-		border-bottom: border-width solid border-color
-		border-right: none
+		border-bottom: none
 
 joexpando
 	background: background-color
@@ -98,12 +88,17 @@ joexpando
 		text-align: center
 		font-family: "jo-flattery"
 		transform-origin: 50% 50% 0
-		transition: transform .3s ease-out
+		transition: transform .2s ease-out
 		color: #fff
 
 	> joexpandocontent
-		transition: opacity .3s ease-out
+		transition: opacity .2s ease-out
 		opacity: 0
+		padding: 1em 0
+
+joexpando > *:last-child
+	border-radius: 0
+	border: border-width solid border-color
 
 joexpando.open > *:first-child
 	border-radius: control-radius control-radius 0 0

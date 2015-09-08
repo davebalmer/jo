@@ -105,6 +105,10 @@
 
 joRecord = function(data) {
 	joDataSource.call(this, data || {});
+
+	this.loadEvent = new joSubject(this);
+	this.saveEvent = new joSubject(this);
+
 	this.delegate = {};
 };
 joRecord.extend(joDataSource, {
@@ -123,6 +127,9 @@ joRecord.extend(joDataSource, {
 	},
 
 	getProperty: function(p) {
+		if (typeof this.data[p] == "undefined")
+			this.data[p] = null;
+
 		return this.data[p];
 	},
 
@@ -141,11 +148,13 @@ joRecord.extend(joDataSource, {
 
 	load: function() {
 //		console.log("TODO: extend the load() method");
+		this.loadEvent.fire(this.data);
 		return this;
 	},
 
 	save: function() {
 //		console.log("TODO: extend the save() method");
+		this.saveEvent.fire(this.data);
 		return this;
 	}
 });

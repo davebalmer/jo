@@ -35,6 +35,8 @@
 */
 joGesture = {
 	load: function() {
+//		console.log("gesture", this);
+
 		this.upEvent = new joSubject(this);
 		this.downEvent = new joSubject(this);
 		this.leftEvent = new joSubject(this);
@@ -56,11 +58,23 @@ joGesture = {
 		joEvent.on(document.body, "keydown", this.onKeyDown, this);
 		joEvent.on(document.body, "keyup", this.onKeyUp, this);
 
-		joEvent.on(document.body, "unload", this.closeEvent, this);
-		joEvent.on(window, "activate", this.activateEvent, this);
-		joEvent.on(window, "deactivate", this.deactivateEvent, this);
+		joEvent.on(document.body, "unload", this.close, this);
+		joEvent.on(window, "activate", this.activate, this);
+		joEvent.on(window, "deactivate", this.deactivate, this);
 
 		joEvent.on(window, "resize", this.resize, this);
+	},
+
+	close: function() {
+		this.closeEvent.fire();
+	},
+
+	activate: function() {
+		this.activateEvent.fire();
+	},
+
+	deactivate: function() {
+		this.deactivateEvent.fire();
 	},
 
 	resize: function() {
@@ -90,6 +104,9 @@ joGesture = {
 		if (e.keyCode == 13) {
 			joEvent.stop(e);
 			joEvent.preventDefault(e);
+
+			if (joFocus.last)
+				joFocus.last.onBlur();
 
 			this.defaultEvent.fire("default");
 			return;

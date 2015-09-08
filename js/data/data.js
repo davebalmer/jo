@@ -16,8 +16,9 @@ joData = {
 	intersect: function(a, b) {
 		var o = {};
 
-		for (var i in a)
+		for (var i in a) {
 			o[i] = b[i];
+		}
 
 		return o;
 	},
@@ -30,7 +31,10 @@ joData = {
 				if (typeof b[i] === "undefined"
 				|| (typeof a === "string" && b[i] == "")
 				|| (typeof a === "number" && b[i] < 0)) {
-					return {};
+					// do nothing
+				}
+				else {
+					o[i] = b[i];
 				}
 			}
 			else {
@@ -42,6 +46,8 @@ joData = {
 					o[i] = b[i];
 			}
 		}
+
+		return o;
 	},
 
 	test: function(a, b) {

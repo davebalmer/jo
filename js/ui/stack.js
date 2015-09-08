@@ -68,6 +68,7 @@ joStack = function(data) {
 		new joScroller()
 	];
 	this.scroller = this.scrollers[0];
+	this.scrollerIndex = 0;
 
 	this.visible = false;
 
@@ -78,8 +79,8 @@ joStack = function(data) {
 			data = [ data[0] ];
 	}
 
-	if (this.container && this.container.firstChild)
-		this.container.innerHTML = "";
+//	if (this.container && this.container.firstChild)
+//		this.container.innerHTML = "";
 
 	// default to keep first card on the stack; won't pop() off
 	this.setLocked(true);
@@ -91,10 +92,11 @@ joStack = function(data) {
 	this.hideEvent = new joSubject(this);
 	this.backEvent = new joSubject(this);
 	this.forwardEvent = new joSubject(this);
+	this.animatedEvent = new joSubject(this);
 
 	joContainer.call(this, data || []);
 
-	this.index = 0;
+	this.index = -1;
 	this.lastIndex = 0;
 	this.lastNode = null;
 
@@ -103,18 +105,23 @@ joStack = function(data) {
 joStack.extend(joContainer, {
 	tagName: "jostack",
 	type: "fixed",
-	scrollerindex: 1,
-	scroller: null,
-	scrollers: [],
 
 	switchScroller: function() {
-		this.scrollerindex = this.scrollerindex ? 0 : 1;
-		this.scroller = this.scrollers[this.scrollerindex];
+		var i = this.index;
+		if (typeof this.scrollers[i] !== "object") {
+			this.scrollers[i] = new joScroller();
+		}
+		this.scroller = this.scrollers[i];
+		this.scrollerIndex = i;
+
+		return this;
 	},
 
+/*
 	getLastScroller: function() {
-		return this.scrollers[this.scrollerindex ? 0 : 1];
+		return this.scrollers[this.index];
 	},
+*/
 
 	scrollTo: function(something) {
 		this.scroller.scrollTo(something);
@@ -143,7 +150,7 @@ joStack.extend(joContainer, {
 	},
 
 	getChild: function() {
-		return this.scroller.container || null;
+		return this.scroller.container;
 	},
 
 	setEvents: function() {
@@ -156,9 +163,9 @@ joStack.extend(joContainer, {
 
 	forward: function() {
 		if (this.index < this.data.length - 1) {
+			this.index++;
 			this.switchScroller();
 
-			this.index++;
 			this.draw();
 			this.forwardEvent.fire();
 		}
@@ -166,13 +173,36 @@ joStack.extend(joContainer, {
 		return this;
 	},
 
-	back: function() {
+	pop: function(index) {
+		var i = index || this.index;
+
+		var handler = function() {
+			console.log("remove index", i);
+
+			this.scrollers[i].clear();
+			this.scrollers.splice(i, 1);
+			this.data.splice(i, 1);
+
+			this.animatedEvent.unsubscribe(handler, this);
+			this.backEvent.fire();
+		};
+
+		this.animatedEvent.subscribe(handler, this);
+		joDOM.addCSSClass(this.scroller.container, "pull");
+		console.log("pull", this.scroller.container.className);
+		this.back();
+
+		return this;
+	},
+
+	back: function(silent) {
 		if (this.index > 0) {
+			this.index--;
 			this.switchScroller();
 
-			this.index--;
 			this.draw();
-			this.backEvent.fire();
+			if (!silent)
+				this.backEvent.fire();
 		}
 
 		return this;
@@ -198,11 +228,18 @@ joStack.extend(joContainer, {
 			return (o instanceof joView) ? o.container : o;
 		}
 
+		console.log("newchild", newchild);
+
 		if (!newchild)
 			return;
 
-		if (typeof this.data[this.index].activate !== "undefined")
-			this.data[this.index].activate.call(this.data[this.index]);
+		var deact = this.data[this.lastIndex];
+		if (typeof deact.deactivate !== "undefined")
+			deact.deactivate.call(deact);
+
+		var act = this.data[this.index];
+		if (typeof act.activate !== "undefined")
+			act.activate.call(act);
 
 		var oldclass, newclass;
 
@@ -247,6 +284,9 @@ joStack.extend(joContainer, {
 			if (oldchild) {
 				self.removeChild(oldchild);
 				joDOM.removeCSSClass(oldchild, oldclass);
+				joDOM.removeCSSClass(oldchild, "pull");
+				console.log("cleanup", this.scroller.container.className);
+
 //				joDOM.removeCSSClass(oldchild, "next");
 //				joDOM.removeCSSClass(oldchild, "prev");
 			}
@@ -255,9 +295,11 @@ joStack.extend(joContainer, {
 				if (transitionevent)
 					joEvent.remove(newchild, joEvent.map.transitionend, transitionevent);
 
+//				joDOM.removeCSSClass(oldchild, "pull");
 //				joDOM.removeCSSClass(newchild, "next");
 //				joDOM.removeCSSClass(newchild, "prev");
 			}
+			this.animatedEvent.fire();
 		}
 
 		this.lastIndex = this.index;
@@ -275,24 +317,72 @@ joStack.extend(joContainer, {
 		return this.visible;
 	},
 
+/*
 	push: function(o) {
 		// don't push the same view we already have
 		if (this.data && this.data.length && this.data[this.data.length - 1] === o)
 			return;
-
-		this.switchScroller();
-
-		this.scroller.setData(o);
-		this.scroller.scrollTo(0, true);
 
 		if (typeof o === "string")
 			o = joDOM.get(o);
 
 		this.data.push(o);
 		this.index = this.data.length - 1;
-		this.draw();
-		this.pushEvent.fire(o);
 
+		this.switchScroller();
+		this.scroller.setData(o);
+
+		this.draw();
+
+//		this.scroller.scrollTo(0, true);
+		this.pushEvent.fire(o);
+		this.captureBack();
+
+		return this;
+	},
+*/
+
+	flipTo: function(index) {
+		var flips = (index > this.index) ? (index - this.index) : (this.index - index);
+
+		for (var i = 0; i < flips; i++) {
+			if (index > this.index)
+				joDefer(this.forward, this, 200 * (i + 1));
+			else
+				joDefer(this.back, this, 200 * (i + 1));
+		}
+
+		return this;
+	},
+
+	push: function(o, index) {
+		var i = index || this.index + 1;
+		if (typeof o === "string")
+			o = joDOM.get(o);
+
+		var exists = this.data.indexOf(o);
+		if (exists >= 0) {
+			this.flipTo(exists);
+
+			return;
+		}
+
+/*
+		if (i >= this.data.length) {
+			this.data.push(o);
+		}
+		else {
+*/
+			this.data.splice(i, 0, o);
+//		}
+		this.index = i;
+
+		this.switchScroller();
+		this.scroller.setData(o);
+
+		this.draw();
+
+		this.pushEvent.fire(o);
 		this.captureBack();
 
 		return this;
@@ -305,6 +395,7 @@ joStack.extend(joContainer, {
 		return this;
 	},
 
+/*
 	pop: function() {
 		if (this.data.length > this.locked) {
 			this.switchScroller();
@@ -325,57 +416,13 @@ joStack.extend(joContainer, {
 
 		return this;
 	},
+*/
 
 	home: function() {
-		if (!this.data || !this.data.length || this.data.length < 1)
-			return this;
-
-		this.switchScroller();
-
-		if (this.data && this.data.length && this.data.length > 1) {
-			var o = this.data[0];
-			var c = this.data[this.index];
-
-			if (o === c)
-				return this;
-
-			this.data = [o];
-			this.lastIndex = 1;
-			this.index = 0;
-//			this.lastNode = null;
-			this.draw();
-
-			this.captureBack();
-
-			this.popEvent.fire();
+		if (this.index > 0) {
+			this.flipTo(0);
 			this.homeEvent.fire();
 		}
-
-		// cleanup all card deactivate calls
-		for (var i = 1; i < this.data.length; i++) {
-			var j = this.data.length - i;
-			var d = this.data[j];
-
-			if (typeof d.deactivate === "function")
-				d.deactivate.call(d);
-		}
-
-		var o = this.data[0];
-		var c = this.data[this.index];
-
-		if (o === c)
-			return this;
-
-		this.data = [o];
-		this.lastIndex = 1;
-		this.index = 0;
-//			this.lastNode = null;
-		this.draw();
-
-		this.captureBack();
-
-		this.popEvent.fire();
-		this.homeEvent.fire();
 
 		return this;
 	},
@@ -404,6 +451,7 @@ joStack.extend(joContainer, {
 		if (!this.visible) {
 			this.visible = true;
 			joDOM.addCSSClass(this.container, "show");
+			joDOM.removeCSSClass(this.container, "hide");
 
 			joDefer(this.showEvent.fire, this.showEvent, 500);
 		}
@@ -415,6 +463,7 @@ joStack.extend(joContainer, {
 		if (this.visible) {
 			this.visible = false;
 			joDOM.removeCSSClass(this.container, "show");
+			joDOM.addCSSClass(this.container, "hide");
 
 			joDefer(this.hideEvent.fire, this.hideEvent, 500);
 		}

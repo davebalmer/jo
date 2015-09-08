@@ -69,6 +69,8 @@ joScreen = function() {
 	this.defaultEvent = new joSubject(this);
 	this.forwardEvent = new joSubject(this);
 
+	this.notificationList = [];
+
 	joContainer.apply(this, arguments);
 };
 joScreen.extend(joContainer, {
@@ -212,6 +214,35 @@ joScreen.extend(joContainer, {
 	},
 
 	notify: function(msg) {
+		console.log("notify");
+		var n = new joNotification(msg);
+		n.removeEvent.subscribe(this.removeNotification, this);
+		this.container.appendChild(n.container);
+		this.notificationList.unshift(n);
+		this.updateNotificationList();
+		joDefer(n.show, n);
+	},
 
+	removeNotification: function(o) {
+		console.log("remove notification");
+		this.container.removeChild(o.container);
+		o.removeEvent.unsubscribe(this.removeNotification, this);
+		var i = this.notificationList.indexOf(o);
+		if (i >= 0) {
+			this.notificationList.splice(i, 1);
+			this.updateNotificationList();
+		}
+	},
+
+	updateNotificationList: function() {
+		console.log("update notification list");
+		var b = 10;
+		var list = this.notificationList;
+
+		for (var i = 0; i < list.length; i++) {
+			list[i].setBottom(b);
+			var h = list[i].getHeight();
+			b += h + 10;
+		}
 	}
 });

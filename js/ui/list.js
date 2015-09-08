@@ -88,14 +88,14 @@ joList.extend(joControl, {
 
 		if (typeof this.data === 'undefined' || !this.data || !this.data.length) {
 			if (typeof msg === 'object') {
-				this.innerHTML = "";
+				this.container.innerHTML = "";
 				if (msg instanceof joView)
 					this.container.appendChild(msg.container);
 				else if (msg instanceof HTMLElement)
 					this.container.appendChild(msg);
 			}
 			else {
-				this.innerHTML = msg;
+				this.container.innerHTML = msg;
 			}
 		}
 
@@ -112,6 +112,8 @@ joList.extend(joControl, {
 
 			return;
 		}
+
+		joDOM.empty(this.container);
 
 		for (var i = 0, l = this.data.length; i < l; i++) {
 			var element = this.formatItem(this.data[i], i, length);

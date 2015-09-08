@@ -67,8 +67,7 @@ joView.prototype = {
 	clear: function() {
 		this.data = "";
 
-		if (this.container)
-			this.container.innerHTML = "";
+		joDOM.empty(this.container);
 
 		this.changeEvent.fire();
 
@@ -104,7 +103,6 @@ joView.prototype = {
 		if (!this.container || typeof this.data === "undefined")
 			return this;
 
-		this.container.innerHTML = "";
 		this.draw();
 
 		if (this.enabled)
@@ -114,6 +112,7 @@ joView.prototype = {
 	},
 
 	draw: function() {
+		joDOM.empty(this.container);
 		this.container.innerHTML = this.data;
 	},
 

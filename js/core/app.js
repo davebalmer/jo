@@ -15,6 +15,7 @@ joApp.prototype = {
 		var notification;
 		var that = this;
 
+/*
 		function nogo() {
 			App.screen.alert(msg);
 			console.log(">>> notify >>>", msg);
@@ -23,22 +24,27 @@ joApp.prototype = {
 				App.screen.hidePopup();
 			}, that, 5000);
 		}
+*/
 
-		function go() {
-			notification = new Notification(App.title, {
-				body: msg,
-				icon: "favicon-192x192.png"
-			});
+//		function go() {
 
-			joDefer(function() {
-				notification.close();
-			}, that, 5000);
-		}
+		notification = new Notification(App.title, {
+			body: msg,
+			icon: "favicon-192x192.png"
+		});
+
+		joDefer(function() {
+			notification.close();
+		}, that, 5000);
+
+		return this;
+
+//		}
 
 // notifications got weird -- rope this off for now
 //		if (!("Notification" in window)) {
-			nogo();
-			return;
+//			nogo();
+//			return;
 //		}
 //		else if (Notification.permission === "granted") {
 //			// fine
@@ -104,10 +110,10 @@ joApp.prototype = {
 			joDefer(function() {
 				joDOM.applyCSS("jooption { display: flex; } jocard { margin-bottom: 3em; }");
 			}, this);
-			document.body.style.fontSize = "1rem";
+			document.body.style.fontSize = ".9rem";
 		}
 		else {
-			document.body.style.fontSize = "1rem";
+			document.body.style.fontSize = ".9rem";
 		}
 
 		joDefer(function() {

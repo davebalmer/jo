@@ -29,7 +29,7 @@ joBusy.extend(joContainer, {
 	tagName: "jobusy",
 
 	draw: function() {
-		this.container.innerHTML = "";
+		joDOM.empty(this.container);
 	},
 
 	setMessage: function(msg) {

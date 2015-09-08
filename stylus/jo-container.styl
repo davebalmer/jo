@@ -241,26 +241,37 @@ jostack
 	@extend jocontainer
 
 	height: 100%;
-	transition: opacity 0.4s ease-out;
+	transition: opacity 0.2s ease-out;
+	opacity: 1
 
 	> *
 		z-index: 0
+		opacity: 1
 		position: absolute
 		animation-fill-mode: forwards
 		transform: translate3d(0, 0, 0)
-		transition: transform 0.4s ease-out, z-index 0.4s ease-out, height 0s ease, overflow 0s ease
+		transition: transform 0.25s ease-in, opacity 0.25s ease-out, height 0s ease, overflow 0s ease
 
 	> .next
-		z-index: -1
+		z-index: 1
 		transform: translateX(100%)
 		height: 100%
-		overflow: hidden
+		// overflow: hidden
+		opacity: 1
 
 	> .prev
-		z-index: 1
-		transform: translateX(-100%)
+		z-index: 0
+		transform: translateX(0)
 		height: 100%
-		overflow: hidden
+		// overflow: hidden
+
+	> *.next.pull
+		transition: transform 0.4s ease-out, opacity 0.4s ease-in, height 0s ease, overflow 0s ease
+		transform: translateY(100%)
+		opacity: 0
+
+jostack.hide
+	opacity: 0
 
 .nativescroll jostack
 	width: 100%
