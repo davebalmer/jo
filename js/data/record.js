@@ -184,11 +184,14 @@ joProperty = function(datasource, p) {
 
 	this.datasource = datasource;
 	this.p = p;
+//	this.dirty = true;
 };
 joProperty.extend(joDataSource, {
 	setData: function(data) {
-		if (this.datasource)
+		if (this.datasource) {
 			this.datasource.setProperty(this.p, data);
+//			this.dirty = true;
+		}
 
 		return this;
 	},
@@ -201,6 +204,7 @@ joProperty.extend(joDataSource, {
 	},
 
 	onSourceChange: function() {
-		this.changeEvent.fire(this.getData());
+//		if (this.dirty)
+			this.changeEvent.fire(this.getData());
 	}
 });
